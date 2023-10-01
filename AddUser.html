@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      div {
+        padding: 10px;
+      }
+      #create {
+        background-color: rgb(128, 226, 37);
+      }
+      td {
+        padding-left: 20px;
+      }
+    </style>
+    <title>Add User</title>
+  </head>
+
+  <body>
+    <div>
+      <h1>Add User</h1>
+      <hr />
+      <form id="userForm">
+        <table style="padding-left: 50px; padding-top: 20px">
+          <tr>
+            <td>Role ID</td>
+            <td>
+              <select name="role_id" id="role_id">
+                <option value="Manager">Manager</option>
+                <option value="lecturer">Lecturer</option>
+                <option value="student">Student</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Login</td>
+            <td>
+                <input type="text" id="login" value="">@fpt.edu.vn
+                <span id="loginError" style="color: red;"></span>
+            </td>
+          </tr>
+          <tr>
+            <td>isActive</td>
+            <td>
+              <label>
+                <input type="checkbox" value="" />
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td>Campus ID</td>
+            <td>
+              <select name="campus_id" id="campus_id">
+                <option value="FPT_HaNoi">FPT Ha Noi</option>
+                <option value="FPT_DaNang">FPT Da Nang</option>
+                <option value="FPT_CanTho">FPT Can Tho</option>
+                <option value="FPT_HoChiMinh">FPT Ho Chi Minh</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><button type="button" id="create">Create</button></td>
+          </tr>
+        </table>
+      </form>
+      <a style="text-decoration: none;" href="List.html" target="_blank"> Back To List </a>
+    </div>
+
+    <script>
+      document.getElementById("create").addEventListener("click", function () {
+        // Lấy giá trị trong trường "Login"
+        var loginValue = document.getElementById("login").value;
+
+        // Kiểm tra nếu trường "Login" trống
+        if (loginValue.trim() === "") {
+          document.getElementById("loginError").textContent = "Vui lòng điền thông tin vào trường Login.";
+        } else {
+          // Nếu trường "Login" không trống, xóa thông báo lỗi
+          document.getElementById("loginError").textContent = "";
+
+          // Thêm mã xử lý tiếp theo ở đây (ví dụ: gửi dữ liệu đến máy chủ)
+        }
+      });
+    </script>
+  </body>
+</html>
