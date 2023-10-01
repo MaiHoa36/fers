@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      div {
+        padding: 10px;
+      }
+      #create {
+        background-color: rgb(101, 194, 13);
+      }
+      td {
+        padding-left: 20px;
+      }
+    </style>
+    <title>Detail User</title>
+  </head>
+
+  <body>
+    <div>
+      <h1>Details User</h1>
+      <hr />
+      <table style="padding-left: 50px; padding-top: 20px">
+        <tr>
+          <td>Login</td>
+          <td><span id="login">abc</span>@fpt.edu.vn</td>
+        </tr>
+
+        <tr>
+          <td>isActive</td>
+          <td>
+            <label>
+              <input type="checkbox" value="" checked="checked" />
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>Role Name</td>
+          <td><span id="role_name">abc</span></td>
+        </tr>
+        <tr>    
+          <td>Campus ID</td>
+          <td><span id="campus_id">abc</span></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><button type="submit" id="create">Create</button></td>
+        </tr>
+      </table>
+      <a style="text-decoration: none" href="EditUser.html" target="_blank">
+        Edit
+      </a>
+      |
+      <a style="text-decoration: none" href="Delete.html" target="_blank">
+        Delete
+      </a>
+      |
+      <a style="text-decoration: none" href="List.html" target="_blank">
+        Back To List
+      </a>
+    </div>
+  </body>
+</html>
