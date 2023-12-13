@@ -65,7 +65,15 @@ public class LecturerController {
         } else return null;
     }
 
-    private void addCourseLog(Course course,
+    private String getLoggedInLecturerMail() {
+        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (null == loggedInEmail || "anonymousUser".equals(loggedInEmail)) {
+            return null;
+        }
+        return loggedInEmail;
+    }
+
+    private void addCourseLog(String courseId, String courseCode, String courseName,
                               CourseEnum.LecturerAction action,
                               CourseEnum.CourseObject object,
                               String objectId,
@@ -73,7 +81,7 @@ public class LecturerController {
                               String email,
                               String oldContent,
                               String newContent) {
-        CourseLog courseLog = new CourseLog(course, action, object, objectId, objectName, email, oldContent, newContent);
+        CourseLog courseLog = new CourseLog(courseId,courseCode,courseName, action, object, objectId, objectName, email, oldContent, newContent);
         courseLogService.addCourseLog(courseLog);
     }
 
@@ -112,21 +120,21 @@ public class LecturerController {
         return "lecturer/course/lecturer_courses";
     }
 
-    @GetMapping({"/courses/{courseId}/update"})
-    public String updateCourseProcess(@PathVariable(required = false) String courseId, final Model model) {
-        if (null == courseId) {
-            courseId = "";
-        }
-        Course course = courseService.findByCourseId(courseId);
-        if (null == course) {
-            return "redirect:lecturer/courses/update?error";
-        } else {
-            List<Account> lecturers = accountService.findAllLecturer();
-            model.addAttribute("lecturers", lecturers);
-            model.addAttribute("course", course);
-            return "lecturer/course/lecturer_update-course";
-        }
-    }
+//    @GetMapping({"/courses/{courseId}/update"})
+//    public String updateCourseProcess(@PathVariable(required = false) String courseId, final Model model) {
+//        if (null == courseId) {
+//            courseId = "";
+//        }
+//        Course course = courseService.findByCourseId(courseId);
+//        if (null == course) {
+//            return "redirect:lecturer/courses/update?error";
+//        } else {
+//            List<Account> lecturers = accountService.findAllLecturer();
+//            model.addAttribute("lecturers", lecturers);
+//            model.addAttribute("course", course);
+//            return "lecturer/course/lecturer_update-course";
+//        }
+//    }
 
     @PostMapping("/courses/{courseID}/changeStatus")
     @Transactional
@@ -140,7 +148,9 @@ public class LecturerController {
         }
         courseService.updateCourse(course);
         //add course log
-        addCourseLog(course,
+        addCourseLog(course.getId(),
+                course.getCourseCode(),
+                course.getCourseName(),
                 CourseEnum.LecturerAction.CHANGE_STATUS,
                 CourseEnum.CourseObject.COURSE,
                 courseID,
@@ -198,7 +208,9 @@ public class LecturerController {
         Topic modelTopic = new Topic();
         modelTopic.setCourse(course);
         //add course log
-        addCourseLog(course,
+        addCourseLog(course.getId(),
+                course.getCourseCode(),
+                course.getCourseName(),
                 CourseEnum.LecturerAction.ADD,
                 CourseEnum.CourseObject.TOPIC,
                 topic.getId(),
@@ -234,7 +246,10 @@ public class LecturerController {
             checkTopicExist.setTopicDescription(topic.getTopicDescription());
             topicService.updateTopic(checkTopicExist);
             //add course log
-            addCourseLog(topic.getCourse(),
+            Course course = checkTopicExist.getCourse();
+            addCourseLog(course.getId(),
+                    course.getCourseCode(),
+                    course.getCourseName(),
                     CourseEnum.LecturerAction.UPDATE,
                     CourseEnum.CourseObject.TOPIC,
                     topic.getId(),
@@ -253,7 +268,10 @@ public class LecturerController {
             courseService.removeTopic(topic.getCourse().getId(), new ObjectId(topicId));
             topicService.softDelete(topic);
             //add course log
-            addCourseLog(topic.getCourse(),
+            Course course = topic.getCourse();
+            addCourseLog(course.getId(),
+                    course.getCourseCode(),
+                    course.getCourseName(),
                     CourseEnum.LecturerAction.UPDATE,
                     CourseEnum.CourseObject.DOCUMENT,
                     topic.getId(),
@@ -297,7 +315,9 @@ public class LecturerController {
         ResourceType modelResourceType = new ResourceType();
         modelResourceType.setCourse(course);
         //add course log
-        addCourseLog(course,
+        addCourseLog(course.getId(),
+                course.getCourseCode(),
+                course.getCourseName(),
                 CourseEnum.LecturerAction.ADD,
                 CourseEnum.CourseObject.RESOURCE_TYPE,
                 resourceType.getId(),
@@ -333,7 +353,10 @@ public class LecturerController {
             checkResourceTypeExist.setResourceTypeName(resourcetype.getResourceTypeName());
             checkResourceTypeExist = resourceTypeService.updateResourceType(checkResourceTypeExist);
             //add course log
-            addCourseLog(resourcetype.getCourse(),
+            Course course = checkResourceTypeExist.getCourse();
+            addCourseLog(course.getId(),
+                    course.getCourseCode(),
+                    course.getCourseName(),
                     CourseEnum.LecturerAction.UPDATE,
                     CourseEnum.CourseObject.RESOURCE_TYPE,
                     checkResourceTypeExist.getId(),
@@ -354,7 +377,10 @@ public class LecturerController {
             courseService.removeResourceType(resourcetype.getCourse().getId(), new ObjectId(resourceTypeId));
             resourceTypeService.softDelete(resourcetype);
             //add course log
-            addCourseLog(resourcetype.getCourse(),
+            Course course = resourcetype.getCourse();
+            addCourseLog(course.getId(),
+                    course.getCourseCode(),
+                    course.getCourseName(),
                     CourseEnum.LecturerAction.DELETE,
                     CourseEnum.CourseObject.RESOURCE_TYPE,
                     resourceTypeId,
@@ -488,9 +514,11 @@ public class LecturerController {
         if (checkResourceTypeExist) {
             ResourceType addedResourceType = resourceTypeService.addResourceType(resourceType);
             documentDTO.setResourceType(addedResourceType);
+            courseService.addResourceTypeToCourse(topic.getCourse(), new ObjectId(addedResourceType.getId()));
         } else {
             documentDTO.setResourceType(existedResourceType);
         }
+
 
         String id = "fileNotFound";
         if (String.valueOf(documentDTO.isDisplayWithFile()).equalsIgnoreCase("true")) {
@@ -533,7 +561,7 @@ public class LecturerController {
 
         List<MultiFile> multiFiles = new ArrayList<>();
         // Check if files were uploaded
-        if (files != null && files.length > 0) {
+        if (files != null && files.length > 0 && files.length < 4) {
             for (MultipartFile supportFile : files) {
                 // Handle each uploaded file
                 if (!supportFile.isEmpty()) {
@@ -544,8 +572,8 @@ public class LecturerController {
                         // Generate a unique file name
                         String uniqueFileName = System.currentTimeMillis() + "_" + FilenameUtils.getBaseName(originalFileName) + "." + FilenameUtils.getExtension(originalFileName);
                         // Process the uploaded file as needed
-                        String link = storageService.uploadFile(supportFile);
-                        MultiFile multiFile = new MultiFile(uniqueFileName, link);
+                        String link = storageService.uploadFileWithName(supportFile, uniqueFileName);
+                        MultiFile multiFile = new MultiFile(originalFileName, uniqueFileName, link);
                         MultiFile addedFile = multiFileService.addMultiFile(multiFile);
                         multiFiles.add(addedFile);
                     } catch (Exception e) {
@@ -566,7 +594,10 @@ public class LecturerController {
         topicService.addDocumentToTopic(topicId, new ObjectId(document.getId()));
 
         //add course log
-        addCourseLog(topic.getCourse(),
+        Course course = topic.getCourse();
+        addCourseLog(course.getId(),
+                course.getCourseCode(),
+                course.getCourseName(),
                 CourseEnum.LecturerAction.ADD,
                 CourseEnum.CourseObject.DOCUMENT,
                 document.getId(),
@@ -578,7 +609,7 @@ public class LecturerController {
     }
 
     @GetMapping({"/documents/{documentId}/update"})
-    public String updateDocumentProcess(@PathVariable(required = false) String documentId, final Model model) throws IOException {
+    public String updateDocument(@PathVariable(required = false) String documentId, final Model model) throws IOException {
         Document document = documentService.findById(documentId);
         if (null == document) {
             return "redirect:lecturer/documents/update?error";
@@ -597,7 +628,7 @@ public class LecturerController {
 
     @PostMapping("/documents/update")
     @Transactional
-    public String updateDocument(@ModelAttribute DocumentDto document,
+    public String updateDocumentProcess(@ModelAttribute DocumentDto document,
                                  @RequestParam(value = "deleteCurrentFile", required = false) String deleteCurrentFile,
                                  @RequestParam(value = "file", required = false) MultipartFile file,
                                 @RequestParam(value = "files", required = false) MultipartFile[] files)
@@ -644,31 +675,6 @@ public class LecturerController {
                         }
                     }
                 }
-//                List<MultiFile> multiFiles = new ArrayList<>();
-//                // Check if files were uploaded
-//                if (files != null && files.length > 0) {
-//                    for (MultipartFile supportFile : files) {
-//                        // Handle each uploaded file
-//                        if (!supportFile.isEmpty()) {
-//                            try {
-//
-//                                // Get the original file name
-//                                String originalFileName = supportFile.getOriginalFilename();
-//                                // Generate a unique file name
-//                                String uniqueFileName = System.currentTimeMillis() + "_" + FilenameUtils.getBaseName(originalFileName) + "." + FilenameUtils.getExtension(originalFileName);
-//                                // Process the uploaded file as needed
-//                                String link = storageService.uploadFile(supportFile);
-//                                MultiFile multiFile = new MultiFile(uniqueFileName, link);
-//                                MultiFile addedFile = multiFileService.addMultiFile(multiFile);
-//                                multiFiles.add(addedFile);
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                                // Handle any exceptions that occur during file upload
-//                            }
-//                        }
-//                    }
-//                    documentDTO.setMultiFiles(multiFiles);
-//                }
                 if (checkExist.getCloudFileLink() != null && checkExist.getContentId() == null) {
                     storageService.deleteFile(checkExist.getFileName());
                     documentService.updateDocument(checkExist, null, id);
@@ -677,7 +683,10 @@ public class LecturerController {
                 }
             }
             //add course log
-            addCourseLog(document.getTopic().getCourse(),
+            Course course = checkExist.getTopic().getCourse();
+            addCourseLog(course.getId(),
+                    course.getCourseCode(),
+                    course.getCourseName(),
                     CourseEnum.LecturerAction.UPDATE,
                     CourseEnum.CourseObject.DOCUMENT,
                     document.getId(),
@@ -697,7 +706,10 @@ public class LecturerController {
             resourceTypeService.removeDocumentFromResourceType(document.getTopic().getId(), new ObjectId(documentId));
             documentService.softDelete(document);
             //add course log
-            addCourseLog(document.getTopic().getCourse(),
+            Course course = document.getTopic().getCourse();
+            addCourseLog(course.getId(),
+                    course.getCourseCode(),
+                    course.getCourseName(),
                     CourseEnum.LecturerAction.DELETE,
                     CourseEnum.CourseObject.DOCUMENT,
                     document.getId(),
@@ -734,17 +746,11 @@ public class LecturerController {
     */
     @GetMapping({"/questions/list/{status}/{pageIndex}"})
     public String viewListOfQuestions(@PathVariable(required = false) Integer pageIndex, final Model model, @PathVariable String status) {
-        // get account authorized
-        Lecturer lecturer = getLoggedInLecturer();
-        List<Question> questions = questionService.findByLecturer(lecturer);
-//        for (Question q : questions) {
-//            q.setAnswers(new HashSet<>(answerService.findByQuestion(q)));
-//        }
+        List<Question> questions = questionService.findByLecturerMail(getLoggedInLecturerMail());
         model.addAttribute("studentQuestions", questions);
         // add log
 //        addUserLog("/my_library/my_questions/history");
         model.addAttribute("status", status);
-
         return "lecturer/document/lecturer_questions";
     }
 
@@ -761,9 +767,6 @@ public class LecturerController {
     @PostMapping("/feedbacks/add")
     public String processFeedbackForm(@ModelAttribute("feedback") @Valid FeedbackDto feedback,
                                       BindingResult result) {
-//        if (result.hasErrors()) {
-//            return "student/feedback/student_feedback-add"; // Return to the form with validation errors
-//        }
 
         // Get the logged-in user (you need to implement your user authentication mechanism)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -776,6 +779,7 @@ public class LecturerController {
 
         if (loggedInUser != null) {
             feedback.setAccount(loggedInUser);
+            feedback.setStatus("Pending");
             // Save the feedback to the database
             feedbackService.saveFeedback(new Feedback(feedback));
             return "redirect:/admin/feedbacks/list"; // Redirect to a success page
