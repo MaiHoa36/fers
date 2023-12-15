@@ -57,7 +57,7 @@ public class LecturerCourseServiceImpl implements LecturerCourseService{
     }
 
     @Override
-    public List<LecturerCourseResponseDto> findCourseManageHistory(String courseId) {
+    public List<LecturerCourse> findCourseManageHistory(String courseId) {
         Query query = new Query();
 
         Criteria criteria = Criteria.where("id.courseId").is(courseId)
@@ -65,23 +65,7 @@ public class LecturerCourseServiceImpl implements LecturerCourseService{
                 .and("id.lastModifiedDate").exists(true);
         query.addCriteria(criteria);
         List<LecturerCourse> lecturerCourses = mongoTemplate.find(query, LecturerCourse.class);
-        List<String> lecturerIds = lecturerCourses.stream()
-                .map(lecturerCourse -> lecturerCourse.getId().getLecturerId())
-                .collect(Collectors.toList());
-        List<LecturerCourseResponseDto> result = new ArrayList<>();
-        List<Lecturer>  lecturers = lecturerRepository.findByIds(lecturerIds);
-        for (LecturerCourse lecturerCourse : lecturerCourses) {
-            Lecturer lecturer = lecturers.stream()
-                    .filter(l -> l.getId().equals(lecturerCourse.getId().getLecturerId()))
-                    .findFirst()
-                    .orElse(null);
-
-            if (lecturer != null) {
-                result.add(new LecturerCourseResponseDto(lecturer, lecturerCourse));
-                System.out.println(lecturerCourse.getId().getCreatedDate() + "courseId = " + lecturerCourse.getId().getCourseId() + "lecturer" +lecturer.getId());
-            }
-        }
-        return result;
+        return lecturerCourses;
     }
 
     @Override

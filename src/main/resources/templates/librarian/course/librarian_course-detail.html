@@ -157,19 +157,19 @@
                         <td><a class="a-link" th:href="@{'/librarian/lectures/' + ${course.lecturer.id}}"
                                th:text="${course.lecturer.account.email}"></a></td>
                         <td><span class="code-archive-except"
-                                  th:text="${#temporals.format(currentLecturerCourse.id.createdDate, 'dd-MM-yyyy')}"></span>
+                                  th:text="${#temporals.format(currentLecturerCourse.id.createdDate, 'dd-MM-yyyy HH:mm:ss')}"></span>
                         </td>
                         <td><span class="code-archive-except text-success bold">Current</span></td>
                     </tr>
                     <th:block th:each="lecturerCourse, iterStat  : ${lecturerCourses}">
                         <tr>
                             <td th:text="${checkLecturerCourse} ? ${iterStat.index +2} : ${iterStat.index +1}"></td>
-                            <td><a class="a-link" th:href="@{'/librarian/lectures/' + ${lecturerCourse.lecturerId}}"
-                                   th:text="${lecturerCourse.lecturerName}"></a></td>
-                            <td><a class="a-link" th:href="@{'/librarian/lectures/' + ${lecturerCourse.lecturerId}}"
-                                   th:text="${lecturerCourse.lecturerEmail}"></a></td>
-                            <td><span class="code-archive-except" th:text="${lecturerCourse.startDate}"></span></td>
-                            <td><span class="code-archive-except" th:text="${lecturerCourse.endDate}"></span></td>
+                            <td><a class="a-link" th:href="@{'/librarian/lectures/' + ${lecturerCourse.id.lecturerId}}"
+                                   th:text="${lecturerCourse.id.lecturerName}"></a></td>
+                            <td><a class="a-link" th:href="@{'/librarian/lectures/' + ${lecturerCourse.id.lecturerId}}"
+                                   th:text="${lecturerCourse.id.lecturerEmail}"></a></td>
+                            <td><span class="code-archive-except" th:text="${#temporals.format(lecturerCourse.id.createdDate, 'dd-MM-yyyy HH:mm:ss')}"></span></td>
+                            <td><span class="code-archive-except" th:text="${#temporals.format(lecturerCourse.id.lastModifiedDate, 'dd-MM-yyyy HH:mm:ss')}"></span></td>
                         </tr>
                     </th:block>
                     </tbody>

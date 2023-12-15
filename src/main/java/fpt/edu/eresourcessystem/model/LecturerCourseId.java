@@ -18,6 +18,8 @@ public class LecturerCourseId {
 
     @NotNull
     private String lecturerId;
+    private String lecturerName;
+    private String lecturerEmail;
 
     @NotNull
     private String courseId;

@@ -294,13 +294,12 @@ public class LibrarianController {
         List<Account> accounts = accountService.findAllLecturer();
         boolean checkLecturerCourse = course.getLecturer().getId() != null;
         // find course's management history
-        List<LecturerCourseResponseDto>  lecturerCourses = lecturerCourseService.findCourseManageHistory(courseId);
+        List<LecturerCourse>  lecturerCourses = lecturerCourseService.findCourseManageHistory(courseId);
         LecturerCourse currentLecturerCourse = lecturerCourseService.findCurrentLecturer(courseId);
         System.out.println(currentLecturerCourse);
         model.addAttribute("course", course);
         model.addAttribute("lecturerCourses", lecturerCourses);
         model.addAttribute("currentLecturerCourse", currentLecturerCourse);
-        System.out.println("303---" + currentLecturerCourse.getId().getCreatedDate());
         model.addAttribute("checkLecturerCourse", checkLecturerCourse);
         model.addAttribute("accounts", accounts);
         return "librarian/course/librarian_course-detail";
@@ -373,10 +372,11 @@ public class LibrarianController {
             LecturerCourse oldLecturerCourse = lecturerCourseService.findCurrentLecturer(courseId);
             LecturerCourse newLecturerCourse = new LecturerCourse();
             if(null != oldLecturerCourse){
+                lecturerCourseService.delete(oldLecturerCourse);
                 LecturerCourseId lecturerCourseId = oldLecturerCourse.getId();
+                System.out.println(oldLecturerCourse.getId().getLecturerName());
                 lecturerCourseId.setLastModifiedDate(LocalDateTime.now());
                 newLecturerCourse.setId(lecturerCourseId);
-                lecturerCourseService.delete(oldLecturerCourse);
                 lecturerCourseService.add(newLecturerCourse);
             }
         }
@@ -438,6 +438,12 @@ public class LibrarianController {
             // create new lecturerCourseId
             LecturerCourseId lecturerCourseId = new LecturerCourseId();
             lecturerCourseId.setLecturerId(savedLecturer.getId());
+            lecturerCourseId.setLecturerEmail(savedLecturer.getAccount().getEmail());
+            if(null != savedLecturer.getAccount().getName()){
+                lecturerCourseId.setLecturerName(savedLecturer.getAccount().getName());
+            }else {
+                lecturerCourseId.setLecturerName(savedLecturer.getAccount().getUsername());
+            }
             // set course Id that added
             lecturerCourseId.setCourseId(course.getId());
             lecturerCourseId.setCreatedDate(LocalDateTime.now());
