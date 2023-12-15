@@ -3,79 +3,104 @@ function viewOtherDocument(param) {
 }
 
 function viewAllQuestion() {
-    $(".stu__questions-list-view").css("display", "none");
-    $("#stu__view-question-history").css("display", "block");
+    $("#setStatus").val("all");
+    $("#pageIndex").val("1");
+    $("#getMyQuestion").submit();
 }
 
 function viewQuestionWaiting() {
-    $(".stu__questions-list-view").css("display", "none");
-    var divContent = $("#stu__view-waiting-for-reply-question").text().trim();
-    if (divContent.length == 0) {
-        $("#loading").css("display", "block");
-        $.ajax({
-            type: 'GET',
-            url: '/api/student/my_question/new_question',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data.length)
-                var html = "";
-                for (let i = 0; i < data.length; i++) {
-                    html += "<div class=stu__question-content-wrapper>\n" +
-                        "                        <span class=\"stu__question-content stu__question-date\">" + data[i].lastModifiedDate + "</span><br>\n" +
-                        "                    <a class=\"stu__question-title\">You asked on" + data[i].documentTitle + "</a>\n" +
-                        "                    <p class=\"student-content-view-brief\"><span>" + data[i].questionContent + "</span>\n" +
-                        "                        <a class=\"link-view-detailed\"\n" +
-                        "                              href=\"/student/documents/" + data[i].documentId + "#" + data[i].questionId + "\">view <i\n" +
-                        "                            class=\"fa-solid fa-arrow-right\"></i></a></p>\n" +
-                        "                    </div>";
-
-                }
-                $("#stu__view-waiting-for-reply-question").html(html);
-                $("#loading").css("display", "none");
-                $("#stu__view-waiting-for-reply-question").css("display", "block");
-            },
-            error: function (xhr) {
-                // Handle errors
-            }
-        });
-    } else $("#stu__view-waiting-for-reply-question").css("display", "block");
-
+    $("#setStatus").val("wait-reply");
+    $("#pageIndex").val("1");
+    $("#getMyQuestion").submit();
 }
 
-function viewNewReplyQuestion() {
-
-    $(".stu__questions-list-view").css("display", "none");
-    var divContent = $("#stu__view-new-reply-question").text().trim();
-    if (divContent.length == 0) {
-        $("#loading").css("display", "block");
-        $.ajax({
-            type: 'GET',
-            url: '/api/student/my_question/new_replies',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data.length)
-                var html = "";
-                for (let i = 0; i < data.length; i++) {
-                    html += "<div class=stu__question-content-wrapper>\n" +
-                        "                        <span class=\"stu__question-content stu__question-date\">" + data[i].lastModifiedDate + "</span><br>\n" +
-                        "                    <a class=\"stu__question-title\">New reply for your question at " + data[i].documentTitle + "</a>\n" +
-                        "                    <p class=\"student-content-view-brief\"><span>" + data[i].questionContent + "</span>\n" +
-                        "                        <a class=\"link-view-detailed\"\n" +
-                        "                              href=\"/student/documents/" + data[i].documentId + "#" + data[i].questionId + "\">view <i\n" +
-                        "                            class=\"fa-solid fa-arrow-right\"></i></a></p>\n" +
-                        "                    </div>";
-                }
-                $("#stu__view-new-reply-question").html(html);
-                $("#loading").css("display", "none");
-                $("#stu__view-new-reply-question").css("display", "block");
-            },
-            error: function (xhr) {
-                // Handle errors
-            }
-        });
-    } else $("#stu__view-new-reply-question").css("display", "block");
+function viewNewReplyQuestion(){
+    $("#setStatus").val("new-reply");
+    $("#pageIndex").val("1");
+    $("#getMyQuestion").submit();
+}
+function pagingInMyQuestion(clickedElement){
+    var page = $(clickedElement).attr('page');
+    $("#pageIndex").val(page);
+    $("#getMyQuestion").submit();
 
 }
+function submitFormGetQuestion(){
+    $("#pageIndex").val("1");
+    $("#getMyQuestion").submit();
+}
+
+
+// function viewQuestionWaiting() {
+//     var search = $("#search-text").val();
+//     $(".stu__questions-list-view").css("display", "none");
+//     var divContent = $("#stu__view-waiting-for-reply-question").text().trim();
+//     if (divContent.length == 0) {
+//         $("#loading").css("display", "block");
+//         $.ajax({
+//             type: 'GET',
+//             url: '/api/student/my_question/new_question'+'?search='+search + '&status=wait-reply',
+//             dataType: 'json',
+//             success: function (data) {
+//                 console.log(data.length)
+//                 var html = "";
+//                 for (let i = 0; i < data.length; i++) {
+//                     html += "<div class=stu__question-content-wrapper>\n" +
+//                         "                        <span class=\"stu__question-content stu__question-date\">" + data[i].lastModifiedDate + "</span><br>\n" +
+//                         "                    <a class=\"stu__question-title\">You asked on" + data[i].documentTitle + "</a>\n" +
+//                         "                    <p class=\"student-content-view-brief\"><span>" + data[i].questionContent + "</span>\n" +
+//                         "                        <a class=\"link-view-detailed\"\n" +
+//                         "                              href=\"/student/documents/" + data[i].documentId + "#" + data[i].questionId + "\">view <i\n" +
+//                         "                            class=\"fa-solid fa-arrow-right\"></i></a></p>\n" +
+//                         "                    </div>";
+//
+//                 }
+//                 $("#stu__view-waiting-for-reply-question").html(html);
+//                 $("#loading").css("display", "none");
+//                 $("#stu__view-waiting-for-reply-question").css("display", "block");
+//             },
+//             error: function (xhr) {
+//                 // Handle errors
+//             }
+//         });
+//     } else $("#stu__view-waiting-for-reply-question").css("display", "block");
+//
+// }
+
+// function viewNewReplyQuestion() {
+//
+//     $(".stu__questions-list-view").css("display", "none");
+//     var divContent = $("#stu__view-new-reply-question").text().trim();
+//     if (divContent.length == 0) {
+//         $("#loading").css("display", "block");
+//         $.ajax({
+//             type: 'GET',
+//             url: '/api/student/my_question/new_replies',
+//             dataType: 'json',
+//             success: function (data) {
+//                 console.log(data.length)
+//                 var html = "";
+//                 for (let i = 0; i < data.length; i++) {
+//                     html += "<div class=stu__question-content-wrapper>\n" +
+//                         "                        <span class=\"stu__question-content stu__question-date\">" + data[i].lastModifiedDate + "</span><br>\n" +
+//                         "                    <a class=\"stu__question-title\">New reply for your question at " + data[i].documentTitle + "</a>\n" +
+//                         "                    <p class=\"student-content-view-brief\"><span>" + data[i].questionContent + "</span>\n" +
+//                         "                        <a class=\"link-view-detailed\"\n" +
+//                         "                              href=\"/student/documents/" + data[i].documentId + "#" + data[i].questionId + "\">view <i\n" +
+//                         "                            class=\"fa-solid fa-arrow-right\"></i></a></p>\n" +
+//                         "                    </div>";
+//                 }
+//                 $("#stu__view-new-reply-question").html(html);
+//                 $("#loading").css("display", "none");
+//                 $("#stu__view-new-reply-question").css("display", "block");
+//             },
+//             error: function (xhr) {
+//                 // Handle errors
+//             }
+//         });
+//     } else $("#stu__view-new-reply-question").css("display", "block");
+//
+// }
 
 function viewTopicDocument(param) {
     if ($("#list-doc-of-topic-" + param).css('display') !== 'none') {
@@ -132,6 +157,14 @@ function viewTopicDocument(param) {
 }
 
 $(document).ready(function () {
+
+    $("#getMyQuestion :input").keypress(function(event) {
+        // Kiểm tra xem phím được ấn có phải là Enter không (mã ASCII 13)
+        if (event.which === 13) {
+            $("#pageIndex").val("1");
+            $("#getMyQuestion").submit();
+        }
+    });
 
     /*
         NAVBAR
@@ -240,9 +273,25 @@ $(document).ready(function () {
     });
 
 
+    // add click on <li> also -> click on <a>
+    $('.stu__navbar-favourite-item').on('click', function() {
+        var link = $(this).find('a');
+        if (link.length > 0) {
+            link[0].click();
+        }
+    });
+
+    $('.home__course-wrapper-inline').on('click', function() {
+        var link = $(this).find('a');
+        if (link.length > 0) {
+            link[0].click();
+        }
+    });
+
+
     $("body").on("click", ".save-doc", function () {
         var docId = $(this).attr("docId");
-        var loading = "<p><a th:attr=\"docId=${docId}\">\n" +
+        var loading = "<p><a docId=" + docId + ">" +
             "                                        <i class=\"fas fa-spinner fa-spin\"></i>\n" +
             "                                        Bookmarking</a></p>"
         $(".stu_save-doc-link").html(loading);
@@ -255,16 +304,14 @@ $(document).ready(function () {
                     "                                        <i class=\"fa-solid fa-bookmark\"></i>\n" +
                     "                                        Unbookmark</a>\n" +
                     "                                    </p>";
+
+                $(".stu_save-doc-link").html(saved);
+            },
+            error: function (errorData) {
                 var unsaved = "<p><a class=\"save-doc\" docId=" + docId + ">" +
                     "                                        <i class=\"fa-regular fa-bookmark\"></i>\n" +
                     "                                        Bookmark</a></p>";
-                if ('saved' == responseData) {
-                    $(".stu_save-doc-link").html(saved);
-                } else if (unsaved) {
-                    $(".stu_save-doc-link").html(unsaved);
-                }
-            },
-            error: function (errorData) {
+                $(".stu_save-doc-link").html(unsaved);
             }
         })
     });
@@ -279,22 +326,20 @@ $(document).ready(function () {
             url: '/api/student/documents/' + docId + '/unsaved_document',
             success: function (responseData) {
                 console.log(responseData);
-                var saved = "<p><a class=\"unsaved-doc\" docId=" + docId + ">" +
-                    "                                        <i class=\"fa-solid fa-bookmark\"></i>\n" +
-                    "                                        Unbookmark</a>\n" +
-                    "                                    </p>";
+
                 var unsaved = "<p><a class=\"save-doc\" docId=" + docId + ">" +
                     "                                        <i class=\"fa-regular fa-bookmark\"></i>\n" +
                     "                                        Bookmark</a></p>";
 
 
-                if ('saved' == responseData) {
-                    $(".stu_save-doc-link").html(saved);
-                } else if (unsaved) {
-                    $(".stu_save-doc-link").html(unsaved);
-                }
+                $(".stu_save-doc-link").html(unsaved);
             },
             error: function (errorData) {
+                var saved = "<p><a class=\"unsaved-doc\" docId=" + docId + ">" +
+                    "                                        <i class=\"fa-solid fa-bookmark\"></i>\n" +
+                    "                                        Unbookmark</a>\n" +
+                    "                                    </p>";
+                $(".stu_save-doc-link").html(saved);
             }
         })
     });
@@ -314,17 +359,14 @@ $(document).ready(function () {
                     "                                        <i class=\"fa-solid fa-bookmark\"></i>\n" +
                     "                                        Unbookmark</a>\n" +
                     "                                    </p>";
-                var unsaved = "<p><a class=\"save-course\" courseId=" + courseId + ">" +
-                    "                                        <i class=\"fa-regular fa-bookmark\"></i>\n" +
-                    "                                        Bookmark</a></p>";
-                if ('saved' == responseData) {
-                    $(".stu_save-course-link").html(saved);
-                } else if (unsaved) {
-                    $(".stu_save-course-link").html(unsaved);
-                }
+                $(".stu_save-course-link").html(saved);
             },
             error: function (errorData) {
                 console.log(errorData)
+                var unsaved = "<p><a class=\"save-course\" courseId=" + courseId + ">" +
+                    "                                        <i class=\"fa-regular fa-bookmark\"></i>\n" +
+                    "                                        Bookmark</a></p>";
+                $(".stu_save-course-link").html(unsaved);
             }
         })
     })
@@ -339,23 +381,19 @@ $(document).ready(function () {
             type: 'POST',
             url: '/api/student/courses/' + courseId + '/unsaved_course',
             success: function (responseData) {
-                console.log(responseData);
+                var unsaved = "<p><a class=\"save-course\" courseId=" + courseId + ">" +
+                    "                                        <i class=\"fa-regular fa-bookmark\"></i>\n" +
+                    "                                        Bookmark</a></p>";
+                $(".stu_save-course-link").html(unsaved);
+
+            },
+            error: function (errorData) {
                 var saved = "<p><a class=\"unsaved-course\" courseId=" + courseId + ">" +
                     "                                        <i class=\"fa-solid fa-bookmark\"></i>\n" +
                     "                                        Unbookmark</a>\n" +
                     "                                    </p>";
-                var unsaved = "<p><a class=\"save-course\" courseId=" + courseId + ">" +
-                    "                                        <i class=\"fa-regular fa-bookmark\"></i>\n" +
-                    "                                        Bookmark</a></p>";
+                $(".stu_save-course-link").html(saved);
 
-
-                if ('saved' == responseData) {
-                    $(".stu_save-course-link").html(saved);
-                } else if (unsaved) {
-                    $(".stu_save-course-link").html(unsaved);
-                }
-            },
-            error: function (errorData) {
             }
         })
     })

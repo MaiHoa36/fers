@@ -25,8 +25,6 @@ public interface DocumentService {
 
     Page<Document> filterAndSearchDocument(String course, String topic, String title, String description, int pageIndex, int pageSize);
 
-    Iterable<EsDocument> searchDocument(String search);
-
     GridFSFile getGridFSFile(ObjectId id) throws IOException;
 
     byte[] getGridFSFileContent(ObjectId id) throws IOException;
@@ -50,4 +48,9 @@ public interface DocumentService {
     List<DocumentResponseDto> findRelevantDocument(String topicId, String docId);
 
     HashMap<String, List<DocumentResponseDto>> findAllDocumentsByCourseAndResourceType(String courseId, String resourceTypeId);
+
+
+    void removeMultiFile(String docId, ObjectId multiFileId);
+
+    Page<Document> findByListDocumentIdAndSearch(String search, List<String> documentIds, int pageIndex, int pageSize);
 }

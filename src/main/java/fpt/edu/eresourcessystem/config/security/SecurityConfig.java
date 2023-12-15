@@ -80,7 +80,6 @@ public class SecurityConfig implements WebMvcConfigurer{
                         .userService(customOAuth2UserService)
 			    )
                 .successHandler(customAuthenticationSuccessHandler)
-//                .defaultSuccessUrl("/student", true)
                 .failureUrl("/login?error"));
 
         http.logout(auth -> auth.logoutUrl("/logout")
@@ -98,10 +97,10 @@ public class SecurityConfig implements WebMvcConfigurer{
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/ws/**", "/notifications/**","/contact_us", "/faq", "/home", "/guest", "/login", "/css/**", "/js/**", "/images/**", "/assets/**", "/oauth2/authorization/**").permitAll()
-                        .requestMatchers("/admin/**").hasAnyRole(AccountEnum.Role.ADMIN.name())
-                        .requestMatchers("/librarian/**").hasAnyRole(AccountEnum.Role.ADMIN.name(), AccountEnum.Role.LIBRARIAN.name())
-                        .requestMatchers("/lecturer/**").hasAnyRole(AccountEnum.Role.ADMIN.name(), AccountEnum.Role.LIBRARIAN.name(), AccountEnum.Role.LECTURER.name())
-                        .requestMatchers("/student/**").hasAnyRole(AccountEnum.Role.ADMIN.name(), AccountEnum.Role.LIBRARIAN.name(), AccountEnum.Role.LECTURER.name(), AccountEnum.Role.STUDENT.name())
+                        .requestMatchers("/admin/**", "/api/admin/**").hasAnyRole(AccountEnum.Role.ADMIN.name())
+                        .requestMatchers("/librarian/**", "/api/librarian/**").hasAnyRole(AccountEnum.Role.ADMIN.name(), AccountEnum.Role.LIBRARIAN.name())
+                        .requestMatchers("/lecturer/**", "/api/lecturer/**").hasAnyRole(AccountEnum.Role.ADMIN.name(), AccountEnum.Role.LIBRARIAN.name(), AccountEnum.Role.LECTURER.name())
+                        .requestMatchers("/student/**", "/api/student/**").hasAnyRole(AccountEnum.Role.ADMIN.name(), AccountEnum.Role.LIBRARIAN.name(), AccountEnum.Role.LECTURER.name(), AccountEnum.Role.STUDENT.name())
                         .anyRequest().authenticated())
 //                        .anyRequest().permitAll());
         ;

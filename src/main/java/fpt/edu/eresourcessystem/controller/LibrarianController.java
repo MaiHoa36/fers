@@ -113,6 +113,10 @@ public class LibrarianController {
         }
         String currentPrincipalName = authentication.getName();
         Librarian librarian = librarianService.findByAccountId(accountService.findByEmail(currentPrincipalName).getId());
+
+        if (librarian == null) {
+            return "redirect:/librarian/courses/add?error";
+        }
         course.setLibrarian(librarian);
 
         // check course code duplicate
@@ -530,30 +534,33 @@ public class LibrarianController {
 //    }
     @GetMapping("/lectures/delete/{id}")
     public String softDeleteLecturer(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
-        Optional<Lecturer> lecturer = Optional.ofNullable(lecturerService.findLecturerById(id));
-        if (lecturer.isPresent()) {
-            boolean isDeleted = lecturerService.softDelete(lecturer.get());
-            if (isDeleted) {
-                redirectAttributes.addFlashAttribute("success", "Lecturer was successfully deleted.");
-            } else {
-                redirectAttributes.addFlashAttribute("error", "Failed to delete lecturer.");
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Lecturer not found.");
-        }
-        return "redirect:/admin/lectures/list";
-    }
-
-    @PostMapping("/lectures/delete/{id}")
-    public String deleteLecturer(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
         try {
-            lecturerService.softDelete(lecturerService.findLecturerById(id));
+            Lecturer lecturer = lecturerService.findLecturerById(id);
+            lecturerService.softDelete(lecturer);
+            for (Course course : lecturer.getCourses()) {
+                removeLecture(course.getId());
+            }
             redirectAttributes.addFlashAttribute("success", "Lecturer deleted successfully");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error deleting lecturer: " + e.getMessage());
         }
-        return "redirect:/admin/lecturers/list";
+        return "redirect:/admin/lectures/list";
     }
+
+//    @PostMapping("/lectures/delete/{id}")
+//    public String deleteLecturer(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
+//        try {
+//            Lecturer lecturer = lecturerService.findLecturerById(id);
+//            lecturerService.softDelete(lecturer);
+//            for (Course course : lecturer.getCourses()) {
+//                removeLecture(course.getId());
+//            }
+//            redirectAttributes.addFlashAttribute("success", "Lecturer deleted successfully");
+//        } catch (Exception e) {
+//            redirectAttributes.addFlashAttribute("error", "Error deleting lecturer: " + e.getMessage());
+//        }
+//        return "redirect:/admin/lecturers/list";
+//    }
 
     /*
         Login as

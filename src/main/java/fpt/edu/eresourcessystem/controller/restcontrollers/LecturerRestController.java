@@ -13,6 +13,7 @@ import fpt.edu.eresourcessystem.service.*;
 import fpt.edu.eresourcessystem.service.s3.ImageService;
 import fpt.edu.eresourcessystem.service.s3.StorageService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -43,6 +44,7 @@ public class LecturerRestController {
     private final ImageService imageService;
     private final StorageService storageService;
     private final CourseLogService courseLogService;
+    private final MultiFileService multiFileService;
 
     private UserLog addUserLog(String url) {
         UserLog userLog = new UserLog(new UserLogDto(url, getLoggedInLecturer().getAccount().getEmail(), AccountEnum.Role.LECTURER));
@@ -231,6 +233,19 @@ public class LecturerRestController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", fileName);
         return new ResponseEntity<>(content, headers, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/load_more_question", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<QuestionResponseDto>> loadMoreOtherQuestion(@RequestParam String docId,
+                                                                           @RequestParam int skip) {
+
+        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Document document = documentService.findById(docId);
+        if(null != loggedInEmail && null!= document){
+            List<QuestionResponseDto> questions = questionService.findByDocumentLimitAndSkip(document, 10, skip);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }

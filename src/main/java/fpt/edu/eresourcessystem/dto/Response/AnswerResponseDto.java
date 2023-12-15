@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +25,7 @@ public class AnswerResponseDto {
     private int totalAnswers;
 
     private String lecturerName;
-
+    private String createdDate;
     private String lastModifiedDate;
     public AnswerResponseDto(Answer answer){
         this.answerId= answer.getId();
@@ -37,6 +39,7 @@ public class AnswerResponseDto {
         if(null != answer.getLecturer() && null !=answer.getLecturer().getAccount()) {
             this.lecturerName = answer.getLecturer().getAccount().getName();
         }
-        this.lastModifiedDate = answer.getLastModifiedDate();
+        this.createdDate = answer.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        this.lastModifiedDate = answer.getLastModifiedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
     }
 }

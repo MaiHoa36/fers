@@ -1,21 +1,27 @@
 package fpt.edu.eresourcessystem.service.elasticsearch;
 
+import fpt.edu.eresourcessystem.model.elasticsearch.EsDocument;
+import fpt.edu.eresourcessystem.repository.elasticsearch.EsDocumentRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
-import fpt.edu.eresourcessystem.model.elasticsearch.EsDocument;
-import fpt.edu.eresourcessystem.repository.elasticsearch.EsDocumentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class EsDocumentService {
 
     private final EsDocumentRepository documentRepository;
+    private final EsDocumentRepository esDocumentRepository;
 
-    @Autowired
-    public EsDocumentService(EsDocumentRepository documentRepository) {
-        this.documentRepository = documentRepository;
+    public Page<EsDocument> searchDocument(String searchTerm, int skip) {
+        Pageable pageable = PageRequest.of(skip, 10);
+        return esDocumentRepository.search(searchTerm, pageable);
     }
 
     public EsDocument save(EsDocument document) {

@@ -58,22 +58,22 @@
                             <h2>Information of lecturer:</h2>
                             <form method="post" th:object="${lecturer}"
                                   th:action="@{/librarian/lectures/update}">
-                                <tr class="lib_input-wrapper">
-                                    <td class="lib_input-label"><label for="name">Name:</label></td>
-                                    <td>
-                                        <input type="text" id="name" name="name" class="lib_input form-control"
-                                               th:value="${lecturer.account.name}" placeholder="Enter name" readonly>
-                                    </td>
-                                </tr>
+<!--                                <tr class="lib_input-wrapper">-->
+<!--                                    <td class="lib_input-label"><label for="name">Name:</label></td>-->
+<!--                                    <td>-->
+<!--                                        <input type="text" id="name" name="name" class="lib_input form-control"-->
+<!--                                               th:value="${lecturer.account.name}" placeholder="Enter name" readonly>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
 
-                                <tr class="lib_input-wrapper">
-                                    <td class="lib_input-label"><label for="role">Role:</label></td>
-                                    <td>
-                                        <!-- You can replace the input type and values with appropriate Thymeleaf expressions -->
-                                        <input type="text" id="role" name="role" class="lib_input form-control"
-                                               th:value="${lecturer.account.role}" placeholder="Enter role" readonly>
-                                    </td>
-                                </tr>
+<!--                                <tr class="lib_input-wrapper">-->
+<!--                                    <td class="lib_input-label"><label for="role">Role:</label></td>-->
+<!--                                    <td>-->
+<!--                                        &lt;!&ndash; You can replace the input type and values with appropriate Thymeleaf expressions &ndash;&gt;-->
+<!--                                        <input type="text" id="role" name="role" class="lib_input form-control"-->
+<!--                                               th:value="${lecturer.account.role}" placeholder="Enter role" readonly>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
 
                                 <!--                                <tr class="lib_input-wrapper">-->
                                 <!--                                    <td class="lib_input-label"><label for="trainingType">Training Type:</label></td>-->
@@ -114,12 +114,11 @@
 <!--                                </tr>-->
 
                                 <tr class="lib_input-wrapper">
-                                    <td class="lib_input-label"><label for="lastModifiedDate">Last Modified
-                                        Date:</label></td>
+                                    <td class="lib_input-label"><label for="email">Email:</label></td>
                                     <td>
-                                        <input type="text" id="lastModifiedDate" name="lastModifiedDate"
-                                               class="lib_input form-control" th:value="${lecturer.lastModifiedDate}"
-                                               placeholder="Enter last modified date" readonly>
+                                        <input type="text" id="email" name="lastModifiedDate"
+                                               class="lib_input form-control" th:value="${lecturer.account.email}"
+                                               placeholder="Enter email" readonly>
                                     </td>
                                 </tr>
                                 <tr>
@@ -150,6 +149,9 @@
                                 <td th:text="${#dates.format(course.getLastModifiedDate(), 'dd/MM/yyyy HH:mm')}"></td>
                             </tr>
 
+                            <tr th:if="${#lists.isEmpty(lecturer.courses)}">
+                                <td colspan="3" class="text-center">No courses available</td>
+                            </tr>
                             </tbody>
 
                         </table>

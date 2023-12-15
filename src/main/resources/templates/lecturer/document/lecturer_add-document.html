@@ -35,7 +35,7 @@
                     </div>
 
                     <div class="stu_courses-content main" id="main-lecturer">
-                        <div class="document-details-head">
+                        <div>
                             <a th:href="@{/lecturer}">Home</a>
                             <span> &gt; <a th:href="@{/lecturer/courses/list/all/1}">Courses management</a></span>
                             <span> &gt; <a th:href="@{'/lecturer/courses/' + ${topic.course.id}}"
@@ -52,10 +52,14 @@
                             </div>
                         </div>
                         <div>
+                            <div id="overlay" class="overlay">
+                                <div class="loader"></div>
+                            </div>
+
                             <form style="width: 75%; margin-left: 10%" method="post" role="form"
                                   th:action="@{'/lecturer/documents/add?topicId=' + ${topic.id}}"
                                   th:object="${document}"
-                                  th:id="add-form" enctype="multipart/form-data">
+                                  id="add-form" enctype="multipart/form-data">
                                 <!--Title-->
                                 <label class="lecturer_input-label-doc" th:for="documentTitle">Title:</label>
                                 <input type="text" th:id="documentTitle"
@@ -140,12 +144,12 @@
                                             <i>File will be previewed here.</i>
                                             <br>
                                             <br>
-                                            <span>Định dạng file cho phép hiển thị dưới dạng content:</span>
+                                            <span>File formats that allow display as content:</span>
                                             <br>
                                             <i>
-                                                <b>- Tài liệu:</b> .pdf, .doc, .docx, .ppt, .pptx, .txt, .html, .md
+                                                <b>- Document:</b> .pdf, .doc, .docx, .ppt, .pptx, .txt, .html, .md
                                                 <br>
-                                                <b>- Hình ảnh:</b> .jpg, .jpeg, .gif, .png, .svg
+                                                <b>- Image:</b> .jpg, .jpeg, .gif, .png, .svg
                                                 <br>
                                                 <b>- Video:</b> .mp4, .webm, .mov, .avi, .flv, .mkv
                                                 <br>
@@ -155,12 +159,12 @@
 
                                             <br>
 
+                                            <span>Previewable file formats:</span>
                                             <i>
-                                                <span>Định dạng file có thể preview:</span>
                                                 <br>
-                                                <b>- Tài liệu:</b> .pdf, .txt, .html, .md
+                                                <b>- Document:</b> .pdf, .txt, .html, .md
                                                 <br>
-                                                <b>- Hình ảnh:</b> .jpg, .jpeg, .gif, .png, .svg
+                                                <b>- Image:</b> .jpg, .jpeg, .gif, .png, .svg
                                                 <br>
                                                 <b>- Video:</b> .mp4, .webm, .mov, .avi, .flv, .mkv
                                                 <br>
@@ -185,10 +189,17 @@
                                                id="supportFileInput" th:name="files" multiple>
                                     </div>
                                 </div>
+                                <div class="mt-3 form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        Save as a draft
+                                    </label>
+                                </div>
 
                                 <div>
                                     <button type="submit" class="btn btn-save lecturer_btn-save"
-                                            id="submitAllData">Save
+                                            id="submitAllData">
+                                        Save
                                     </button>
                                     <th:block th:if="${param.success}">
                                         <a class="btn btn--back" href="javascript:void(0);" onclick="history.go(-2);">Back</a>
@@ -299,6 +310,32 @@
         );
     }
 
+    const overlay = document.getElementById('overlay');
+    const form = document.getElementById('add-form');
+    let isSubmitting = false;
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Ngăn chặn form submit mặc định
+
+        if (isSubmitting) {
+            return; // Nếu form đang được submit, không làm gì
+        }
+
+        isSubmitting = true; // Đánh dấu form đang được submit
+
+        // Hiển thị overlay
+        overlay.style.display = 'block';
+
+        // Xử lý logic submit form
+        form.submit(); // Submit form
+        // ...
+
+        // Sau khi hoàn thành submit form, ẩn overlay
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            isSubmitting = false;
+        }, 7000);
+    });
 </script>
 <script th:src="@{/js/editor.js}"></script>
 <script th:src="@{/js/validation_add-file.js}"></script>

@@ -9,10 +9,7 @@ import fpt.edu.eresourcessystem.repository.CourseRepository;
 import fpt.edu.eresourcessystem.repository.elasticsearch.EsCourseRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -28,7 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("courseService")
-public class CourseServiceImpl implements CourseService{
+public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final TopicService topicService;
     private final ResourceTypeService resourceTypeService;
@@ -36,6 +33,7 @@ public class CourseServiceImpl implements CourseService{
     private final MongoTemplate mongoTemplate;
 
     private final EsCourseRepository esCourseRepository;
+
     @Autowired
     public CourseServiceImpl(CourseRepository courseRepository, TopicService topicService, ResourceTypeService resourceTypeService, MongoTemplate mongoTemplate, EsCourseRepository esCourseRepository) {
         this.courseRepository = courseRepository;
@@ -47,22 +45,23 @@ public class CourseServiceImpl implements CourseService{
 
     @Override
     public Course addCourse(Course course) {
-        if(null!=course && null==course.getId()){
-            if(null!=courseRepository.findByCourseCode(course.getCourseCode())){
+        if (null != course && null == course.getId()) {
+            if (null != courseRepository.findByCourseCode(course.getCourseCode())) {
                 return null;
-            }else {
+            } else {
                 Course result = courseRepository.save(course);
+                ResourceType resourceType;
                 List<ResourceType> resourceTypes = new ArrayList<>();
                 List<String> defaultRt = Arrays.stream(DocumentEnum.DefaultTopicResourceTypes.values())
                         .map(DocumentEnum.DefaultTopicResourceTypes::getDisplayValue)
                         .collect(Collectors.toList());
-                for(String rt : defaultRt) {
-                    ResourceType resourceType = new ResourceType(rt, result);
-                    ResourceType addedResourceType = resourceTypeService.addResourceType(resourceType);
-                    resourceTypes.add(addedResourceType);
+                for (String rt : defaultRt) {
+                    resourceType = new ResourceType(rt, result);
+                    resourceTypes.add(resourceTypeService.addResourceType(resourceType));
                 }
                 result.setResourceTypes(resourceTypes);
-                courseRepository.save(result);
+                Course newCourse = courseRepository.save(result);
+                esCourseRepository.save(new EsCourse(newCourse));
                 return result;
             }
         }
@@ -70,7 +69,7 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
-    public Course updateCourse(Course course){
+    public Course updateCourse(Course course) {
         Optional<Course> savedCourseOpt = courseRepository.findById(course.getId());
         if (savedCourseOpt.isPresent()) {
             Course savedCourse = savedCourseOpt.get();
@@ -79,13 +78,15 @@ public class CourseServiceImpl implements CourseService{
             savedCourse.setDescription(course.getDescription());
             savedCourse.setTrainingType(course.getTrainingType());
             savedCourse.setStatus(course.getStatus());
-            return courseRepository.save(savedCourse);
+            Course updatedCourse = courseRepository.save(savedCourse);
+            esCourseRepository.save(new EsCourse(updatedCourse));
+            return updatedCourse;
         }
         return null;
     }
 
     @Override
-    public Course findByCourseId(String courseId){
+    public Course findByCourseId(String courseId) {
         Course course = courseRepository.findByIdAndDeleteFlg(courseId, CommonEnum.DeleteFlg.PRESERVED);
         return course;
     }
@@ -104,15 +105,16 @@ public class CourseServiceImpl implements CourseService{
     @Override
     public boolean softDelete(Course course) {
         Optional<Course> check = courseRepository.findById(course.getId());
-        if(check.isPresent()){
+        if (check.isPresent()) {
             // Soft delete topic first
-            for(Topic topic:course.getTopics()){
+            for (Topic topic : course.getTopics()) {
                 topicService.softDelete(topic);
             }
 
             // SOFT DELETE Course
             course.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
             courseRepository.save(course);
+            esCourseRepository.delete(new EsCourse(course));
             return true;
         }
         return false;
@@ -121,7 +123,7 @@ public class CourseServiceImpl implements CourseService{
     @Override
     public boolean delete(Course course) {
         Optional<Course> check = courseRepository.findById(course.getId());
-        if(check.isPresent()){
+        if (check.isPresent()) {
             courseRepository.delete(course);
             return true;
         }
@@ -194,35 +196,35 @@ public class CourseServiceImpl implements CourseService{
     @Override
     public boolean addTopic(Topic topic) {
         // check course exist
-            Optional<Course> course = courseRepository.findById(topic.getCourse().getId());
-            if(course.isPresent()) {
-                Course courseExisted = course.get();
+        Optional<Course> course = courseRepository.findById(topic.getCourse().getId());
+        if (course.isPresent()) {
+            Course courseExisted = course.get();
 
-                // get topics of course
-                if (null == topic.getId()) {
-                    return false;
-                }
-                List<Topic> topics = courseExisted.getTopics();
-                if (null == courseExisted.getTopics()) {
-                    topics = new ArrayList<>();
-                }
+            // get topics of course
+            if (null == topic.getId()) {
+                return false;
+            }
+            List<Topic> topics = courseExisted.getTopics();
+            if (null == courseExisted.getTopics()) {
+                topics = new ArrayList<>();
+            }
 
-                // check topic existed in course
-                boolean checkTopicExist = false;
-                for (int i = 0; i < topics.size(); i++) {
-                    if (topics.get(i).equals(topic.getId())) {
-                        checkTopicExist = true;
-                    }
-                }
-                // check topic not existed in course
-                if (!checkTopicExist) {
-                    // add topic to course
-                    topics.add(topic);
-                    courseExisted.setTopics(topics);
-                    courseRepository.save(courseExisted);
+            // check topic existed in course
+            boolean checkTopicExist = false;
+            for (int i = 0; i < topics.size(); i++) {
+                if (topics.get(i).equals(topic.getId())) {
+                    checkTopicExist = true;
                 }
             }
-                return false;
+            // check topic not existed in course
+            if (!checkTopicExist) {
+                // add topic to course
+                topics.add(topic);
+                courseExisted.setTopics(topics);
+                courseRepository.save(courseExisted);
+            }
+        }
+        return false;
     }
 
 
@@ -245,7 +247,7 @@ public class CourseServiceImpl implements CourseService{
     public boolean addResourceType(ResourceType resourceType) {
         // check course exist
         Optional<Course> course = courseRepository.findById(resourceType.getCourse().getId());
-        if(course.isPresent()) {
+        if (course.isPresent()) {
             Course courseExisted = course.get();
 
             // get resourceTypes of course
@@ -283,6 +285,20 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
+    public void addStudentSaveToCourse(String courseId, String studentMail) {
+        Query query = new Query(Criteria.where("id").is(courseId));
+        Update update = new Update().push("students", studentMail);
+        mongoTemplate.updateFirst(query, update, Course.class);
+    }
+
+    @Override
+    public void removeStudentUnsaveFromCourse(String courseId, String studentMail) {
+        Query query = new Query(Criteria.where("id").is(courseId));
+        Update update = new Update().pull("students", studentMail);
+        mongoTemplate.updateFirst(query, update, Course.class);
+    }
+
+    @Override
     public List<Course> findByListId(List<String> courseIds) {
         Query query = new Query(Criteria.where("id").in(courseIds));
         List<Course> courses = mongoTemplate.find(query, Course.class);
@@ -293,10 +309,11 @@ public class CourseServiceImpl implements CourseService{
     public List<Course> findCourseByLibrarian(String email) {
         return courseRepository.findCourseByLibrarianEmail(email);
     }
+
     @Override
     public Page<Course> findByCodeOrNameOrDescription(String code, String name, String description, int pageIndex, int pageSize) {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
-        Page<Course> page = courseRepository.findByCourseCodeLikeOrCourseNameLikeOrDescriptionLike( code, name, description,
+        Page<Course> page = courseRepository.findByCourseCodeLikeOrCourseNameLikeOrDescriptionLike(code, name, description,
                 pageable);
         return page;
     }
@@ -323,7 +340,7 @@ public class CourseServiceImpl implements CourseService{
 
         Query query = new Query(criteria).with(pageable);
         List<Course> results = mongoTemplate.find(query, Course.class);
-        Page<Course> page =  PageableExecutionUtils.getPage(results, pageable,
+        Page<Course> page = PageableExecutionUtils.getPage(results, pageable,
                 () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Course.class));
         return page;
     }
@@ -340,7 +357,7 @@ public class CourseServiceImpl implements CourseService{
 
         Query query = new Query(criteria).with(pageable);
         List<Course> results = mongoTemplate.find(query, Course.class);
-        Page<Course> page =  PageableExecutionUtils.getPage(results, pageable,
+        Page<Course> page = PageableExecutionUtils.getPage(results, pageable,
                 () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Course.class));
         return page;
     }
@@ -360,7 +377,7 @@ public class CourseServiceImpl implements CourseService{
 //        Page<Course> page = new PageImpl<>(results, pageable, total);
 //        return page;
         List<Course> results = mongoTemplate.find(query, Course.class);
-        Page<Course> page =  PageableExecutionUtils.getPage(results, pageable,
+        Page<Course> page = PageableExecutionUtils.getPage(results, pageable,
                 () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Course.class));
         return page;
     }
@@ -369,7 +386,7 @@ public class CourseServiceImpl implements CourseService{
     public Course updateLectureId(String courseId, Lecturer newLecture) {
         Optional<Course> courseOptional = courseRepository.findById(courseId);
 
-        if (courseOptional.isPresent() ) {
+        if (courseOptional.isPresent()) {
             Course course = courseOptional.get();
             course.setLecturer(newLecture);
             course.setStatus(CourseEnum.Status.NEW);
@@ -382,7 +399,6 @@ public class CourseServiceImpl implements CourseService{
 
     public boolean removeLecture(String courseId) {
         Course course = courseRepository.findById(courseId).orElse(null);
-
         if (course == null) {
             return false;
         }
@@ -393,13 +409,34 @@ public class CourseServiceImpl implements CourseService{
 
     @Override
     public SearchPage<EsCourse> searchCourse(String search, int pageIndex, int pageSize) {
-        Pageable pageable = PageRequest.of(pageIndex,pageSize);
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
         return esCourseRepository.customSearch(search, pageable);
     }
 
     @Override
     public long countTotalCourses() {
         return courseRepository.count();
+    }
+
+    @Override
+    public Page<Course> findByListCourseIdAndSearch(String search, List<String> courseIds, int pageIndex, int pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+        Criteria criteria = new Criteria();
+        criteria.and("id").in(courseIds);
+        if (search != null && !search.isEmpty()) {
+            Criteria regexCriteria = new Criteria().orOperator(
+                    Criteria.where("courseName").regex(search, "i"),
+                    Criteria.where("courseCode").regex(search, "i")
+            );
+            criteria.andOperator(regexCriteria);
+        }
+        Query query = new Query(criteria);
+        long total = mongoTemplate.count(query, Course.class);
+        System.out.println(total);
+        List<Course> courses = mongoTemplate.find(query.with(pageable), Course.class);
+        return new PageImpl<>(courses, pageable, total);
+        //        return courseRepository.findByCourseNameIgnoreCaseContainingOrCourseCodeIgnoreCaseContainingAndIdIn(
+//                search,search,courseIds, pageable);
     }
 
 
