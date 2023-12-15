@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Lecturer | Courses </title>
+    <title>Lecturer | Feedback </title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Style -->
     <link rel="stylesheet" th:href="@{/css/feedback.css}">
     <!-- Bootstrap core CSS -->
@@ -46,7 +47,8 @@
                         <div class="col-md-8">
                             <div class="form h-100">
                                 <h3>Send feedback</h3>
-                                <form class="mb-5" th:action="@{/student/feedbacks/add}" method="post"  th:object="${feedback}" >
+                                <form class="mb-5" th:action="@{/student/feedbacks/add}" method="post"
+                                      th:object="${feedback}">
                                     <div class="row">
                                         <div class="col-md-4 form-group mb-5">
                                             <label for="name" class="col-form-label">Name</label>
@@ -71,40 +73,49 @@
 
                                     <div class="row">
                                         <div class="col-md-12 form-group mb-5">
-                                            <label class="col-form-label">How was your experience with the E-resource site? </label>
+                                            <label class="col-form-label">How was your experience with the E-resource
+                                                site? </label>
                                             <div class="emoji">
                                                 <div class="container">
                                                     <div class="item">
                                                         <label for="0">
-                                                            <input th:field="*{feedbackEmotion}" class="radio" type="radio" name="feedback" id="0" value="Bad">
+                                                            <input th:field="*{feedbackEmotion}" class="radio"
+                                                                   type="radio" name="feedback" id="0" value="Bad">
                                                             <span>🤬</span>
                                                         </label>
                                                     </div>
 
                                                     <div class="item">
                                                         <label for="1">
-                                                            <input th:field="*{feedbackEmotion}" class="radio"  type="radio" name="feedback" id="1" value="Good">
+                                                            <input th:field="*{feedbackEmotion}" class="radio"
+                                                                   type="radio" name="feedback" id="1" value="Good">
                                                             <span>🙁</span>
                                                         </label>
                                                     </div>
 
                                                     <div class="item">
                                                         <label for="2">
-                                                            <input th:field="*{feedbackEmotion}" class="radio" type="radio" name="feedback" id="2" value="Very Good">
+                                                            <input th:field="*{feedbackEmotion}" class="radio"
+                                                                   type="radio" name="feedback" id="2"
+                                                                   value="Very Good">
                                                             <span>😶</span>
                                                         </label>
                                                     </div>
 
                                                     <div class="item">
                                                         <label for="3">
-                                                            <input th:field="*{feedbackEmotion}" class="radio" type="radio" name="feedback" id="3" value="Satisfied">
+                                                            <input th:field="*{feedbackEmotion}" class="radio"
+                                                                   type="radio" name="feedback" id="3"
+                                                                   value="Satisfied">
                                                             <span>😁</span>
                                                         </label>
                                                     </div>
 
                                                     <div class="item">
                                                         <label for="4">
-                                                            <input th:field="*{feedbackEmotion}" class="radio" type="radio" name="feedback" id="4" value="Very Satisfied">
+                                                            <input th:field="*{feedbackEmotion}" class="radio"
+                                                                   type="radio" name="feedback" id="4"
+                                                                   value="Very Satisfied">
                                                             <span>😍</span>
                                                         </label>
                                                     </div>
@@ -114,18 +125,21 @@
 
                                         </div>
                                     </div>
-                                    <input type="hidden" th:value="Pending" th:field="*{status}" >
+                                    <input type="hidden" th:value="Pending" th:field="*{status}">
                                     <!-- Feedback Content Field -->
                                     <div class="row">
                                         <div class="col-md-12 form-group mb-5">
                                             <label for="feedbackContent" class="col-form-label">Message *</label>
-                                            <textarea class="form-control" th:field="*{feedbackContent}" id="feedbackContent" cols="30" rows="4" placeholder="Write your feedback"></textarea>
+                                            <textarea class="form-control" th:field="*{feedbackContent}"
+                                                      id="feedbackContent" cols="30" rows="4"
+                                                      placeholder="Write your feedback"></textarea>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <input onclick="sendFeedback('4')" type="submit" value="Send Message" class="btn btn-primary rounded-0 py-2 px-4">
+                                            <input onclick="sendFeedback('4')" type="submit" value="Send Message"
+                                                   class="btn btn-primary rounded-0 py-2 px-4">
                                             <span class="submitting"></span>
                                         </div>
                                     </div>
@@ -169,7 +183,9 @@
 <div class="row" th:replace="~{fragments/footer :: footerSection}"></div>
 
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"
 
@@ -183,8 +199,8 @@
         this.style.height = (this.scrollHeight) + 'px';
     });
 
-        var successParam = [[${param.success}]];
-        if (successParam) {
+    var successParam = [[${param.success}]];
+    if (successParam) {
         Swal.fire(
             'Success!',
             'Send feedback successful!',
@@ -192,8 +208,8 @@
         );
     }
 
-        var errorParam = [[${param.error}]];
-        if (errorParam) {
+    var errorParam = [[${param.error}]];
+    if (errorParam) {
         Swal.fire(
             'Error!',
             'Please check feedback information again!',

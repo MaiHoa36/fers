@@ -1,7 +1,10 @@
 package fpt.edu.eresourcessystem.dto.Response;
 
 import fpt.edu.eresourcessystem.model.Document;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -17,10 +20,11 @@ public class DocumentResponseDto {
     private String createdDate;
     private String lastModifiedBy;
     private String lastModifiedDate;
+
     public DocumentResponseDto(Document document) {
         this.id = document.getId();
         this.title = document.getTitle();
-        if(null!= document.getTopic()){
+        if (null != document.getTopic()) {
             topicId = document.getTopic().getId();
             topicTitle = document.getTopic().getTopicTitle();
         }

@@ -5,6 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Lecturer | Student questions </title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -30,24 +31,24 @@
 
                     <div class="lec__courses-content main" id="main-lecturer">
                         <form th:action="@{/lecturer/questions/list}" th:method="GET" id="getMyQuestion">
-                        <div class="header__search">
-                            <!--Label-->
-                            <div class="search-label">
-                                <label th:for="search">Search question</label>
+                            <div class="header__search">
+                                <!--Label-->
+                                <div class="search-label">
+                                    <label th:for="search">Search question</label>
+                                </div>
+                                <!-- Input  -->
+                                <input type="text" name="status" th:value="${status}" id="setStatus" hidden>
+                                <input type="text" name="pageIndex" th:value="${currentPage}" id="pageIndex" hidden>
+                                <div class="header__search-input-wrap">
+                                    <input type="text" class="header__search-input"
+                                           placeholder="Enter question content ..."
+                                           name="search"
+                                           th:id="search-text" th:value="${search}">
+                                </div>
+                                <button class="header__search-btn" type="button" onclick="submitFormGetQuestion()">
+                                    <i class="header__search-btn-icon fas fa-search"></i>
+                                </button>
                             </div>
-                            <!-- Input  -->
-                            <input type="text" name="status" th:value="${status}" id="setStatus" hidden>
-                            <input type="text" name="pageIndex" th:value="${currentPage}" id="pageIndex" hidden>
-                            <div class="header__search-input-wrap">
-                                <input type="text" class="header__search-input"
-                                       placeholder="Enter question content ..."
-                                       name="search"
-                                       th:id="search-text" th:value="${search}">
-                            </div>
-                            <button class="header__search-btn" type="button" onclick="submitFormGetQuestion()">
-                                <i class="header__search-btn-icon fas fa-search"></i>
-                            </button>
-                        </div>
                         </form>
                         <div class="lec__navbar-favourite">
                             <ul class="lec__navbar-list border-bottom">
@@ -74,21 +75,22 @@
                                 </li>
                             </ul>
                         </div>
-<!--                        <div class="lec__questions-list-view view-list" id="loading"  style="display:none;">-->
-<!--                            <p th:id="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</p>-->
-<!--                        </div>-->
-<!--                        <div th:id="lec__view-waiting-for-reply-question" style="display: none" class="view-list lec__questions-list-view">-->
-<!--                        </div>-->
-<!--                        <div th:id="lec__view-replied-question" style="display: none" class="view-list lec__questions-list-view">-->
-<!--                        </div>-->
+                        <!--                        <div class="lec__questions-list-view view-list" id="loading"  style="display:none;">-->
+                        <!--                            <p th:id="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</p>-->
+                        <!--                        </div>-->
+                        <!--                        <div th:id="lec__view-waiting-for-reply-question" style="display: none" class="view-list lec__questions-list-view">-->
+                        <!--                        </div>-->
+                        <!--                        <div th:id="lec__view-replied-question" style="display: none" class="view-list lec__questions-list-view">-->
+                        <!--                        </div>-->
                         <div class="lec__questions-list-view" th:id="lec__questions-list-view">
                             <div class="lec__view-my-questions">
                                 <div th:if="${param.search} AND ${studentQuestions == null} OR ${studentQuestions.size()} == 0">
-                                     <p class="number-count count-questions">Total question: 0 question</p>
+                                    <p class="number-count count-questions">Total question: 0 question</p>
                                 </div>
                                 <div class="lec__view-list-question"
                                      th:if="${studentQuestions ne null} AND ${studentQuestions.size()} > 0">
-                                    <p class="number-count count-questions">Total question: <span th:text="${totalItems}"></span> question(s).</p>
+                                    <p class="number-count count-questions">Total question: <span
+                                            th:text="${totalItems}"></span> question(s).</p>
                                     <div class="view-question-list">
                                         <ul class="home__question-list">
                                             <li class="home__question-item">
@@ -106,14 +108,16 @@
                                                     <p class="lecturer-content-view-brief">
                                                         <span th:text="${studentQuestion.content}"></span>
                                                         <a class="link-view-detailed"
-                                                           th:href="@{'/lecturer/documents/' + ${studentQuestion.documentId.id} + '?questionId='+ ${studentQuestion.id} +'#' + ${studentQuestion.id}}">view <i
-                                                                class="fa-solid fa-arrow-right"></i></a>
+                                                           th:href="@{'/lecturer/documents/' + ${studentQuestion.documentId.id} + '?questionId='+ ${studentQuestion.id} +'#' + ${studentQuestion.id}}">view
+                                                            <i
+                                                                    class="fa-solid fa-arrow-right"></i></a>
                                                     </p>
                                                 </div>
                                             </li>
                                         </ul>
                                     </div>
-                                    <nav th:if="${totalPages ne null} AND ${totalPages} >1" aria-label="Page navigation example">
+                                    <nav th:if="${totalPages ne null} AND ${totalPages} >1"
+                                         aria-label="Page navigation example">
                                         <ul class="pagination home-courses__pagination-distance">
                                             <li class="pagination-item"
                                                 th:classappend=" ${currentPage == 1} ? 'disabled' : ''">
@@ -123,12 +127,14 @@
                                                 </a>
                                             </li>
 
-                                            <li th:each="pageIndex: ${#numbers.sequence(1, totalPages)}" class="pagination-item"
+                                            <li th:each="pageIndex: ${#numbers.sequence(1, totalPages)}"
+                                                class="pagination-item"
                                                 th:classappend=" (${currentPage == pageIndex}) ? 'pagination-item--active' : '' ">
                                                 <th:block th:if="${currentPage - pageIndex == 3 }">
                                                     <span class="pagination-item__link">...</span>
                                                 </th:block>
-                                                <th:block th:if="${currentPage - pageIndex <= 2} AND ${currentPage - pageIndex >= -2}">
+                                                <th:block
+                                                        th:if="${currentPage - pageIndex <= 2} AND ${currentPage - pageIndex >= -2}">
                                                     <a th:page="${pageIndex}" onclick="pagingInMyQuestion(this)"
                                                        th:text="${pageIndex}" th:value="${pageIndex}"
                                                        class="pagination-item__link" style="cursor: pointer"></a>
@@ -137,8 +143,8 @@
                                                     <span class="pagination-item__link">...</span>
                                                 </th:block>
                                             </li>
-                                            <li  class="pagination-item"
-                                                 th:classappend="${currentPage == totalPages} ? 'disabled' : ''">
+                                            <li class="pagination-item"
+                                                th:classappend="${currentPage == totalPages} ? 'disabled' : ''">
                                                 <a th:page="${currentPage}+1" onclick="pagingInMyQuestion(this)"
                                                    class="pagination-item__link" style="cursor: pointer">
                                                     <i class="pagination-item__icon fas fa-angle-right"></i>
@@ -159,7 +165,9 @@
 <!-- Footer -->
 <div class="row" th:replace="~{fragments/footer :: footerSection}"></div>
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"

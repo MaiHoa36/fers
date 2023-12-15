@@ -12,7 +12,8 @@ import java.util.Optional;
 public interface DocumentNoteRepository extends MongoRepository<DocumentNote, String> {
 
     Optional<DocumentNote> findById(String studentNoteId);
-    DocumentNote findByIdAndDeleteFlg(String studentNoteId, CommonEnum.DeleteFlg status );
+
+    DocumentNote findByIdAndDeleteFlg(String studentNoteId, CommonEnum.DeleteFlg status);
 
     DocumentNote findByDocIdAndStudentIdAndDeleteFlg(String docId, String studentId, CommonEnum.DeleteFlg status);
 

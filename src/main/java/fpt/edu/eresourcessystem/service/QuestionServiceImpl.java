@@ -3,7 +3,10 @@ package fpt.edu.eresourcessystem.service;
 import fpt.edu.eresourcessystem.dto.Response.QuestionResponseDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
-import fpt.edu.eresourcessystem.model.*;
+import fpt.edu.eresourcessystem.model.Answer;
+import fpt.edu.eresourcessystem.model.Document;
+import fpt.edu.eresourcessystem.model.Question;
+import fpt.edu.eresourcessystem.model.Student;
 import fpt.edu.eresourcessystem.repository.QuestionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.*;
@@ -114,7 +117,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<QuestionResponseDto> findRepliedQuestionForLecturer(String lecturerEmail) {
-        QuestionAnswerEnum.Status [] statuses = {QuestionAnswerEnum.Status.REPLIED,QuestionAnswerEnum.Status.READ, QuestionAnswerEnum.Status.UNREAD};
+        QuestionAnswerEnum.Status[] statuses = {QuestionAnswerEnum.Status.REPLIED, QuestionAnswerEnum.Status.READ, QuestionAnswerEnum.Status.UNREAD};
         Query query = new Query(Criteria.where("lecturer").is(lecturerEmail)
                 .and("status").in(statuses))
                 .limit(5).skip(0);
@@ -164,7 +167,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Question updateQuestion(Question question) {
         Question savedQuestion = questionRepository.findByIdAndDeleteFlg(question.getId(), PRESERVED);
-        if (null!= savedQuestion) {
+        if (null != savedQuestion) {
             Question result = questionRepository.save(question);
             return result;
         }
@@ -189,7 +192,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Page<Question> findByStudentAndSearch(Student student, String search, QuestionAnswerEnum.Status status, int pageIndex, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageIndex-1, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
         Criteria criteria = new Criteria();
         criteria.and("student").is(student);
         if (search != null && !search.isEmpty()) {
@@ -209,7 +212,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Page<Question> findByLecturerAndSearch(String lecturerEmail, String search, QuestionAnswerEnum.Status status, int pageIndex, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageIndex-1, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
         Criteria criteria = new Criteria();
         criteria.and("lecturer").is(lecturerEmail);
         if (search != null && !search.isEmpty()) {
@@ -217,9 +220,9 @@ public class QuestionServiceImpl implements QuestionService {
             criteria.andOperator(regexCriteria);
         }
         if (status != null) {
-            if(QuestionAnswerEnum.Status.CREATED == status){
+            if (QuestionAnswerEnum.Status.CREATED == status) {
                 criteria.and("status").is(status);
-            }else {
+            } else {
                 criteria.and("status").ne(QuestionAnswerEnum.Status.CREATED);
             }
         }

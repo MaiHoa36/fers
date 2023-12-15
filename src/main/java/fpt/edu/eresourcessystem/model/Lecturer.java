@@ -1,16 +1,13 @@
 package fpt.edu.eresourcessystem.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.*;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
@@ -33,7 +30,7 @@ public class Lecturer {
 
     private List<String> lecturerCourses;
 
-    @DocumentReference (lazy = true)
+    @DocumentReference(lazy = true)
     private List<Course> courses;
 
     @DocumentReference(lazy = true)

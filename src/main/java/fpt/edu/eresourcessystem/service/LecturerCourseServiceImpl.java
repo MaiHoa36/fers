@@ -1,6 +1,5 @@
 package fpt.edu.eresourcessystem.service;
 
-import fpt.edu.eresourcessystem.dto.Response.LecturerCourseResponseDto;
 import fpt.edu.eresourcessystem.model.Lecturer;
 import fpt.edu.eresourcessystem.model.LecturerCourse;
 import fpt.edu.eresourcessystem.model.LecturerCourseId;
@@ -12,15 +11,12 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service("lecturerCourseService")
 @RequiredArgsConstructor
-public class LecturerCourseServiceImpl implements LecturerCourseService{
+public class LecturerCourseServiceImpl implements LecturerCourseService {
     private final LecturerCourseRepository lecturerCourseRepository;
     private final MongoTemplate mongoTemplate;
     private final LecturerRepository lecturerRepository;
@@ -33,10 +29,10 @@ public class LecturerCourseServiceImpl implements LecturerCourseService{
 
     @Override
     public LecturerCourse add(LecturerCourse lecturerCourse) {
-        if(null!=lecturerCourse && null!=lecturerCourse.getId()){
-            if(null!=findById(lecturerCourse.getId())){
+        if (null != lecturerCourse && null != lecturerCourse.getId()) {
+            if (null != findById(lecturerCourse.getId())) {
                 return null;
-            }else {
+            } else {
                 LecturerCourse result = lecturerCourseRepository.save(lecturerCourse);
                 return result;
             }

@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface CourseRepository extends
         MongoRepository<Course, String> {
 
-//    @Query("{ '_id' : ?0, 'deleteFlg' : 'PRESERVED' }")
+    //    @Query("{ '_id' : ?0, 'deleteFlg' : 'PRESERVED' }")
     Optional<Course> findById(String id);
 
     @Query("{ 'courseCode' : ?0, 'deleteFlg' : 'PRESERVED' }")
@@ -29,6 +29,7 @@ public interface CourseRepository extends
 
     @Query("{'_id': { $in: ?0 }}")
     List<Course> findCoursesByLibrarianCreatedCourses(List<String> courseIds);
+
     @Query(("{$and:[{ 'deleteFlg' : 'PRESERVED' },"
             + "{$or: ["
             + "    {courseCode: {$regex: ?0}},"
@@ -36,7 +37,7 @@ public interface CourseRepository extends
             + "    {courseDescription: {$regex: ?2}}"
             + "    ]}"
             + "]}"))
-    Page<Course> findByCourseCodeLikeOrCourseNameLikeOrDescriptionLike(String code,String name,String description,Pageable pageable);
+    Page<Course> findByCourseCodeLikeOrCourseNameLikeOrDescriptionLike(String code, String name, String description, Pageable pageable);
 
     @Query("{$and:[{ 'deleteFlg' : 'PRESERVED' },"
             + "{$or: ["
@@ -69,5 +70,5 @@ public interface CourseRepository extends
     Course findByIdAndDeleteFlg(String courseId, CommonEnum.DeleteFlg preserved);
 
     Page<Course> findByCourseNameIgnoreCaseContainingOrCourseCodeIgnoreCaseContainingAndIdIn(
-             String courseName, String courseCode, List<String> courseIds, Pageable pageable);
+            String courseName, String courseCode, List<String> courseIds, Pageable pageable);
 }

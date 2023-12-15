@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-  <meta charset="ISO-8859-1">
-  <title>404</title>
+    <meta charset="ISO-8859-1">
+    <title>FPT E-Resources | 404</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
 </head>
 <body>
-<h1 class = "error">404</h1>
-<h3 th:text = "${errorMessage}"></h3>
+<div>
+    <div style="display: flex; justify-content: center">
+        <img src="/images/errors/404.png" style="width: 60%">
+    </div>
+    <div style="display: flex; justify-content: center">
+        <a class="btn btn--back" href="javascript:void(0);" onclick="history.go(-1);">Back</a>
+    </div>
+</div>
+<h3 class="d-none" th:text="${errorMessage}"></h3>
 </body>
 </html>

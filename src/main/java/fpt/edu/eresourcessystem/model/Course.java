@@ -1,17 +1,16 @@
 package fpt.edu.eresourcessystem.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import fpt.edu.eresourcessystem.dto.CourseDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.enums.CourseEnum;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
@@ -71,7 +70,7 @@ public class Course {
     private String lastModifiedDate;
 
     // Constructor DTO
-    public Course(CourseDto courseDTO, CourseEnum.Status status){
+    public Course(CourseDto courseDTO, CourseEnum.Status status) {
         this.id = courseDTO.getId();
         this.librarian = courseDTO.getLibrarian();
         this.lecturer = courseDTO.getLecturer();
@@ -83,11 +82,11 @@ public class Course {
         this.deleteFlg = CommonEnum.DeleteFlg.PRESERVED;
     }
 
-    public Course publishCourse(CourseDto courseDTO){
+    public Course publishCourse(CourseDto courseDTO) {
         return new Course(courseDTO, CourseEnum.Status.PUBLISH);
     }
 
-    public Course draftCourse(CourseDto courseDTO){
+    public Course draftCourse(CourseDto courseDTO) {
         return new Course(courseDTO, CourseEnum.Status.DRAFT);
     }
 

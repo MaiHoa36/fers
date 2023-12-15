@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service("multiFileService")
-public class MultiFileServiceImpl implements MultiFileService{
+public class MultiFileServiceImpl implements MultiFileService {
     private final MultiFileRepository multiFileRepository;
 
     public MultiFileServiceImpl(MultiFileRepository multiFileRepository) {
@@ -44,8 +44,8 @@ public class MultiFileServiceImpl implements MultiFileService{
     public MultiFile updateMultiFile(MultiFile multiFile) {
         MultiFile savedMultiFile = multiFileRepository
                 .findByIdAndDeleteFlg(multiFile.getId(), CommonEnum.DeleteFlg.PRESERVED).orElse(null);
-        if(null != savedMultiFile){
-            MultiFile result =  multiFileRepository.save(multiFile);
+        if (null != savedMultiFile) {
+            MultiFile result = multiFileRepository.save(multiFile);
             return result;
         }
         return null;
@@ -55,7 +55,7 @@ public class MultiFileServiceImpl implements MultiFileService{
     public boolean deleteMultiFile(MultiFile multiFile) {
         MultiFile check = multiFileRepository
                 .findByIdAndDeleteFlg(multiFile.getId(), CommonEnum.DeleteFlg.PRESERVED).orElse(null);
-        if(null != check){
+        if (null != check) {
             check.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
             multiFileRepository.save(check);
             return true;
@@ -67,7 +67,7 @@ public class MultiFileServiceImpl implements MultiFileService{
     public boolean hardDeleteMultiFile(MultiFile multiFile) {
         MultiFile check = multiFileRepository
                 .findByIdAndDeleteFlg(multiFile.getId(), CommonEnum.DeleteFlg.PRESERVED).orElse(null);
-        if(null != check){
+        if (null != check) {
             multiFileRepository.delete(check);
             return true;
         }
@@ -78,7 +78,7 @@ public class MultiFileServiceImpl implements MultiFileService{
     public boolean hardDeleteMultiFile(String cloudFileName) {
         MultiFile check = multiFileRepository
                 .findByCloudFileNameAndDeleteFlg(cloudFileName).orElse(null);
-        if(null != check){
+        if (null != check) {
             multiFileRepository.delete(check);
             return true;
         }

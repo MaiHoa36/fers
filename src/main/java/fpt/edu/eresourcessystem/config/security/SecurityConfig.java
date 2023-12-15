@@ -7,19 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -30,7 +25,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 @EnableWebMvc
 
-public class SecurityConfig implements WebMvcConfigurer{
+public class SecurityConfig implements WebMvcConfigurer {
 
     private CustomizeUserDetailsService customizeUserDetailsService;
 
@@ -40,7 +35,7 @@ public class SecurityConfig implements WebMvcConfigurer{
 
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
-                                                       PasswordEncoder passwordEncoder){
+                                                       PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
@@ -78,7 +73,7 @@ public class SecurityConfig implements WebMvcConfigurer{
                 .loginPage("/login")
                 .userInfoEndpoint(userInfo -> userInfo
                         .userService(customOAuth2UserService)
-			    )
+                )
                 .successHandler(customAuthenticationSuccessHandler)
                 .failureUrl("/login?error"));
 
@@ -90,13 +85,12 @@ public class SecurityConfig implements WebMvcConfigurer{
                 .logoutSuccessUrl("/login?logout"));
 
 
-
 //        MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector).servletPath("/");
 
         // Authorization
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/ws/**", "/notifications/**","/contact_us", "/faq", "/home", "/guest", "/login", "/css/**", "/js/**", "/images/**", "/assets/**", "/oauth2/authorization/**").permitAll()
+                        .requestMatchers("/", "/ws/**", "/notifications/**", "/contact_us", "/faq", "/home", "/guest", "/login", "/css/**", "/js/**", "/images/**", "/assets/**", "/oauth2/authorization/**").permitAll()
                         .requestMatchers("/admin/**", "/api/admin/**").hasAnyRole(AccountEnum.Role.ADMIN.name())
                         .requestMatchers("/librarian/**", "/api/librarian/**").hasAnyRole(AccountEnum.Role.ADMIN.name(), AccountEnum.Role.LIBRARIAN.name())
                         .requestMatchers("/lecturer/**", "/api/lecturer/**").hasAnyRole(AccountEnum.Role.ADMIN.name(), AccountEnum.Role.LIBRARIAN.name(), AccountEnum.Role.LECTURER.name())

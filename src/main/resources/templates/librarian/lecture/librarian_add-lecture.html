@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Add Lecture</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
 
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
     <!-- Bootstrap core CSS -->
@@ -12,7 +13,8 @@
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css">
 
     <!-- Custom styles for this template -->
 
@@ -33,12 +35,15 @@
             color: red;
             /*font-size: smaller;*/
         }
+
         body {
             font-size: 1.3rem;
         }
+
         .bootstrap-select .dropdown-toggle .filter-option-inner-inner {
             font-size: 1.3rem;
         }
+
         btn {
             font-size: 1.3rem;
         }
@@ -78,22 +83,24 @@
                             <div class="form-group mt-5">
                                 <label for="select-multiple-course">Assign to Courses: </label>
 
-                                <select id="select-multiple-course" th:field="*{courses}"  class="form-control selectpicker show-tick"  data-style="btn-white" multiple data-live-search="true"  >
+                                <select id="select-multiple-course" th:field="*{courses}"
+                                        class="form-control selectpicker show-tick" data-style="btn-white" multiple
+                                        data-live-search="true">
                                     <option selected disabled th:value="0">Choose a course</option>
                                     <option th:each="course : ${allCourses}" th:value="${course.getId()}"
                                             th:text="${course.getCourseName()}"></option>
                                 </select>
                             </div>
 
-<!--                            <div class="form-group mt-5">-->
-<!--                                <label for="select-multiple-training">Training Type </label>-->
+                            <!--                            <div class="form-group mt-5">-->
+                            <!--                                <label for="select-multiple-training">Training Type </label>-->
 
-<!--                                <select id="select-multiple-training" th:field="*{trainingType}"  class="form-control selectpicker show-tick"  data-style="btn-white"  data-live-search="true"  >-->
-<!--                                    <option selected disabled th:value="0">Choose a training type</option>-->
-<!--                                    <option th:each="trainingType : ${trainingTypes}" th:value="${trainingType.getId()}"-->
-<!--                                            th:text="${trainingType.trainingTypeName}"></option>-->
-<!--                                </select>-->
-<!--                            </div>-->
+                            <!--                                <select id="select-multiple-training" th:field="*{trainingType}"  class="form-control selectpicker show-tick"  data-style="btn-white"  data-live-search="true"  >-->
+                            <!--                                    <option selected disabled th:value="0">Choose a training type</option>-->
+                            <!--                                    <option th:each="trainingType : ${trainingTypes}" th:value="${trainingType.getId()}"-->
+                            <!--                                            th:text="${trainingType.trainingTypeName}"></option>-->
+                            <!--                                </select>-->
+                            <!--                            </div>-->
 
                             <button type="submit" class="btn align-items-center lib_btn-save">Add Lecture</button>
                         </div>

@@ -2,60 +2,67 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FPT University E-Resources</title>
-  <!-- CSS -->
-  <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
-  <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>FPT E-Resources | Help & FAQs</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
 
-  <link rel="stylesheet" th:href="@{/css/styles/guest.css}">
-  <link rel="stylesheet" th:href="@{/css/fragment.css}"/>
-  <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/guest.css}">
+    <link rel="stylesheet" th:href="@{/css/fragment.css}"/>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
 
 </head>
 <body>
 <div class="app_container">
 
-  <div th:replace="~{fragments/header::guestHeaderSection}"></div>
-  <!--  Main-->
-<!--  <div th:replace="~{fragments/main}"></div>-->
-  <section class="help-faq">
-    <h2 class="faq-heading"> FAQs</h2>
-    <div class="faq">
-      <h2 class="question" onclick="toggleAnswer(this)">
-        1. Ai được truy cập vào hệ thống tài nguyên số FERS?</h2>
-      <p class="answer">
-        <strong>Tất cả thành viên thuộc hệ thống giáo dục FPT (FPT Education). </strong> <br>
-        Học sinh, sinh viên, giảng viên, cán bộ nhân viên thuộc tổ chức giáo dục FPT đều có thể truy cập vào
-        hệ thống.
-         </p>
-    </div>
-    <div class="faq">
-      <h2 class="question" onclick="toggleAnswer(this)"> 2. Làm thế nào để có thể truy cập vào hệ thống?</h2>
-      <p class="answer"> <strong> Trở thành học sinh, sinh viên của tổ chức giáo dục FPT. </strong> <br>
-        Có thể đăng nhập thông qua tài khoảng FPT edu (fpt.edu.vn) hoặc hệ thống FEID.
-      </p>
+    <div th:replace="~{fragments/header::guestHeaderSection}"></div>
+    <!--  Main-->
+    <!--  <div th:replace="~{fragments/main}"></div>-->
+    <section class="help-faq">
+        <h2 class="faq-heading"> FAQs</h2>
+        <div class="faq">
+            <h2 class="question" onclick="toggleAnswer(this)">
+                1. Ai được truy cập vào hệ thống tài nguyên số FERS?</h2>
+            <p class="answer">
+                <strong>Tất cả thành viên thuộc hệ thống giáo dục FPT (FPT Education). </strong> <br>
+                Học sinh, sinh viên, giảng viên, cán bộ nhân viên thuộc tổ chức giáo dục FPT đều có thể truy cập vào
+                hệ thống.
+            </p>
+        </div>
+        <div class="faq">
+            <h2 class="question" onclick="toggleAnswer(this)"> 2. Làm thế nào để có thể truy cập vào hệ thống?</h2>
+            <p class="answer"><strong> Trở thành học sinh, sinh viên của tổ chức giáo dục FPT. </strong> <br>
+                Có thể đăng nhập thông qua tài khoảng FPT edu (fpt.edu.vn) hoặc hệ thống FEID.
+            </p>
 
-    </div>
-    <div class="faq">
-      <h2 class="question" onclick="toggleAnswer(this)"> 3. Tài nguyên học tập của mỗi môn học bao gồm những gì và đuợc cập nhật như thế nào?</h2>
-      <p class="answer"><strong> Hệ thống hỗ trợ đa dạng các loại tài nguyên và dữ liệu môn học được cập nhật bởi giảng viên phụ trách.
-      </strong> <br>
-        - Các loại tài nguyên môn học được hỗ trợ cả phần nghe và phần nhìn, bao gồm các định dạng tài liệu, video, audio...
-        <br>
-        - Giảng viên phụ trách quản lý môn học sẽ chịu trách nhiệm cập nhật dữ liệu của môn học.
-      </p>
-    </div>
-    <div class="faq">
-      <h2 class="question" onclick="toggleAnswer(this)"> 4. Có thể tương tác như thế nào đối với tài nguyên số của hệ thống?</h2>
-      <p class="answer"> <strong> Lưu trữ khoá học / tài liệu, take note và đặt câu hỏi với giảng viên dưới tài liệu.</strong> <br>
-        Người học có thể lưu trữ khóa học hoặc tài liệu số, đồng thời có thể take note dưới tài liệu và đặt câu hỏi cho giảng viên đã đăng tài liệu.</p>
-    </div>
+        </div>
+        <div class="faq">
+            <h2 class="question" onclick="toggleAnswer(this)"> 3. Tài nguyên học tập của mỗi môn học bao gồm những gì và
+                đuợc cập nhật như thế nào?</h2>
+            <p class="answer"><strong> Hệ thống hỗ trợ đa dạng các loại tài nguyên và dữ liệu môn học được cập nhật bởi
+                giảng viên phụ trách.
+            </strong> <br>
+                - Các loại tài nguyên môn học được hỗ trợ cả phần nghe và phần nhìn, bao gồm các định dạng tài liệu,
+                video, audio...
+                <br>
+                - Giảng viên phụ trách quản lý môn học sẽ chịu trách nhiệm cập nhật dữ liệu của môn học.
+            </p>
+        </div>
+        <div class="faq">
+            <h2 class="question" onclick="toggleAnswer(this)"> 4. Có thể tương tác như thế nào đối với tài nguyên số của
+                hệ thống?</h2>
+            <p class="answer"><strong> Lưu trữ khoá học / tài liệu, take note và đặt câu hỏi với giảng viên dưới tài
+                liệu.</strong> <br>
+                Người học có thể lưu trữ khóa học hoặc tài liệu số, đồng thời có thể take note dưới tài liệu và đặt câu
+                hỏi cho giảng viên đã đăng tài liệu.</p>
+        </div>
 
-  </section>
-  <!-- Footer -->
-  <div th:replace="~{fragments/footer :: footerSection}"></div>
+    </section>
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footerSection}"></div>
 </div>
 <script th:src="@{/js/librarian.js}"></script>
 <script th:src="@{/js/guest.js}"></script>

@@ -1,6 +1,5 @@
 package fpt.edu.eresourcessystem.controller;
 
-import fpt.edu.eresourcessystem.constants.UrlConstants;
 import fpt.edu.eresourcessystem.controller.advices.GlobalControllerAdvice;
 import fpt.edu.eresourcessystem.dto.AccountDto;
 import fpt.edu.eresourcessystem.dto.TrainingTypeDto;
@@ -14,14 +13,11 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-//import org.springframework.data.elasticsearch.ResourceNotFoundException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -349,7 +345,7 @@ public class AdminController {
         }
         foundAccount.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
         Account account = accountService.updateAccount(foundAccount);
-        if(null == account){
+        if (null == account) {
             return "redirect: /admin/accounts/updated/" + accountId + "?error";
         }
         return "redirect: /admin/accounts/list?success";

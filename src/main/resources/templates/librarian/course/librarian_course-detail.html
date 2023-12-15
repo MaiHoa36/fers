@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Librarian | Course detail</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
 
 
     <!-- Bootstrap core CSS -->
@@ -153,7 +154,8 @@
                     <tr th:if="${checkLecturerCourse}">
                         <td> 1</td>
                         <td><a class="a-link" th:href="@{'/librarian/courses/' + ${course.getId}}"
-                               th:text="${course.lecturer.account.name} == null ? ${course.lecturer.account.username}: ${course.lecturer.account.name}"></a></td>
+                               th:text="${course.lecturer.account.name} == null ? ${course.lecturer.account.username}: ${course.lecturer.account.name}"></a>
+                        </td>
                         <td><a class="a-link" th:href="@{'/librarian/lectures/' + ${course.lecturer.id}}"
                                th:text="${course.lecturer.account.email}"></a></td>
                         <td><span class="code-archive-except"
@@ -168,8 +170,12 @@
                                    th:text="${lecturerCourse.id.lecturerName}"></a></td>
                             <td><a class="a-link" th:href="@{'/librarian/lectures/' + ${lecturerCourse.id.lecturerId}}"
                                    th:text="${lecturerCourse.id.lecturerEmail}"></a></td>
-                            <td><span class="code-archive-except" th:text="${#temporals.format(lecturerCourse.id.createdDate, 'dd-MM-yyyy HH:mm:ss')}"></span></td>
-                            <td><span class="code-archive-except" th:text="${#temporals.format(lecturerCourse.id.lastModifiedDate, 'dd-MM-yyyy HH:mm:ss')}"></span></td>
+                            <td><span class="code-archive-except"
+                                      th:text="${#temporals.format(lecturerCourse.id.createdDate, 'dd-MM-yyyy HH:mm:ss')}"></span>
+                            </td>
+                            <td><span class="code-archive-except"
+                                      th:text="${#temporals.format(lecturerCourse.id.lastModifiedDate, 'dd-MM-yyyy HH:mm:ss')}"></span>
+                            </td>
                         </tr>
                     </th:block>
                     </tbody>

@@ -109,11 +109,11 @@ public class Document {
         return Objects.hash(getId());
     }
 
-    public int getRate(){
+    public int getRate() {
         int sum = 0;
-        for(Rate rate:this.rates){
-            sum =+ rate.getRate();
+        for (Rate rate : this.rates) {
+            sum = +rate.getRate();
         }
-        return sum/this.rates.size();
+        return sum / this.rates.size();
     }
 }

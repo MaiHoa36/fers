@@ -5,6 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Search | FPT University E-resources</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -42,7 +43,7 @@
                                     <input type="text" class="header__search-input"
                                            placeholder="Enter here ..."
                                            name="search"
-                                           id="searchKeyword"  th:value="${search}">
+                                           id="searchKeyword" th:value="${search}">
                                     <!-- Header-search-history -->
                                     <div class="header__search-history">
                                         <h3 class="header__search-history-heading">
@@ -70,7 +71,7 @@
                         <div class="stu__navbar-favourite">
                             <ul class="stu__navbar-favourite-list border-bottom">
                                 <li id="searchDocuments"
-                                        class="stu__navbar-favourite-item stu__navbar-active note-view-link"
+                                    class="stu__navbar-favourite-item stu__navbar-active note-view-link"
                                     onclick="loadDocuments()">
                                     <a>
                                         Materials, resources
@@ -82,7 +83,7 @@
                                 <!--                  </a>-->
                                 <!--                </li>-->
                                 <li id="searchCourses"
-                                        class="stu__navbar-favourite-item  note-view-link" onclick="loadCourses()">
+                                    class="stu__navbar-favourite-item  note-view-link" onclick="loadCourses()">
                                     <a>
                                         Courses
                                     </a>
@@ -190,7 +191,7 @@
         const url = `/student/search?search=${encodeURIComponent(searchKeyword)}`;
         // Sửa đổi URL bằng phương thức replaceState
         history.replaceState(null, "", url);
-        if(searchBy === 'document'){
+        if (searchBy === 'document') {
             $.ajax({
                 url: "/api/student/search_document", // URL endpoint của API tìm kiếm
                 method: "GET",
@@ -203,7 +204,7 @@
                     let results = $('#results ul');
                     console.log(results);
                     results.empty();
-                    if(data.length == 0) {
+                    if (data.length == 0) {
                         let li = $('<li style="margin: 2rem 2rem">');
                         let img = $('<img src="/images/no-result.png" style="width: 100%">').attr('alt', 'No result');
                         li.append(img);
@@ -267,7 +268,7 @@
                     let results = $('#results ul');
                     console.log(data);
                     results.empty();
-                    if(data.length == 0) {
+                    if (data.length == 0) {
                         let li = $('<li style="margin: 2rem 2rem">');
                         let img = $('<img src="/images/no-result.png" style="width: 100%">').attr('alt', 'No result');
                         li.append(img);
@@ -280,7 +281,7 @@
                             let div1 = $('<div>').addClass('d-flex document-view-info');
                             let div2 = $('<div>').addClass('doc-info-head grid__column-9');
                             let p1 = $('<p>').addClass('doc-info-title');
-                            let a = $('<a>').attr('href', '/student/documents/' + item.courseId);
+                            let a = $('<a>').attr('href', '/student/courses/' + item.courseId);
                             let span1 = $('<span>').addClass('highlighted-title').text(item.code);
                             a.append(span1);
                             p1.append(a);
@@ -338,7 +339,7 @@
                 overlay.style.display = 'none';
                 let results = $('#results ul');
                 results.empty();
-                if(data.length == 0) {
+                if (data.length == 0) {
                     let li = $('<li style="margin: 2rem 2rem">');
                     let img = $('<img src="/images/no-result.png" style="width: 100%">').attr('alt', 'No result');
                     li.append(img);
@@ -351,7 +352,7 @@
                         let div1 = $('<div>').addClass('d-flex document-view-info');
                         let div2 = $('<div>').addClass('doc-info-head grid__column-9');
                         let p1 = $('<p>').addClass('doc-info-title');
-                        let a = $('<a>').attr('href', '/student/documents/' + item.courseId);
+                        let a = $('<a>').attr('href', '/student/courses/' + item.courseId);
                         let span1 = $('<span>').addClass('highlighted-title').text(item.code);
                         a.append(span1);
                         p1.append(a);
@@ -406,7 +407,7 @@
             },
             success: function (data) {
                 overlay.style.display = 'none';
-                if(data.length == 0) {
+                if (data.length == 0) {
                     let results = $('#results ul');
                     results.empty();
                     let li = $('<li style="margin: 2rem 2rem">');

@@ -1,4 +1,4 @@
-package fpt.edu.eresourcessystem.dto.Response;
+package fpt.edu.eresourcessystem.dto;
 
 import fpt.edu.eresourcessystem.model.Course;
 import fpt.edu.eresourcessystem.model.Lecturer;
@@ -25,7 +25,7 @@ public class LecturerDto {
 
     public LecturerDto(Lecturer lecturer) {
         this.id = lecturer.getId();
-        if(lecturer.getAccount() != null) {
+        if (lecturer.getAccount() != null) {
             this.accountName = lecturer.getAccount().getName();
             this.accountEmail = lecturer.getAccount().getEmail();
         }
@@ -33,7 +33,7 @@ public class LecturerDto {
                 ? lecturer.getCourses().stream().map(Course::getCourseCode).collect(Collectors.toList())
                 : Collections.emptyList();
 
-        if(lecturer.getCourses() != null) {
+        if (lecturer.getCourses() != null) {
             this.totalCourses = lecturer.getCourses().size();
         }
         this.lastModifiedDate = lecturer.getLastModifiedDate();

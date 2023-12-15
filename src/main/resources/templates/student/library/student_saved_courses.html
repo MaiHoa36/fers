@@ -5,6 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>My courses | FPT University E-resources</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -85,13 +86,14 @@
                                 </div>
                                 <div class="stu__view-list-course-content"
                                      th:if="${coursesSaved ne null} AND ${coursesSaved.size()} > 0">
-                                    <p class="number-count">Total course: <span th:text="${totalItems}"> course(s).</span> </p>
+                                    <p class="number-count">Total course: <span
+                                            th:text="${totalItems}"> course(s).</span></p>
                                     <div class="view-block-list">
                                         <ul class="home__course-list">
                                             <li class="home__course-item">
                                                 <div class="home__course-wrapper" th:each="course : ${coursesSaved}">
                                                     <h2 class="home__course-code" th:text="${course.courseCode}"
-                                                        ></h2>
+                                                    ></h2>
                                                     <a class="home__course-name" th:text="${course.courseName}"
                                                        th:href="@{'/student/courses/' + ${course.id}}"></a>
                                                     <p class="home__course-description"
@@ -109,34 +111,40 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <nav th:if="${totalPages ne null} AND ${totalPages} >1" aria-label="Page navigation example">
+                                    <nav th:if="${totalPages ne null} AND ${totalPages} >1"
+                                         aria-label="Page navigation example">
                                         <ul class="pagination home-courses__pagination-distance">
                                             <li class="pagination-item"
                                                 th:classappend=" ${currentPage == 1} ? 'disabled' : ''">
                                                 <a th:href="@{/student/my_library/saved_courses(search=${search}, pageIndex=${currentPage}-1)}"
-                                                        class="pagination-item__link previous-page-stu-course-number" style="cursor: pointer">
+                                                   class="pagination-item__link previous-page-stu-course-number"
+                                                   style="cursor: pointer">
                                                     <i class="pagination-item__icon fas fa-angle-left"></i>
                                                 </a>
                                             </li>
 
-                                            <li th:each="pageIndex: ${#numbers.sequence(1, totalPages)}" class="pagination-item"
+                                            <li th:each="pageIndex: ${#numbers.sequence(1, totalPages)}"
+                                                class="pagination-item"
                                                 th:classappend=" (${currentPage == pageIndex}) ? 'pagination-item--active' : '' ">
                                                 <th:block th:if="${currentPage - pageIndex == 3 }">
                                                     <span class="pagination-item__link">...</span>
                                                 </th:block>
-                                                <th:block th:if="${currentPage - pageIndex <= 2} AND ${currentPage - pageIndex >= -2}">
+                                                <th:block
+                                                        th:if="${currentPage - pageIndex <= 2} AND ${currentPage - pageIndex >= -2}">
                                                     <a th:href="@{/student/my_library/saved_courses(search=${search}, pageIndex=${pageIndex})}"
-                                                            th:text="${pageIndex}" th:value="${pageIndex}"
-                                                       class="pagination-item__link page-stu-course-number" style="cursor: pointer"></a>
+                                                       th:text="${pageIndex}" th:value="${pageIndex}"
+                                                       class="pagination-item__link page-stu-course-number"
+                                                       style="cursor: pointer"></a>
                                                 </th:block>
                                                 <th:block th:if="${pageIndex - currentPage == 3 }">
                                                     <span class="pagination-item__link">...</span>
                                                 </th:block>
                                             </li>
-                                            <li  class="pagination-item"
-                                                 th:classappend="${currentPage == totalPages} ? 'disabled' : ''">
+                                            <li class="pagination-item"
+                                                th:classappend="${currentPage == totalPages} ? 'disabled' : ''">
                                                 <a th:href="@{/student/my_library/saved_courses(search=${search}, pageIndex=${currentPage} + 1)}"
-                                                        class="pagination-item__link next-page-stu-course-number" style="cursor: pointer">
+                                                   class="pagination-item__link next-page-stu-course-number"
+                                                   style="cursor: pointer">
                                                     <i class="pagination-item__icon fas fa-angle-right"></i>
                                                 </a>
                                             </li>

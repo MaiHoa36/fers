@@ -3,10 +3,10 @@ package fpt.edu.eresourcessystem.config.ckfinder.listener;
 import com.cksource.ckfinder.config.Config;
 import com.cksource.ckfinder.event.LoadConfigEvent;
 import com.cksource.ckfinder.listener.Listener;
+import jakarta.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.inject.Named;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

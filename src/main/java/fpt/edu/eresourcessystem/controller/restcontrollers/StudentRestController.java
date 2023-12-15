@@ -6,7 +6,6 @@ import fpt.edu.eresourcessystem.dto.QuestionDto;
 import fpt.edu.eresourcessystem.dto.Response.AnswerResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.DocumentResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.QuestionResponseDto;
-import fpt.edu.eresourcessystem.dto.Response.TopicResponseDto;
 import fpt.edu.eresourcessystem.dto.UserLogDto;
 import fpt.edu.eresourcessystem.enums.AccountEnum;
 import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
@@ -19,14 +18,11 @@ import fpt.edu.eresourcessystem.service.elasticsearch.EsDocumentService;
 import fpt.edu.eresourcessystem.service.s3.StorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
@@ -443,11 +439,11 @@ public class StudentRestController {
 
     @GetMapping(value = "/load_more_my_question", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<QuestionResponseDto>> loadMoreMyQuestion(@RequestParam String docId,
-                                                                                  @RequestParam int skip) {
+                                                                        @RequestParam int skip) {
 
         Student student = getLoggedInStudent();
         Document document = documentService.findById(docId);
-        if(null != student && null!= document){
+        if (null != student && null != document) {
             List<QuestionResponseDto> questions = questionService.findByStudentLimitAndSkip(student, document, 10, skip);
             return new ResponseEntity<>(questions, HttpStatus.OK);
         }
@@ -456,11 +452,11 @@ public class StudentRestController {
 
     @GetMapping(value = "/load_more_other_question", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<QuestionResponseDto>> loadMoreOtherQuestion(@RequestParam String docId,
-                                                                                  @RequestParam int skip) {
+                                                                           @RequestParam int skip) {
 
         Student student = getLoggedInStudent();
         Document document = documentService.findById(docId);
-        if(null != student && null!= document){
+        if (null != student && null != document) {
             List<QuestionResponseDto> questions = questionService.findByOtherStudentLimitAndSkip(student, document, 10, skip);
             return new ResponseEntity<>(questions, HttpStatus.OK);
         }
@@ -469,10 +465,10 @@ public class StudentRestController {
 
     @GetMapping(value = "/search_document", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<EsDocument>> loadDocument(@RequestParam String search,
-                                                                           @RequestParam int skip) {
+                                                         @RequestParam int skip) {
 
         Page<EsDocument> esDocuments = esDocumentService.searchDocument(search, skip);
-        if(null != esDocuments){
+        if (null != esDocuments) {
             return new ResponseEntity<>(esDocuments.stream().toList(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -480,9 +476,9 @@ public class StudentRestController {
 
     @GetMapping(value = "/search_course", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<EsCourse>> loadCourse(@RequestParam String search,
-                                                                    @RequestParam int skip) {
+                                                     @RequestParam int skip) {
         Page<EsCourse> esCourses = esCourseService.searchCourse(search, skip);
-        if(null != esCourses){
+        if (null != esCourses) {
             return new ResponseEntity<>(esCourses.stream().toList(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

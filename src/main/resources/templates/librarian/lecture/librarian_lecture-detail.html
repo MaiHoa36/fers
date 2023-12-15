@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> Lecturer Detail</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
@@ -58,22 +59,22 @@
                             <h2>Information of lecturer:</h2>
                             <form method="post" th:object="${lecturer}"
                                   th:action="@{/librarian/lectures/update}">
-<!--                                <tr class="lib_input-wrapper">-->
-<!--                                    <td class="lib_input-label"><label for="name">Name:</label></td>-->
-<!--                                    <td>-->
-<!--                                        <input type="text" id="name" name="name" class="lib_input form-control"-->
-<!--                                               th:value="${lecturer.account.name}" placeholder="Enter name" readonly>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
+                                <!--                                <tr class="lib_input-wrapper">-->
+                                <!--                                    <td class="lib_input-label"><label for="name">Name:</label></td>-->
+                                <!--                                    <td>-->
+                                <!--                                        <input type="text" id="name" name="name" class="lib_input form-control"-->
+                                <!--                                               th:value="${lecturer.account.name}" placeholder="Enter name" readonly>-->
+                                <!--                                    </td>-->
+                                <!--                                </tr>-->
 
-<!--                                <tr class="lib_input-wrapper">-->
-<!--                                    <td class="lib_input-label"><label for="role">Role:</label></td>-->
-<!--                                    <td>-->
-<!--                                        &lt;!&ndash; You can replace the input type and values with appropriate Thymeleaf expressions &ndash;&gt;-->
-<!--                                        <input type="text" id="role" name="role" class="lib_input form-control"-->
-<!--                                               th:value="${lecturer.account.role}" placeholder="Enter role" readonly>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
+                                <!--                                <tr class="lib_input-wrapper">-->
+                                <!--                                    <td class="lib_input-label"><label for="role">Role:</label></td>-->
+                                <!--                                    <td>-->
+                                <!--                                        &lt;!&ndash; You can replace the input type and values with appropriate Thymeleaf expressions &ndash;&gt;-->
+                                <!--                                        <input type="text" id="role" name="role" class="lib_input form-control"-->
+                                <!--                                               th:value="${lecturer.account.role}" placeholder="Enter role" readonly>-->
+                                <!--                                    </td>-->
+                                <!--                                </tr>-->
 
                                 <!--                                <tr class="lib_input-wrapper">-->
                                 <!--                                    <td class="lib_input-label"><label for="trainingType">Training Type:</label></td>-->
@@ -85,33 +86,33 @@
                                 <!--                                    </td>-->
                                 <!--                                </tr>-->
 
-<!--                                <tr class="lib_input-wrapper">-->
-<!--                                    <td class="lib_input-label"><label for="createdBy">Created By:</label></td>-->
-<!--                                    <td>-->
-<!--                                        <input type="text" id="createdBy" name="createdBy"-->
-<!--                                               class="lib_input form-control" th:value="${lecturer.createdBy}"-->
-<!--                                               placeholder="Enter created by" readonly>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
+                                <!--                                <tr class="lib_input-wrapper">-->
+                                <!--                                    <td class="lib_input-label"><label for="createdBy">Created By:</label></td>-->
+                                <!--                                    <td>-->
+                                <!--                                        <input type="text" id="createdBy" name="createdBy"-->
+                                <!--                                               class="lib_input form-control" th:value="${lecturer.createdBy}"-->
+                                <!--                                               placeholder="Enter created by" readonly>-->
+                                <!--                                    </td>-->
+                                <!--                                </tr>-->
 
-<!--                                <tr class="lib_input-wrapper">-->
-<!--                                    <td class="lib_input-label"><label for="createdDate">Created Date:</label></td>-->
-<!--                                    <td>-->
-<!--                                        <input type="text" id="createdDate" name="createdDate"-->
-<!--                                               class="lib_input form-control" th:value="${lecturer.createdDate}"-->
-<!--                                               placeholder="Enter created date" readonly>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
+                                <!--                                <tr class="lib_input-wrapper">-->
+                                <!--                                    <td class="lib_input-label"><label for="createdDate">Created Date:</label></td>-->
+                                <!--                                    <td>-->
+                                <!--                                        <input type="text" id="createdDate" name="createdDate"-->
+                                <!--                                               class="lib_input form-control" th:value="${lecturer.createdDate}"-->
+                                <!--                                               placeholder="Enter created date" readonly>-->
+                                <!--                                    </td>-->
+                                <!--                                </tr>-->
 
-<!--                                <tr class="lib_input-wrapper">-->
-<!--                                    <td class="lib_input-label"><label for="lastModifiedBy">Last Modified By:</label>-->
-<!--                                    </td>-->
-<!--                                    <td>-->
-<!--                                        <input type="text" id="lastModifiedBy" name="lastModifiedBy"-->
-<!--                                               class="lib_input form-control" th:value="${lecturer.lastModifiedBy}"-->
-<!--                                               placeholder="Enter last modified by" readonly>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
+                                <!--                                <tr class="lib_input-wrapper">-->
+                                <!--                                    <td class="lib_input-label"><label for="lastModifiedBy">Last Modified By:</label>-->
+                                <!--                                    </td>-->
+                                <!--                                    <td>-->
+                                <!--                                        <input type="text" id="lastModifiedBy" name="lastModifiedBy"-->
+                                <!--                                               class="lib_input form-control" th:value="${lecturer.lastModifiedBy}"-->
+                                <!--                                               placeholder="Enter last modified by" readonly>-->
+                                <!--                                    </td>-->
+                                <!--                                </tr>-->
 
                                 <tr class="lib_input-wrapper">
                                     <td class="lib_input-label"><label for="email">Email:</label></td>
@@ -124,8 +125,9 @@
                                 <tr>
                                     <td></td>
                                     <td>
-<!--                                        <button type="submit" class="btn lib_btn-save">Update</button>-->
-                                        <button type="button" class="btn lib_btn-delete delete-lecturer" th:id="${lecturer.getId}">Delete
+                                        <!--                                        <button type="submit" class="btn lib_btn-save">Update</button>-->
+                                        <button type="button" class="btn lib_btn-delete delete-lecturer"
+                                                th:id="${lecturer.getId}">Delete
                                         </button>
                                     </td>
                                 </tr>
@@ -171,7 +173,9 @@
 
         crossorigin="anonymous"></script>
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!--Custom script-->
 <script th:src="@{/js/librarian/librarian.js}"></script>
 

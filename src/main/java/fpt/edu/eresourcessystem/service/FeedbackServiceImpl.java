@@ -6,7 +6,6 @@ import fpt.edu.eresourcessystem.repository.FeedbackRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-//import org.springframework.data.elasticsearch.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +30,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     public Feedback saveFeedback(Feedback feedback) {
         // You might want to add additional business logic here
-        if(feedback == null){
+        if (feedback == null) {
             throw new IllegalArgumentException("Feed back cannot be null");
         }
         return feedbackRepository.save(feedback);

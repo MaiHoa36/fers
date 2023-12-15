@@ -7,6 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Lecturer | Add document</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -37,7 +38,7 @@
                     <div class="stu_courses-content main" id="main-lecturer">
                         <div>
                             <a th:href="@{/lecturer}">Home</a>
-                            <span> &gt; <a th:href="@{/lecturer/courses/list/all/1}">Courses management</a></span>
+                            <span> &gt; <a th:href="@{/lecturer/courses/list}">Courses management</a></span>
                             <span> &gt; <a th:href="@{'/lecturer/courses/' + ${topic.course.id}}"
                                            th:text="${topic.course.courseName}"></a></span>
                             <span> &gt; <a th:href="@{'/lecturer/topics/' + ${topic.id}}"
@@ -127,7 +128,8 @@
 
                                 <div id="uploadFileInput" style="display: none; margin-top: 1rem">
                                     <div class="d-flex justify-content-between lecturer__input-doc">
-                                        <label th:for="file" class="lecturer_input-label-doc">Display-content file upload:</label>
+                                        <label th:for="file" class="lecturer_input-label-doc">Display-content file
+                                            upload:</label>
 
                                         <div id="cancelUploadButton" class="d-flex align-items-center">
                                             <button type="button" class="border-0"
@@ -176,7 +178,8 @@
 
                                 <div class="mt-3">
                                     <div class="d-flex justify-content-between">
-                                        <label for="supportFileInput" class="lecturer_input-label-doc">Supporting files: </label>
+                                        <label for="supportFileInput" class="lecturer_input-label-doc">Supporting
+                                            files: </label>
                                         <div id="cancelSupportFileButton" class="d-flex align-items-center">
                                             <button type="button" class="border-0"
                                                     style="padding: 4px 6px; border-radius: 2px">
@@ -314,7 +317,7 @@
     const form = document.getElementById('add-form');
     let isSubmitting = false;
 
-    form.addEventListener('submit', function(event) {
+    form.addEventListener('submit', function (event) {
         event.preventDefault(); // Ngăn chặn form submit mặc định
 
         if (isSubmitting) {

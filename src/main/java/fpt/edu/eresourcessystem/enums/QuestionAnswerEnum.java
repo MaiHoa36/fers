@@ -16,6 +16,7 @@ public class QuestionAnswerEnum {
             this.displayValue = displayValue;
             this.toString = toString;
         }
+
         public String getToString() {
             return toString;
         }

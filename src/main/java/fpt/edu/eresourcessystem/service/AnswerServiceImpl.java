@@ -1,7 +1,10 @@
 package fpt.edu.eresourcessystem.service;
 
 import fpt.edu.eresourcessystem.enums.CommonEnum;
-import fpt.edu.eresourcessystem.model.*;
+import fpt.edu.eresourcessystem.model.Answer;
+import fpt.edu.eresourcessystem.model.Document;
+import fpt.edu.eresourcessystem.model.Question;
+import fpt.edu.eresourcessystem.model.Student;
 import fpt.edu.eresourcessystem.repository.AnswerRepository;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service("answerService")
-public class AnswerServiceImpl implements AnswerService{
+public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
 
     public AnswerServiceImpl(AnswerRepository answerRepository) {
@@ -54,8 +57,8 @@ public class AnswerServiceImpl implements AnswerService{
     public Answer updateAnswer(Answer answer) {
         Answer savedAnswer = answerRepository
                 .findByIdAndDeleteFlg(answer.getId(), CommonEnum.DeleteFlg.PRESERVED);
-        if(null != savedAnswer){
-            Answer result =  answerRepository.save(answer);
+        if (null != savedAnswer) {
+            Answer result = answerRepository.save(answer);
             return result;
         }
         return null;
@@ -65,13 +68,14 @@ public class AnswerServiceImpl implements AnswerService{
     public boolean deleteAnswer(Answer answer) {
         Answer check = answerRepository
                 .findByIdAndDeleteFlg(answer.getId(), CommonEnum.DeleteFlg.PRESERVED);
-        if(null != check){
+        if (null != check) {
             check.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
             answerRepository.save(check);
             return true;
         }
         return false;
     }
+
     @Override
     public List<Answer> findByQuestion(Question question) {
         List<Answer> answers = answerRepository

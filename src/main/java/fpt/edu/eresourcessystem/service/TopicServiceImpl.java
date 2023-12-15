@@ -9,8 +9,8 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -129,13 +129,13 @@ public class TopicServiceImpl implements TopicService {
 //        query.fields().include("id", "topic", "title", "description", "lastModifiedDate");
 //        List<Document> documents = mongoTemplate.find(query, Document.class);
         Optional<Topic> topic = topicRepository.findById(topicId);
-        if(topic.isPresent()){
+        if (topic.isPresent()) {
             List<DocumentResponseDto> responseList = topic.get().getDocuments().stream()
                     .filter(entity -> CommonEnum.DeleteFlg.PRESERVED.equals(entity.getDeleteFlg()))
                     .map(entity -> new DocumentResponseDto(entity))
                     .collect(Collectors.toList());
             return responseList;
-        }else return null;
+        } else return null;
 
     }
 }

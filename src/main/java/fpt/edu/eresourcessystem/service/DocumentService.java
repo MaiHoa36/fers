@@ -3,11 +3,9 @@ package fpt.edu.eresourcessystem.service;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import fpt.edu.eresourcessystem.dto.DocumentDto;
 import fpt.edu.eresourcessystem.dto.Response.DocumentResponseDto;
-import fpt.edu.eresourcessystem.dto.Response.TopicResponseDto;
 import fpt.edu.eresourcessystem.model.Course;
 import fpt.edu.eresourcessystem.model.Document;
 import fpt.edu.eresourcessystem.model.Lecturer;
-import fpt.edu.eresourcessystem.model.elasticsearch.EsDocument;
 import org.apache.tika.exception.TikaException;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -32,6 +30,7 @@ public interface DocumentService {
     Document addDocument(DocumentDto documentDTO, String id) throws IOException, TikaException, SAXException;
 
     Document findById(String documentId);
+
     List<Document> findByListId(List<String> documentIds);
 
     Document updateDocument(Document document, String currentFileId, String id) throws IOException;
@@ -43,6 +42,7 @@ public interface DocumentService {
     boolean setToDefaultResourceType(Course course, Document document);
 
     boolean delete(String documentId);
+
     String addFile(MultipartFile file) throws IOException;
 
     List<DocumentResponseDto> findRelevantDocument(String topicId, String docId);

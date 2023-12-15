@@ -7,7 +7,9 @@ import fpt.edu.eresourcessystem.dto.DocumentDto;
 import fpt.edu.eresourcessystem.dto.Response.DocumentResponseDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
-import fpt.edu.eresourcessystem.model.*;
+import fpt.edu.eresourcessystem.model.Course;
+import fpt.edu.eresourcessystem.model.Document;
+import fpt.edu.eresourcessystem.model.Lecturer;
 import fpt.edu.eresourcessystem.model.elasticsearch.EsDocument;
 import fpt.edu.eresourcessystem.repository.CourseRepository;
 import fpt.edu.eresourcessystem.repository.DocumentRepository;
@@ -29,9 +31,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
-import javax.print.Doc;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -276,12 +280,12 @@ public class DocumentServiceImpl implements DocumentService {
         HashMap<String, List<DocumentResponseDto>> topicResponseDtos = new HashMap<>();
         mongoTemplate.find(query, Document.class, "documents").stream().forEach(o -> {
             String topicKey = o.getTopic().getId();
-            if(topicResponseDtos.containsKey(topicKey)){
-                if(topicResponseDtos.get(topicKey) != null){
+            if (topicResponseDtos.containsKey(topicKey)) {
+                if (topicResponseDtos.get(topicKey) != null) {
                     topicResponseDtos.get(topicKey).add(new DocumentResponseDto(o));
                 }
-            }else {
-                topicResponseDtos.put(topicKey,new ArrayList<>());
+            } else {
+                topicResponseDtos.put(topicKey, new ArrayList<>());
                 topicResponseDtos.get(topicKey).add(new DocumentResponseDto(o));
             }
         });
@@ -298,7 +302,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Page<Document> findByListDocumentIdAndSearch(String search, List<String> documentIds, int pageIndex, int pageSize) {
-        Pageable pageable = PageRequest.of(pageIndex-1, pageSize);
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
         Criteria criteria = new Criteria();
         criteria.and("id").in(documentIds);
         if (search != null && !search.isEmpty()) {

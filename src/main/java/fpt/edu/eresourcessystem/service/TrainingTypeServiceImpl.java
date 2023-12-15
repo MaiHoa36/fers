@@ -2,12 +2,8 @@ package fpt.edu.eresourcessystem.service;
 
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.model.Course;
-import fpt.edu.eresourcessystem.model.Document;
 import fpt.edu.eresourcessystem.model.TrainingType;
 import fpt.edu.eresourcessystem.repository.TrainingTypeRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +14,11 @@ public class TrainingTypeServiceImpl implements TrainingTypeService {
 
     private final TrainingTypeRepository trainingTypeRepository;
 
-//    @Autowired
+    //    @Autowired
     public TrainingTypeServiceImpl(TrainingTypeRepository trainingTypeRepository) {
         this.trainingTypeRepository = trainingTypeRepository;
     }
+
     public TrainingType save(TrainingType trainingType) {
         if (trainingType == null) {
             throw new IllegalArgumentException("TrainingType cannot be null");
@@ -91,7 +88,6 @@ public class TrainingTypeServiceImpl implements TrainingTypeService {
         }
         return false;
     }
-
 
 
 }

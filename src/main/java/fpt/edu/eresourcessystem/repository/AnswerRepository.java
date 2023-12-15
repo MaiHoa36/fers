@@ -14,10 +14,14 @@ import java.util.Optional;
 @Repository("answerRepository")
 public interface AnswerRepository extends MongoRepository<Answer, String> {
     Optional<Answer> findById(String id);
+
     Answer findByIdAndDeleteFlg(String id, CommonEnum.DeleteFlg delete);
+
     List<Answer> findByDocumentIdAndDeleteFlg(Document document, CommonEnum.DeleteFlg delete);
+
     List<Answer> findByDocumentIdAndQuestionIdAndDeleteFlg(Document document, Question question, CommonEnum.DeleteFlg delete);
 
     List<Answer> findByQuestionAndDeleteFlg(Question question, CommonEnum.DeleteFlg delete);
+
     List<Answer> findByStudentAndQuestionAndDeleteFlg(Student student, Question question, CommonEnum.DeleteFlg delete);
 }

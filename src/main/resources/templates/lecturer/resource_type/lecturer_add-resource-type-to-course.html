@@ -6,6 +6,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Lecturer | Details Course</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -51,7 +52,8 @@
                             <div class="add-content">
                                 <div class="add-form">
                                     <div class="add-form-content">
-                                        <form method="post" role="form" th:action="@{/lecturer/resource_types/add_resource_type}"
+                                        <form method="post" role="form"
+                                              th:action="@{/lecturer/resource_types/add_resource_type}"
                                               th:object="${resourceType}" th:id="add-resource-type">
                                             <table class="table-form add-table" style="width: 60%">
                                                 <tr class="d-none">
@@ -63,9 +65,11 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="lecturer_input-label"><label th:for="resourceTypeTitle">Resource type name:</label></td>
+                                                    <td class="lecturer_input-label"><label th:for="resourceTypeTitle">Resource
+                                                        type name:</label></td>
                                                     <td><input type="text"
-                                                               class="lecturer_input form-control" th:field="*{resourceTypeName}"
+                                                               class="lecturer_input form-control"
+                                                               th:field="*{resourceTypeName}"
                                                                placeholder="Enter resource type name" required>
                                                         <p class="text-danger" th:errors="*{resourceTypeName}"
                                                            th:if="${#fields.hasErrors('resourceTypeName')}"></p>
@@ -76,10 +80,12 @@
                                                     <td>
                                                         <button type="submit" class="btn btn-save">Save</button>
                                                         <th:block th:if="${param.success}">
-                                                            <a class="btn btn--back" href="javascript:void(0);" onclick="history.go(-2);">Back</a>
+                                                            <a class="btn btn--back" href="javascript:void(0);"
+                                                               onclick="history.go(-2);">Back</a>
                                                         </th:block>
                                                         <th:block th:unless="${param.success}">
-                                                            <a class="btn btn--back" href="javascript:void(0);" onclick="history.go(-1);">Back</a>
+                                                            <a class="btn btn--back" href="javascript:void(0);"
+                                                               onclick="history.go(-1);">Back</a>
                                                         </th:block>
                                                     </td>
                                                 </tr>
@@ -123,7 +129,9 @@
 <div class="row" th:replace="~{fragments/footer :: footerSection}"></div>
 
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script
         src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"

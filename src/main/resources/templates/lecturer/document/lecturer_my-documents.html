@@ -5,6 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Lecturer | Uploaded documents </title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -96,27 +97,28 @@
                                                             th:if="${document.resourceType ne null}">
                                                             Type:
                                                             <a class="home__course-lecturer-link"
-                                                               href="" th:text="${document.resourceType.resourceTypeName}">
+                                                               href=""
+                                                               th:text="${document.resourceType.resourceTypeName}">
                                                             </a>
                                                         </li>
 
-<!--                                                        <li class="home__course-lecturer-item">-->
-<!--                                                            <th:block th:if="${status == 'all'}">-->
-<!--                                                                Status:-->
-<!--                                                                <th:block-->
-<!--                                                                        th:if="${course.status.toString().equals('PUBLISH')}">-->
-<!--                                                                    <span class="text-success fw-bold">Publish</span>-->
-<!--                                                                </th:block>-->
-<!--                                                                <th:block-->
-<!--                                                                        th:if="${course.status.toString().equals('DRAFT')}">-->
-<!--                                                                    <span class="text-warning fw-bold">Draft</span>-->
-<!--                                                                </th:block>-->
-<!--                                                                <th:block-->
-<!--                                                                        th:if="${course.status.toString().equals('HIDE')}">-->
-<!--                                                                    <span class="text-secondary fw-bold">Hidden</span>-->
-<!--                                                                </th:block>-->
-<!--                                                            </th:block>-->
-<!--                                                        </li>-->
+                                                        <!--                                                        <li class="home__course-lecturer-item">-->
+                                                        <!--                                                            <th:block th:if="${status == 'all'}">-->
+                                                        <!--                                                                Status:-->
+                                                        <!--                                                                <th:block-->
+                                                        <!--                                                                        th:if="${course.status.toString().equals('PUBLISH')}">-->
+                                                        <!--                                                                    <span class="text-success fw-bold">Publish</span>-->
+                                                        <!--                                                                </th:block>-->
+                                                        <!--                                                                <th:block-->
+                                                        <!--                                                                        th:if="${course.status.toString().equals('DRAFT')}">-->
+                                                        <!--                                                                    <span class="text-warning fw-bold">Draft</span>-->
+                                                        <!--                                                                </th:block>-->
+                                                        <!--                                                                <th:block-->
+                                                        <!--                                                                        th:if="${course.status.toString().equals('HIDE')}">-->
+                                                        <!--                                                                    <span class="text-secondary fw-bold">Hidden</span>-->
+                                                        <!--                                                                </th:block>-->
+                                                        <!--                                                            </th:block>-->
+                                                        <!--                                                        </li>-->
                                                     </ul>
                                                 </div>
                                             </li>
@@ -151,7 +153,9 @@
 <!-- Footer -->
 <div class="row" th:replace="~{fragments/footer :: footerSection}"></div>
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"

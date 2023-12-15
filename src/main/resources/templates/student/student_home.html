@@ -5,6 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>FPT University E-resources</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -80,8 +81,6 @@
                         <div th:id="check-ws"></div>
 
 
-
-
                         <div class="stu__recent-course-content">
                             <div class="stu__div-content-recent-title">
                                 <h2 class="p border-bottom">
@@ -93,15 +92,19 @@
                                     <div class="stu__view-list-course-content">
                                         <div class="view-inline-list">
                                             <ul class="home__course-list  d-flex">
-                                                <li class="home__course-item grid__column-2"  th:each="course : ${recentCourses}">
+                                                <li class="home__course-item grid__column-2"
+                                                    th:each="course : ${recentCourses}">
                                                     <div class="home__course-wrapper-inline">
-                                                        <h2 class="home__course-code" th:text="${course.courseCode}" href=""></h2>
-                                                        <a class="home__course-name-inline" th:text="${course.courseName}"
+                                                        <h2 class="home__course-code" th:text="${course.courseCode}"
+                                                            href=""></h2>
+                                                        <a class="home__course-name-inline"
+                                                           th:text="${course.courseName}"
                                                            th:href="@{'/student/courses/' + ${course.id}}"></a>
-                                                        <p class="home__course-description" th:text="${course.description}"></p>
+                                                        <p class="home__course-description"
+                                                           th:text="${course.description}"></p>
                                                         <ul class="home__course-lecturer-list">
                                                             <th:block th:if="${course.lecturer ne null}">
-                                                                <li class="home__course-lecturer-item" >
+                                                                <li class="home__course-lecturer-item">
                                                                     <a class="home__course-lecturer-link"
                                                                        href="">
                                                                         <span>Lecturer: </span>
@@ -121,7 +124,6 @@
                         </div>
 
 
-
                     </div>
                 </div>
             </div>
@@ -131,7 +133,9 @@
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footerSection}"></div>
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"

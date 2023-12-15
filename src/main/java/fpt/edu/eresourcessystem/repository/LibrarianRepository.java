@@ -24,6 +24,7 @@ public interface LibrarianRepository extends MongoRepository<Librarian, String> 
             "{ $lookup: { from: 'courses', localField: 'createdCourses', foreignField: '_id', as: 'createdCourses' } }"
     })
     AggregationResults<Librarian> findAllLibrariansAndCourses();
+
     @Override
     List<Librarian> findAll();
 }

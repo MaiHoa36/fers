@@ -1,11 +1,8 @@
 package fpt.edu.eresourcessystem.service;
 
-import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.model.Course;
-import fpt.edu.eresourcessystem.model.CourseLog;
 import fpt.edu.eresourcessystem.model.UserLog;
 import fpt.edu.eresourcessystem.repository.UserLogRepository;
-import org.bson.types.ObjectId;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,7 +15,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Service("userLogService")
-public class UserLogServiceImpl implements UserLogService{
+public class UserLogServiceImpl implements UserLogService {
     private final UserLogRepository userLogRepository;
     private final MongoTemplate mongoTemplate;
 
@@ -61,7 +58,7 @@ public class UserLogServiceImpl implements UserLogService{
 
     @Override
     public UserLog addUserLog(UserLog userLog) {
-        if(null!=userLog){
+        if (null != userLog) {
             UserLog result = userLogRepository.save(userLog);
             return result;
         }
@@ -81,7 +78,7 @@ public class UserLogServiceImpl implements UserLogService{
         // Use a Pageable to limit the result set to 5 documents
         PageRequest pageable = PageRequest.of(0, 5);
         query.with(pageable);
-        List<String> listCourseIds = mongoTemplate.findDistinct(query,"url" , UserLog.class, String.class)
+        List<String> listCourseIds = mongoTemplate.findDistinct(query, "url", UserLog.class, String.class)
                 .stream().map(o -> o.substring(o.indexOf(urlPrefix) + urlPrefix.length()))
                 .toList();
         List<Course> result = mongoTemplate.find(

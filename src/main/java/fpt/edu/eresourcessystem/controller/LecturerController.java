@@ -5,7 +5,6 @@ import fpt.edu.eresourcessystem.dto.DocumentDto;
 import fpt.edu.eresourcessystem.dto.FeedbackDto;
 import fpt.edu.eresourcessystem.dto.Response.NotificationResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.QuestionResponseDto;
-import fpt.edu.eresourcessystem.dto.Response.NotificationResponseDto;
 import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
 import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
@@ -28,7 +27,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +36,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static fpt.edu.eresourcessystem.constants.Constants.*;
-import static fpt.edu.eresourcessystem.utils.CommonUtils.*;
+import static fpt.edu.eresourcessystem.utils.CommonUtils.convertToPlainText;
+import static fpt.edu.eresourcessystem.utils.CommonUtils.extractTextFromFile;
 
 @Controller
 @RequiredArgsConstructor
@@ -198,7 +197,7 @@ public class LecturerController {
         topic = topicService.addTopic(topic);
         courseService.addTopic(topic);
         Course course = courseService.findByCourseId(topic.getCourse().getId());
-        if (course.getStatus() == CourseEnum.Status.NEW){
+        if (course.getStatus() == CourseEnum.Status.NEW) {
             course.setStatus(CourseEnum.Status.DRAFT);
             courseService.updateCourse(course);
         }
@@ -617,7 +616,7 @@ public class LecturerController {
 
         // Notify student that save this course
         Notification notification;
-        if(course.getStudents() != null){
+        if (course.getStudents() != null) {
             for (String student : course.getStudents()) {
                 notification = new Notification(
                         getLoggedInLecturerMail(),
@@ -752,11 +751,11 @@ public class LecturerController {
                 String uniqueFileName, link;
                 MultiFile multiFile;
                 for (MultipartFile file : files) {
-                    if(file.getSize() < MAX_SIZE_SUPPORTING_FILE){
+                    if (file.getSize() < MAX_SIZE_SUPPORTING_FILE) {
                         // Get the original file name
                         String originalFileName = file.getOriginalFilename();
                         String fileExtension = StringUtils.getFilenameExtension(originalFileName);
-                        if(DocumentEnum.DocumentSupportFilesFormat.getDocType(fileExtension) == DocumentEnum.DocumentSupportFilesFormat.ACCEPT) {
+                        if (DocumentEnum.DocumentSupportFilesFormat.getDocType(fileExtension) == DocumentEnum.DocumentSupportFilesFormat.ACCEPT) {
                             // Generate a unique file name
                             uniqueFileName = System.currentTimeMillis() + "_" + FilenameUtils.getBaseName(originalFileName) + "." + FilenameUtils.getExtension(originalFileName);
                             // Process the uploaded file as needed

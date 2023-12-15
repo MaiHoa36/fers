@@ -25,15 +25,18 @@ public class AccountEnum {
             return displayValue;
         }
     }
+
     public enum Role {
         STUDENT("STUDENT"),
         LECTURER("LECTURER"),
         LIBRARIAN("LIBRARIAN"),
         ADMIN("ADMIN");
         private final String displayValue;
+
         Role(String displayValue) {
             this.displayValue = displayValue;
         }
+
         public String getDisplayValue() {
             return displayValue;
         }
@@ -57,10 +60,11 @@ public class AccountEnum {
         }
 
     }
+
     public enum Gender {
         M("Male"),
         F("Female");
-//        O("Other");
+        //        O("Other");
         private final String displayValue;
 
         Gender(String displayValue) {
@@ -72,7 +76,7 @@ public class AccountEnum {
         }
     }
 
-    public static List<String> getListCampus(){
+    public static List<String> getListCampus() {
         List<String> displayValues = new ArrayList<>();
         for (Campus campus : Campus.values()) {
             displayValues.add(campus.getDisplayValue());

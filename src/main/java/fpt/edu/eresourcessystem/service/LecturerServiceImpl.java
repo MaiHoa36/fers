@@ -1,7 +1,7 @@
 package fpt.edu.eresourcessystem.service;
 
 import com.mongodb.client.result.UpdateResult;
-import fpt.edu.eresourcessystem.dto.Response.LecturerDto;
+import fpt.edu.eresourcessystem.dto.LecturerDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.model.*;
 import fpt.edu.eresourcessystem.repository.LecturerCourseRepository;
@@ -55,8 +55,9 @@ public class LecturerServiceImpl implements LecturerService {
         }
         return null;
     }
+
     @Override
-    public  Lecturer updateCourseForLecturer(Lecturer lecturer, Course result) {
+    public Lecturer updateCourseForLecturer(Lecturer lecturer, Course result) {
         Query query = new Query(Criteria.where("id").is(lecturer.getId()));
         Update update = new Update().push("courses", new ObjectId(result.getId()));
         mongoTemplate.updateFirst(query, update, Lecturer.class);
@@ -133,7 +134,7 @@ public class LecturerServiceImpl implements LecturerService {
 
     @Override
     public Page<Course> findListManagingCourse(Lecturer lecturer, String search, String status, int pageIndex, int pageSize) {
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize,Sort.by(Sort.Direction.DESC, "lecturerCourseIds.createdDate"));
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.by(Sort.Direction.DESC, "lecturerCourseIds.createdDate"));
         Criteria criteria = new Criteria();
         // Sort by the "time" in descending order to get the most recent documents
         criteria.andOperator(
@@ -272,10 +273,6 @@ public class LecturerServiceImpl implements LecturerService {
 //    }
 
 
-
-
-
-
     @Override
     public int getFilteredCount(String searchValue) {
         if (searchValue == null || searchValue.isEmpty()) {
@@ -321,9 +318,6 @@ public class LecturerServiceImpl implements LecturerService {
 
         return new PageImpl<>(lecturerDtos, pageable, total);
     }
-
-
-
 
 
 }

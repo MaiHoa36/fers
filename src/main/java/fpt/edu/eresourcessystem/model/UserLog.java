@@ -5,9 +5,12 @@ import fpt.edu.eresourcessystem.enums.AccountEnum;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.*;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -33,7 +36,8 @@ public class UserLog {
     private LocalDateTime createdDate; // time
 
     private AccountEnum.Role role;
-    public UserLog(UserLogDto userLogDto){
+
+    public UserLog(UserLogDto userLogDto) {
         this.id = userLogDto.getId();
         this.url = userLogDto.getUrl();
         this.role = userLogDto.getRole();

@@ -6,6 +6,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Lecturer | Resource details</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -37,7 +38,7 @@
                     <div class="lec__courses-content main" id="main-lecturer">
                         <div class="course-details-head">
                             <a th:href="@{/lecturer}">Home</a>
-                            <span> &gt; <a th:href="@{/lecturer/courses/list/all/1}"> Courses management</a> </span>
+                            <span> &gt; <a th:href="@{/lecturer/courses/list}"> Courses management</a> </span>
                             <span> &gt; <a th:href="@{'/lecturer/courses/' + ${course.id}}"
                                            th:text="${course.courseCode}"></a> </span>
                             <span> &gt; <a th:href="@{'/lecturer/resource_types/' + ${resourceType.id}}"
@@ -91,7 +92,9 @@
 <!-- Footer -->
 <div class="row" th:replace="~{fragments/footer :: footerSection}"></div>
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script
         src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"

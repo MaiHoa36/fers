@@ -18,27 +18,28 @@ import java.util.Optional;
 public class DocumentNoteServiceImpl implements DocumentNoteService {
     private final DocumentNoteRepository documentNoteRepository;
     private final MongoTemplate mongoTemplate;
+
     @Override
     public DocumentNote findById(String studentNoteId) {
         DocumentNote studentNote = documentNoteRepository.findByIdAndDeleteFlg(studentNoteId, CommonEnum.DeleteFlg.PRESERVED);
-        return  studentNote;
+        return studentNote;
     }
 
     @Override
     public DocumentNote findByDocIdAndStudentId(String docId, String studentId) {
         DocumentNote documentNote = documentNoteRepository
-                .findByDocIdAndStudentIdAndDeleteFlg(docId,studentId, CommonEnum.DeleteFlg.PRESERVED);
+                .findByDocIdAndStudentIdAndDeleteFlg(docId, studentId, CommonEnum.DeleteFlg.PRESERVED);
         return documentNote;
     }
 
     @Override
     public DocumentNote addDocumentNote(DocumentNote documentNote) {
-        if(null!= documentNote && null== documentNote.getId()){
-            if(null!= documentNoteRepository
+        if (null != documentNote && null == documentNote.getId()) {
+            if (null != documentNoteRepository
                     .findByDocIdAndStudentIdAndDeleteFlg(documentNote.getDocId(), documentNote.getStudentId(),
-                            CommonEnum.DeleteFlg.PRESERVED)){
+                            CommonEnum.DeleteFlg.PRESERVED)) {
                 return null;
-            }else {
+            } else {
                 documentNote.setDeleteFlg(CommonEnum.DeleteFlg.PRESERVED);
                 DocumentNote result = documentNoteRepository.save(documentNote);
                 return result;
@@ -49,12 +50,12 @@ public class DocumentNoteServiceImpl implements DocumentNoteService {
 
     @Override
     public DocumentNote updateDocumentNote(DocumentNote documentNote) {
-        if (null == documentNote || null==documentNote.getId()){
+        if (null == documentNote || null == documentNote.getId()) {
             return null;
         }
         Optional<DocumentNote> savedStudentNote = documentNoteRepository.findById(documentNote.getId());
-        if(savedStudentNote.isPresent()){
-            DocumentNote result =  documentNoteRepository.save(documentNote);
+        if (savedStudentNote.isPresent()) {
+            DocumentNote result = documentNoteRepository.save(documentNote);
             return result;
         }
         return null;
@@ -63,7 +64,7 @@ public class DocumentNoteServiceImpl implements DocumentNoteService {
     @Override
     public boolean deleteDocumentNote(DocumentNote documentNote) {
         DocumentNote check = documentNoteRepository.findByIdAndDeleteFlg(documentNote.getId(), CommonEnum.DeleteFlg.PRESERVED);
-        if(null != check){
+        if (null != check) {
             // SOFT DELETE
             documentNote.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
             documentNoteRepository.save(documentNote);

@@ -4,15 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Librarian | Add Training Type</title>
-
+    <title>Admin | Add Training Type</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
 
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
 
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css">
 
     <!-- Custom styles for this template -->
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
@@ -27,32 +28,35 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
 
-        <style>
-            label.error {
-                margin-top: 5px;
-                margin-left: 5px;
-                display: block;
-                color: red;
-                /*font-size: smaller;*/
-            }
-            body {
-                font-size: 1.3rem;
-            }
-            .bootstrap-select .dropdown-toggle .filter-option-inner-inner {
-                font-size: 1.3rem;
-            }
-            .btn {
-                font-size: 1.3rem;
-            }
+    <style>
+        label.error {
+            margin-top: 5px;
+            margin-left: 5px;
+            display: block;
+            color: red;
+            /*font-size: smaller;*/
+        }
 
-            textarea {
-                width: 100%;
-                min-height: 100px;
-                font-size: 16px;
-                resize: none;
-                overflow-y: hidden;
-            }
-        </style>
+        body {
+            font-size: 1.3rem;
+        }
+
+        .bootstrap-select .dropdown-toggle .filter-option-inner-inner {
+            font-size: 1.3rem;
+        }
+
+        .btn {
+            font-size: 1.3rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            font-size: 16px;
+            resize: none;
+            overflow-y: hidden;
+        }
+    </style>
 </head>
 <body class="app_container">
 
@@ -82,9 +86,10 @@
 
 
                                         <tr class="lib_input-wrapper">
-                                            <td class="lib_input-label"><label th:for="trainingTypeName">Training type name*</label>
+                                            <td class="lib_input-label"><label th:for="trainingTypeName">Training type
+                                                name*</label>
                                             </td>
-                                            <td><input type="text"  th:id="trainingTypeName"
+                                            <td><input type="text" th:id="trainingTypeName"
                                                        class="lib_input form-control" th:field="*{trainingTypeName}"
                                                        placeholder="Enter training type name" required>
 
@@ -97,25 +102,25 @@
                                             <td><textarea class="lib_textarea form-control  paragraph"
                                                           th:id="trainingTypeDescription"
                                                           th:field="*{trainingTypeDescription}"
-                                                       placeholder="Enter training type description" required >
+                                                          placeholder="Enter training type description" required>
                                                 </textarea>
 
                                             </td>
                                         </tr>
 
-<!--                                        <tr class="lib_input-wrapper">-->
-<!--                                            <td class="lib_input-label"><label th:for="trainingTypeDescription">-->
-<!--                                                Courses of training type</label>-->
-<!--                                            </td>-->
-<!--                                            <td>-->
+                                        <!--                                        <tr class="lib_input-wrapper">-->
+                                        <!--                                            <td class="lib_input-label"><label th:for="trainingTypeDescription">-->
+                                        <!--                                                Courses of training type</label>-->
+                                        <!--                                            </td>-->
+                                        <!--                                            <td>-->
 
-<!--                                                <select id="select-multiple-course" th:field="*{courses}"  class="form-control selectpicker show-tick"  data-style="btn-white" multiple data-live-search="true"  >-->
-<!--                                                    <option selected disabled th:value="0">Choose a course</option>-->
-<!--                                                    <option th:each="course : ${allCourses}" th:value="${course.getId()}"-->
-<!--                                                            th:text="${course.getCourseName()}"></option>-->
-<!--                                                </select>-->
-<!--                                            </td>-->
-<!--                                        </tr>-->
+                                        <!--                                                <select id="select-multiple-course" th:field="*{courses}"  class="form-control selectpicker show-tick"  data-style="btn-white" multiple data-live-search="true"  >-->
+                                        <!--                                                    <option selected disabled th:value="0">Choose a course</option>-->
+                                        <!--                                                    <option th:each="course : ${allCourses}" th:value="${course.getId()}"-->
+                                        <!--                                                            th:text="${course.getCourseName()}"></option>-->
+                                        <!--                                                </select>-->
+                                        <!--                                            </td>-->
+                                        <!--                                        </tr>-->
 
                                         <tr>
                                             <td></td>
