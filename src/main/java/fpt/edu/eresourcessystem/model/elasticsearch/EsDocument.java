@@ -1,10 +1,6 @@
 package fpt.edu.eresourcessystem.model.elasticsearch;
 
-import lombok.AllArgsConstructor;
 import lombok.*;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;

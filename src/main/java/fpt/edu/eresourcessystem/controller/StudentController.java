@@ -10,7 +10,6 @@ import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
 import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
 import fpt.edu.eresourcessystem.model.*;
-import fpt.edu.eresourcessystem.model.elasticsearch.EsCourse;
 import fpt.edu.eresourcessystem.model.elasticsearch.EsDocument;
 import fpt.edu.eresourcessystem.service.*;
 import fpt.edu.eresourcessystem.service.elasticsearch.EsCourseService;
@@ -19,7 +18,6 @@ import fpt.edu.eresourcessystem.utils.CommonUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -28,14 +26,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.Doc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
 import static fpt.edu.eresourcessystem.constants.Constants.PAGE_SIZE;
-import static fpt.edu.eresourcessystem.constants.UrlConstants.*;
+import static fpt.edu.eresourcessystem.constants.UrlConstants.LOGIN_REQUIRED;
+import static fpt.edu.eresourcessystem.constants.UrlConstants.SUCCESS_PARAM;
 
 @Controller
 @RequiredArgsConstructor

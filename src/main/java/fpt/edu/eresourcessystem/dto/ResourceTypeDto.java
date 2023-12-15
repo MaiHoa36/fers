@@ -5,7 +5,7 @@ import fpt.edu.eresourcessystem.model.Course;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.*;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 

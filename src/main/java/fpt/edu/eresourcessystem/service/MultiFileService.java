@@ -1,8 +1,6 @@
 package fpt.edu.eresourcessystem.service;
 
-import fpt.edu.eresourcessystem.model.*;
-
-import java.util.List;
+import fpt.edu.eresourcessystem.model.MultiFile;
 
 public interface MultiFileService {
 

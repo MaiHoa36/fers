@@ -6,7 +6,10 @@ import fpt.edu.eresourcessystem.model.ResourceType;
 import fpt.edu.eresourcessystem.model.Topic;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.bson.types.ObjectId;
 
 import java.util.List;
