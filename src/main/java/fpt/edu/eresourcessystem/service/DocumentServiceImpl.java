@@ -5,7 +5,6 @@ import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import fpt.edu.eresourcessystem.dto.DocumentDto;
 import fpt.edu.eresourcessystem.dto.Response.DocumentResponseDto;
-import fpt.edu.eresourcessystem.dto.Response.TopicResponseDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
 import fpt.edu.eresourcessystem.model.*;
@@ -18,13 +17,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.tika.exception.TikaException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
@@ -32,6 +29,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
+import javax.print.Doc;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -108,11 +106,6 @@ public class DocumentServiceImpl implements DocumentService {
         Page<Document> page = documentRepository.filterAndSearchDocument(course, topic, title, description,
                 pageable);
         return page;
-    }
-
-    @Override
-    public Iterable<EsDocument> searchDocument(String search) {
-        return esDocumentRepository.search(search);
     }
 
     public String addFile(MultipartFile upload) throws IOException {
@@ -233,6 +226,7 @@ public class DocumentServiceImpl implements DocumentService {
             // Soft delete
             document.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
             documentRepository.save(document);
+            esDocumentRepository.delete(new EsDocument(document));
             return true;
         }
         return false;
@@ -292,5 +286,31 @@ public class DocumentServiceImpl implements DocumentService {
         });
 
         return topicResponseDtos;
+    }
+
+    @Override
+    public void removeMultiFile(String docId, ObjectId multiFileId) {
+        Query query = new Query(Criteria.where("id").is(docId));
+        Update update = new Update().pull("multipleFiles", multiFileId);
+        mongoTemplate.updateFirst(query, update, Document.class);
+    }
+
+    @Override
+    public Page<Document> findByListDocumentIdAndSearch(String search, List<String> documentIds, int pageIndex, int pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex-1, pageSize);
+        Criteria criteria = new Criteria();
+        criteria.and("id").in(documentIds);
+        if (search != null && !search.isEmpty()) {
+            Criteria regexCriteria = new Criteria().orOperator(
+                    Criteria.where("title").regex(search, "i"),
+                    Criteria.where("description").regex(search, "i")
+            );
+            criteria.andOperator(regexCriteria);
+        }
+        Query query = new Query(criteria);
+        query.fields().include("id", "title", "description", "createdDate", "resourceTypes");
+        long total = mongoTemplate.count(query, Document.class);
+        List<Document> documents = mongoTemplate.find(query.with(pageable), Document.class);
+        return new PageImpl<>(documents, pageable, total);
     }
 }

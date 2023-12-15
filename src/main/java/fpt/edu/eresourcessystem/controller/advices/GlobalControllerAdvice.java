@@ -27,6 +27,13 @@ public class GlobalControllerAdvice {
     @ModelAttribute("notificationNumber")
     public String getNotificationNumber() {
         String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        int numOfNotifications = notificationService.findUnreadByToAccount(loggedInEmail).size();
+        return String.valueOf(numOfNotifications);
+    }
+
+    @ModelAttribute("allNotificationNumber")
+    public String getAllNotificationNumber() {
+        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         int numOfNotifications = notificationService.findAllByToAccount(loggedInEmail).size();
         return String.valueOf(numOfNotifications);
     }

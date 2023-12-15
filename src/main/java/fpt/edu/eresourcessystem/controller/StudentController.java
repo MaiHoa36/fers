@@ -1,19 +1,25 @@
 package fpt.edu.eresourcessystem.controller;
 
 import fpt.edu.eresourcessystem.dto.FeedbackDto;
+import fpt.edu.eresourcessystem.dto.Response.NotificationResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.QuestionResponseDto;
 import fpt.edu.eresourcessystem.dto.StudentNoteDto;
 import fpt.edu.eresourcessystem.dto.UserLogDto;
 import fpt.edu.eresourcessystem.enums.AccountEnum;
 import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
+import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
 import fpt.edu.eresourcessystem.model.*;
+import fpt.edu.eresourcessystem.model.elasticsearch.EsCourse;
 import fpt.edu.eresourcessystem.model.elasticsearch.EsDocument;
 import fpt.edu.eresourcessystem.service.*;
+import fpt.edu.eresourcessystem.service.elasticsearch.EsCourseService;
+import fpt.edu.eresourcessystem.service.elasticsearch.EsDocumentService;
 import fpt.edu.eresourcessystem.utils.CommonUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -22,6 +28,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.Doc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -36,20 +43,22 @@ import static fpt.edu.eresourcessystem.constants.UrlConstants.*;
 public class StudentController {
     private final AccountService accountService;
     private final CourseService courseService;
+    private final EsCourseService esCourseService;
     private final StudentService studentService;
     private final TopicService topicService;
-//    private final CourseLogService courseLogService;
+    //    private final CourseLogService courseLogService;
     private final DocumentService documentService;
+    private final EsDocumentService esDocumentService;
     private final StudentNoteService studentNoteService;
     private final DocumentNoteService documentNoteService;
     private final QuestionService questionService;
     private final AnswerService answerService;
     private final UserLogService userLogService;
     private final FeedbackService feedbackService;
+    private final NotificationService notificationService;
 
     private Student getLoggedInStudent() {
         String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println(loggedInEmail);
         if (null == loggedInEmail || "anonymousUser".equals(loggedInEmail)) {
             return null;
         }
@@ -59,6 +68,11 @@ public class StudentController {
         } else return null;
     }
 
+    private String getLoggedInStudentMail() {
+        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return loggedInEmail;
+    }
+
     /*
         HOME
      */
@@ -66,7 +80,7 @@ public class StudentController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         Account loggedInUser = accountService.findByEmail(currentPrincipalName);
-        UserLog userLog = new UserLog(new UserLogDto(url,getLoggedInStudent().getAccount().getEmail(),AccountEnum.Role.STUDENT ));
+        UserLog userLog = new UserLog(new UserLogDto(url, getLoggedInStudent().getAccount().getEmail(), AccountEnum.Role.STUDENT));
         userLog = userLogService.addUserLog(userLog);
         System.out.println(userLog);
         return userLog;
@@ -89,6 +103,7 @@ public class StudentController {
 
     /**
      * Display 5 recent course
+     *
      * @param account account
      * @return recent courses
      */
@@ -122,7 +137,9 @@ public class StudentController {
         DOCUMENT
     */
     @GetMapping({"/documents/{docId}"})
-    public String viewDocumentDetail(@PathVariable String docId, final Model model) throws IOException {
+    public String viewDocumentDetail(@PathVariable String docId,
+                                     @RequestParam(required = false) String questionId,
+                                     final Model model) throws IOException {
         // auth
         Student student = getLoggedInStudent();
         Document document = documentService.findById(docId);
@@ -135,7 +152,7 @@ public class StudentController {
         }
         if (document.isDisplayWithFile() == true) {
             String data;
-            if(document.getCloudFileLink() != null) {
+            if (document.getCloudFileLink() != null) {
                 data = document.getCloudFileLink();
             } else {
                 byte[] file = documentService.getGridFSFileContent(document.getContentId());
@@ -151,21 +168,17 @@ public class StudentController {
         if (null != documentNote) {
             model.addAttribute("documentNote", documentNote);
         } else model.addAttribute("documentNote", new DocumentNote());
-        // get list questions
-        List<Question> questions = questionService.findByDocId(document);
-        List<QuestionResponseDto> questionResponseDtos = new ArrayList<>();
-        List<QuestionResponseDto> myQuestionResponseDtos = new ArrayList<>();
 
-        // Need to optimize - dùng AJAX ik =)))))))))))))))))))))))))))))))))))))))))))))))))))
-        for (Question q : questions) {
-            if (!q.getStudent().getId().equals(student.getId())) {
-                questionResponseDtos.add(new QuestionResponseDto(q));
-            } else {
-                myQuestionResponseDtos.add(new QuestionResponseDto(q));
-            }
+        List<QuestionResponseDto> myQuestionResponseDtos = new ArrayList<>();
+        if (null != questionId) {
+            myQuestionResponseDtos.add(new QuestionResponseDto(questionService.findById(questionId)));
+        } else {
+            questionService.findByStudentLimitAndSkip(student, document, 3, 0);
         }
 
-//        // get others doc
+        List<QuestionResponseDto> questionResponseDtos = questionService.findByOtherStudentLimitAndSkip(student, document, 3, 0);
+        System.out.println(questionResponseDtos.size());
+        //        // get others doc
 //        if (null != document.getTopic()) {
 //            List<DocumentResponseDto> relevantDocuments = documentService
 //                    .findRelevantDocument(document.getTopic().getId(), docId);
@@ -196,26 +209,43 @@ public class StudentController {
      */
 
     @GetMapping({"/my_library/saved_courses", "/my_library"})
-    public String viewCourseSaved(final Model model) {
+    public String viewCourseSaved(@RequestParam(required = false, defaultValue = "1") int pageIndex,
+                                  @RequestParam(required = false, defaultValue = "") String search,
+                                  final Model model) {
         // get account authorized
         Student student = getLoggedInStudent();
         List<String> savedCourses = student != null ? student.getSavedCourses() : null;
         if (null != savedCourses) {
-            List<Course> courses = courseService.findByListId(savedCourses);
-            model.addAttribute("coursesSaved", courses);
+//            List<Course> courses = courseService.findByListId(savedCourses);
+            Page<Course> courses = courseService.findByListCourseIdAndSearch(search, savedCourses, pageIndex, PAGE_SIZE);
+            model.addAttribute("coursesSaved", courses.getContent());
+            model.addAttribute("totalPages", courses.getTotalPages());
+            model.addAttribute("totalItems", courses.getTotalElements());
+            System.out.println(courses.getContent().size());
         }
+        model.addAttribute("search", search);
+        model.addAttribute("currentPage", pageIndex);
         return "student/library/student_saved_courses";
     }
 
     @GetMapping({"/my_library/saved_documents"})
-    public String viewDocumentSaved(final Model model) {
+    public String viewDocumentSaved(@RequestParam(required = false, defaultValue = "1") int pageIndex,
+                                    @RequestParam(required = false, defaultValue = "") String search,
+                                    final Model model) {
         // get account authorized
         Student student = getLoggedInStudent();
         List<String> savedDocuments = student != null ? student.getSavedDocuments() : null;
         if (null != savedDocuments) {
-            List<Document> documents = documentService.findByListId(savedDocuments);
-            model.addAttribute("documentsSaved", documents);
+//            List<Document> documents = documentService.findByListId(savedDocuments);
+            Page<Document> documents = documentService.findByListDocumentIdAndSearch(search, savedDocuments, pageIndex, PAGE_SIZE);
+            model.addAttribute("totalPages", documents.getTotalPages());
+            System.out.println(documents.getContent().size());
+            model.addAttribute("documentsSaved", documents.getContent());
+            model.addAttribute("totalItems", documents.getTotalElements());
+
         }
+        model.addAttribute("search", search);
+        model.addAttribute("currentPage", pageIndex);
         return "student/library/student_saved_documents";
     }
 
@@ -247,9 +277,9 @@ public class StudentController {
         Page<Course> page = courseService.findByCourseNameOrCourseCode(search, search, pageIndex, PAGE_SIZE);
         // search by elastic search
 //        SearchPage<EsCourse> page = courseService.searchCourse(search, pageIndex, PAGE_SIZE);
-        List<Integer> pages = CommonUtils.pagingFormat(page.getTotalPages(), pageIndex);
-        model.addAttribute("pages", pages);
-        model.addAttribute("totalPage", page.getTotalPages());
+//        List<Integer> pages = CommonUtils.pagingFormat(page.getTotalPages(), pageIndex);
+//        model.addAttribute("pages", pages);
+        model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("courses", page.getContent());
         model.addAttribute("search", search);
         model.addAttribute("roles", AccountEnum.Role.values());
@@ -266,7 +296,8 @@ public class StudentController {
      */
 
     @GetMapping({"/my_library/my_notes/{pageIndex}"})
-    public String viewMyNote(@RequestParam(required = false, defaultValue = "") String search, @PathVariable Integer pageIndex, final Model model) {
+    public String viewMyNote(@RequestParam(required = false, defaultValue = "") String search,
+                             @PathVariable Integer pageIndex, final Model model) {
         // get account authorized
         Student student = getLoggedInStudent();
         Page<StudentNote> page = null;
@@ -323,10 +354,10 @@ public class StudentController {
         StudentNote studentNote = studentNoteService.findById(studentNoteId);
         System.out.println(studentNoteId);
         System.out.println(studentNote);
-        if(null == studentNoteId){
+        if (null == studentNoteId) {
             return "exception/404";
 
-        }else {
+        } else {
             model.addAttribute("studentNote", studentNote);
             System.out.println(studentNote);
             return "student/library/student_my-note_detail";
@@ -337,7 +368,7 @@ public class StudentController {
     @PostMapping("/my_note/student_notes/update")
     @Transactional
     public String updateMyNote(@ModelAttribute StudentNote studentNote,
-                            BindingResult result) {
+                               BindingResult result) {
         Student student = getLoggedInStudent();
         StudentNote checkExist = studentNoteService.findById(studentNote.getId());
         if (null == student) {
@@ -351,10 +382,10 @@ public class StudentController {
         studentNote = studentNoteService.updateStudentNote(checkExist);
         if (null != studentNote) {
             // add log
-            addUserLog("/student/my_note/student_notes/" + studentNote.getId()+ "?success");
-            return "redirect:/student/my_note/student_notes/"+ studentNote.getId() + SUCCESS_PARAM;
+            addUserLog("/student/my_note/student_notes/" + studentNote.getId() + "?success");
+            return "redirect:/student/my_note/student_notes/" + studentNote.getId() + SUCCESS_PARAM;
         } else {
-            return "redirect:/student/my_note/student_notes/"+ studentNote.getId() + "?error";
+            return "redirect:/student/my_note/student_notes/" + studentNote.getId() + "?error";
         }
     }
 
@@ -371,7 +402,7 @@ public class StudentController {
         boolean checkDeleted = studentNoteService.softDeleteStudentNote(checkExist);
         if (checkDeleted) {
             // add log
-            addUserLog("/student/my_note/student_notes/delete/" + studentNoteId+ "?success");
+            addUserLog("/student/my_note/student_notes/delete/" + studentNoteId + "?success");
             return "redirect:/student/my_note/student_notes/add" + SUCCESS_PARAM;
         } else {
             return "redirect:/student/my_note/student_notes/" + studentNoteId + "?error";
@@ -380,15 +411,27 @@ public class StudentController {
 
     // tối ưu
     @GetMapping("/my_library/my_questions/history")
-    public String viewMyQuestions(final Model model) {
+    public String viewMyQuestions(@RequestParam(required = false, defaultValue = "1") int pageIndex,
+                                  @RequestParam(required = false, defaultValue = "") String search,
+                                  @RequestParam(required = false, defaultValue = "all") String status,
+                                  final Model model) {
         Student student = getLoggedInStudent();
-        List<Question> questions = questionService.findByStudent(student);
-//        for (Question q : questions) {
-//            q.setAnswers(new HashSet<>(answerService.findByStudentAnsQuestion(student, q)));
-//        }
-        model.addAttribute("studentQuestions", questions);
+        QuestionAnswerEnum.Status findStatus = null;
+        if ("new-reply".equals(status)) {
+            findStatus = QuestionAnswerEnum.Status.REPLIED;
+        } else if ("wait-reply".equals(status)) {
+            findStatus = QuestionAnswerEnum.Status.CREATED;
+        }
+        Page<Question> questions = (student != null) ? questionService.findByStudentAndSearch(student, search, findStatus, pageIndex, PAGE_SIZE) : null;
+        model.addAttribute("totalPages", questions.getTotalPages());
+        model.addAttribute("documentsSaved", questions.getContent());
+        model.addAttribute("studentQuestions", questions.getContent());
         // add log
         addUserLog("/my_library/my_questions/history");
+        model.addAttribute("search", search);
+        model.addAttribute("currentPage", pageIndex);
+        model.addAttribute("status", status);
+        model.addAttribute("totalItems", questions.getTotalElements());
         return "student/library/student_my-questions-and-answers";
     }
 
@@ -399,19 +442,8 @@ public class StudentController {
 
     @GetMapping({"/search"})
     public String getSearchResults(@RequestParam(required = false, value = "search") String search,
-                                   @RequestParam(required = false, defaultValue = "all") String filter,
                                    final Model model) {
-        Iterable<EsDocument> esDocuments;
-        esDocuments = documentService.searchDocument(search.trim());
-//        if (null == filter || "all".equals(filter)) {
-//            esDocuments = documentService.searchDocument(search);
-//        }
-//        else if ("e_resource".equals(filter)) {
-//            page = courseService.findByCourseNameLike(search, pageIndex, PAGE_SIZE);
-//        } else {
-//            page = courseService.findByCourseCodeLike(search, pageIndex, PAGE_SIZE);
-//        }
-
+        List<EsDocument> esDocuments = esDocumentService.searchDocument(search, 0).stream().toList();
         model.addAttribute("foundDocuments", esDocuments);
         model.addAttribute("search", search);
         return "student/student_search-results";
@@ -428,7 +460,7 @@ public class StudentController {
     public String processFeedbackForm(@ModelAttribute("feedback") @Valid FeedbackDto feedback,
                                       BindingResult result) {
         if (result.hasErrors()) {
-            return "student/feedback/student_feedback-add"; // Return to the form with validation errors
+            return "student/feedback/student_feedback-add?error"; // Return to the form with validation errors
         }
 
         // Get the logged-in user (you need to implement your user authentication mechanism)
@@ -445,14 +477,21 @@ public class StudentController {
             feedback.setStatus("Pending");
             Feedback feedback1 = feedbackService.saveFeedback(new Feedback(feedback));
 
-            return "redirect:/student/feedbacks/add"; // Redirect to a success page
+            if (loggedInUser.getRole().equals(AccountEnum.Role.LECTURER))
+                return "redirect:/lecturer/feedbacks/add?success"; // Redirect to a success page
+            else
+                return "redirect:/student/feedbacks/add?success"; // Redirect to a success page
         } else {
             return "redirect:/login"; // Redirect to the login page if the user is not logged in
         }
     }
 
-    @GetMapping({"/chat"})
-    public String goHomePage() {
-        return "student/test_notification";
+    @GetMapping({"/notifications"})
+    public String getNotifications(final Model model) {
+        String studentMail = getLoggedInStudentMail();
+        List<NotificationResponseDto> notificationResponseDtos = notificationService.findAllByToAccount(studentMail);
+        model.addAttribute("notifications", notificationResponseDtos);
+        return "student/student_notifications";
     }
+
 }

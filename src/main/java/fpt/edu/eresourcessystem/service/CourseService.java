@@ -50,6 +50,12 @@ public interface CourseService {
     // Resource type
     boolean addResourceType(ResourceType resourceType);
 
+    void addResourceTypeToCourse(Course course, ObjectId resourceTypeId);
+
+    void addStudentSaveToCourse(String courseId, String studentMail);
+
+    void removeStudentUnsaveFromCourse(String courseId, String studentMail);
+
     List<Course> findByListId(List<String> courseIds);
 
     Page<Course> findByCodeOrNameOrDescription(String code, String name, String description, int pageIndex, int pageSize);
@@ -67,4 +73,5 @@ public interface CourseService {
     boolean removeLecture(String courseId);
     SearchPage<EsCourse> searchCourse(String search, int pageIndex, int pageSize);
     long countTotalCourses();
+    Page<Course> findByListCourseIdAndSearch(String search, List<String> courseIds, int pageIndex, int pageSize);
 }

@@ -2,17 +2,14 @@ package fpt.edu.eresourcessystem.model.elasticsearch;
 
 import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.model.Course;
-import lombok.AllArgsConstructor;
 import lombok.*;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 
 import java.io.Serializable;
 
-@Document(indexName = "documents")
+@Document(indexName = "courses")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

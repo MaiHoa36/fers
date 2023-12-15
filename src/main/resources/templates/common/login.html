@@ -19,12 +19,12 @@
                     <div th:if="${param.error}" class="alert alert-danger" role="alert">Invalid account
                     </div>
 
-                    <div class="auth-form__group ">
-                        <input type="email" name="username" class="auth-form__input" placeholder="Your Email">
-                    </div>
-                    <div class="auth-form__group ">
-                        <input type="password" name="password" class="auth-form__input" placeholder="Enter Password">
-                    </div>
+<!--                    <div class="auth-form__group ">-->
+<!--                        <input type="email" name="username" class="auth-form__input" placeholder="Your Email">-->
+<!--                    </div>-->
+<!--                    <div class="auth-form__group ">-->
+<!--                        <input type="password" name="password" class="auth-form__input" placeholder="Enter Password">-->
+<!--                    </div>-->
                     <div class="auth-form__socials">
                         <a th:href="@{/oauth2/authorization/google}"
                            class="btn btn-login btn-primary auth-form__socials--google">
@@ -33,7 +33,7 @@
                         Login with Google
                         </span>
                         </a>
-                        <a href="" class="btn btn-login btn--with-icon auth-form__socials--feid">
+                        <a href="https://feid.fpt.edu.vn/Account/Login" class="btn btn-login btn--with-icon auth-form__socials--feid">
                             <i class="auth-form__socials-feid-icon fa-solid fa-envelope"></i>
                             <span class="auth-form__socials-title">
                         Login with FEID

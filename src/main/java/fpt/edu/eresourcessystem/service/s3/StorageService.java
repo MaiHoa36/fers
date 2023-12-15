@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+//import software.amazon.awssdk.services.transcribe.TranscribeClient;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,6 +32,14 @@ public class StorageService {
     public String uploadFile(MultipartFile file) {
         File fileObj = convertMultiPartFileToFile(file);
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileName, fileObj);
+        s3Client.putObject(putObjectRequest);
+        fileObj.delete();
+        return s3Client.getUrl(bucketName, fileName).toString();
+    }
+
+    public String uploadFileWithName(MultipartFile file, String fileName) {
+        File fileObj = convertMultiPartFileToFile(file);
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileName, fileObj);
         s3Client.putObject(putObjectRequest);
         fileObj.delete();

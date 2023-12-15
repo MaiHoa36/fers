@@ -3,8 +3,12 @@ package fpt.edu.eresourcessystem.controller;
 import fpt.edu.eresourcessystem.controller.advices.GlobalControllerAdvice;
 import fpt.edu.eresourcessystem.dto.DocumentDto;
 import fpt.edu.eresourcessystem.dto.FeedbackDto;
+import fpt.edu.eresourcessystem.dto.Response.NotificationResponseDto;
+import fpt.edu.eresourcessystem.dto.Response.QuestionResponseDto;
+import fpt.edu.eresourcessystem.dto.Response.NotificationResponseDto;
 import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
+import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
 import fpt.edu.eresourcessystem.model.*;
 import fpt.edu.eresourcessystem.service.*;
 import fpt.edu.eresourcessystem.service.s3.StorageService;
@@ -12,9 +16,9 @@ import fpt.edu.eresourcessystem.utils.CommonUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.tika.exception.TikaException;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -28,13 +32,13 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static fpt.edu.eresourcessystem.constants.Constants.PAGE_SIZE;
-import static fpt.edu.eresourcessystem.utils.CommonUtils.convertToPlainText;
-import static fpt.edu.eresourcessystem.utils.CommonUtils.extractTextFromFile;
+import static fpt.edu.eresourcessystem.constants.Constants.*;
+import static fpt.edu.eresourcessystem.utils.CommonUtils.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -53,6 +57,8 @@ public class LecturerController {
     private final StorageService storageService;
     private final CourseLogService courseLogService;
     private final MultiFileService multiFileService;
+    private final NotificationService notificationService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     private Lecturer getLoggedInLecturer() {
         String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -65,6 +71,14 @@ public class LecturerController {
         } else return null;
     }
 
+    private String getLoggedInLecturerMail() {
+        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (null == loggedInEmail || "anonymousUser".equals(loggedInEmail)) {
+            return null;
+        }
+        return loggedInEmail;
+    }
+
     private void addCourseLog(String courseId, String courseCode, String courseName,
                               CourseEnum.LecturerAction action,
                               CourseEnum.CourseObject object,
@@ -73,7 +87,7 @@ public class LecturerController {
                               String email,
                               String oldContent,
                               String newContent) {
-        CourseLog courseLog = new CourseLog(courseId,courseCode,courseName, action, object, objectId, objectName, email, oldContent, newContent);
+        CourseLog courseLog = new CourseLog(courseId, courseCode, courseName, action, object, objectId, objectName, email, oldContent, newContent);
         courseLogService.addCourseLog(courseLog);
     }
 
@@ -95,38 +109,26 @@ public class LecturerController {
      * @param model     model
      * @return lecturer courses
      */
-    @GetMapping({"/courses/list/{status}/{pageIndex}"})
-    public String viewCourseManaged(@PathVariable(required = false) Integer pageIndex, final Model model, @PathVariable String status) {
+    @GetMapping({"/courses/list"})
+    public String viewCourseManaged(
+            @RequestParam(required = false, defaultValue = "") String search,
+            @RequestParam(required = false, defaultValue = "1") Integer pageIndex,
+            @RequestParam(required = false, defaultValue = "all") String status,
+            final Model model) {
         // get account authorized
         Lecturer lecturer = getLoggedInLecturer();
         if (null == lecturer || "".equalsIgnoreCase(status)) {
             return "common/login";
         }
-        Page<Course> page = lecturerService.findListManagingCourse(lecturer, status, pageIndex, PAGE_SIZE);
-        List<Integer> pages = CommonUtils.pagingFormat(page.getTotalPages(), pageIndex);
-        model.addAttribute("pages", pages);
-        model.addAttribute("totalPage", page.getTotalPages());
+        Page<Course> page = lecturerService.findListManagingCourse(lecturer, search, status, pageIndex, PAGE_SIZE);
+        model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("courses", page.getContent());
         model.addAttribute("status", status);
-
+        model.addAttribute("currentPage", pageIndex);
+        model.addAttribute("search", search);
+        model.addAttribute("totalItems", page.getTotalElements());
         return "lecturer/course/lecturer_courses";
     }
-
-//    @GetMapping({"/courses/{courseId}/update"})
-//    public String updateCourseProcess(@PathVariable(required = false) String courseId, final Model model) {
-//        if (null == courseId) {
-//            courseId = "";
-//        }
-//        Course course = courseService.findByCourseId(courseId);
-//        if (null == course) {
-//            return "redirect:lecturer/courses/update?error";
-//        } else {
-//            List<Account> lecturers = accountService.findAllLecturer();
-//            model.addAttribute("lecturers", lecturers);
-//            model.addAttribute("course", course);
-//            return "lecturer/course/lecturer_update-course";
-//        }
-//    }
 
     @PostMapping("/courses/{courseID}/changeStatus")
     @Transactional
@@ -196,6 +198,10 @@ public class LecturerController {
         topic = topicService.addTopic(topic);
         courseService.addTopic(topic);
         Course course = courseService.findByCourseId(topic.getCourse().getId());
+        if (course.getStatus() == CourseEnum.Status.NEW){
+            course.setStatus(CourseEnum.Status.DRAFT);
+            courseService.updateCourse(course);
+        }
         List<Topic> topics = course.getTopics();
         Topic modelTopic = new Topic();
         modelTopic.setCourse(course);
@@ -425,14 +431,26 @@ public class LecturerController {
     }
 
     @GetMapping({"/documents/{documentId}"})
-    public String viewDocument(@PathVariable(required = false) String documentId, final Model model) throws IOException {
+    public String viewDocument(@PathVariable String documentId,
+                               @RequestParam(required = false) String questionId,
+                               final Model model) throws IOException {
         Document document = documentService.findById(documentId);
         if (null == document) {
             model.addAttribute("errorMessage", "Could not found document.");
             return "exception/404";
         } else {
             // get list question
-            List<Question> questions = questionService.findByDocId(document);
+            List<QuestionResponseDto> questions = new ArrayList<>();
+            if (null != questionId) {
+                QuestionResponseDto question = new QuestionResponseDto(questionService.findById(questionId));
+                if (question != null) {
+                    questions.add(new QuestionResponseDto(questionService.findById(questionId)));
+                } else {
+                    questions = questionService.findByDocumentLimitAndSkip(document, 5, 0);
+                }
+            } else {
+                questions = questionService.findByDocumentLimitAndSkip(document, 5, 0);
+            }
 
             if (document.isDisplayWithFile() == true) {
                 String data;
@@ -465,7 +483,6 @@ public class LecturerController {
                 .collect(Collectors.toList());
 
         model.addAttribute("resourceTypes", resourceTypes);
-//        System.out.println(DocumentEnum.DefaultTopicResourceTypes.values());
         return "lecturer/document/lecturer_add-document";
     }
 
@@ -476,7 +493,6 @@ public class LecturerController {
         model.addAttribute("resourceType", resourceType);
         List<Topic> topics = resourceType.getCourse().getTopics();
         model.addAttribute("topics", topics);
-//        System.out.println(DocumentEnum.DefaultTopicResourceTypes.values());
         return "lecturer/document/lecturer_add-document-to-resource-type";
     }
 
@@ -486,14 +502,15 @@ public class LecturerController {
                                      @RequestParam(value = "topicId") String topicId,
                                      @RequestParam(value = "respondResourceType") String respondResourceType,
                                      @RequestParam(value = "file", required = false) MultipartFile file,
-                                     @RequestParam(value = "files", required = false) MultipartFile[] files) throws IOException, TikaException, SAXException {
+                                     @RequestParam(value = "files", required = false) MultipartFile[] files) throws Exception {
         // set topic vào document
         Topic topic = topicService.findById(topicId);
+        Course course = topic.getCourse();
         documentDTO.setTopic(topic);
-        ResourceType resourceType = new ResourceType(respondResourceType, topic.getCourse());
+        ResourceType resourceType = new ResourceType(respondResourceType, course);
 
         // Thêm resource type
-        List<ResourceType> resourceTypesInCourse = topic.getCourse().getResourceTypes();
+        List<ResourceType> resourceTypesInCourse = course.getResourceTypes();
         boolean checkResourceTypeExist = true;
         ResourceType existedResourceType = null;
         for (ResourceType resourceTypeObject : resourceTypesInCourse) {
@@ -506,9 +523,11 @@ public class LecturerController {
         if (checkResourceTypeExist) {
             ResourceType addedResourceType = resourceTypeService.addResourceType(resourceType);
             documentDTO.setResourceType(addedResourceType);
+            courseService.addResourceTypeToCourse(course, new ObjectId(addedResourceType.getId()));
         } else {
             documentDTO.setResourceType(existedResourceType);
         }
+
 
         String id = "fileNotFound";
         if (String.valueOf(documentDTO.isDisplayWithFile()).equalsIgnoreCase("true")) {
@@ -516,19 +535,15 @@ public class LecturerController {
             // Xử lý file
             // thêm check file trước khi add
             String message = "";
-            if (file != null && !file.isEmpty() && file.getSize() < 104857600) {
+            if (file != null && !file.isEmpty() && file.getSize() < MAX_SIZE_FILE) {
 
                 String filename = file.getOriginalFilename();
                 String fileExtension = StringUtils.getFilenameExtension(filename);
                 DocumentEnum.DocumentFormat docType = DocumentEnum.DocumentFormat.getDocType(fileExtension);
 
-                if (docType != DocumentEnum.DocumentFormat.OTHER) {
-                    documentDTO.setContent(extractTextFromFile(file.getInputStream()));
-                } else {
-                    documentDTO.setContent(null);
-                }
-                if (file.getSize() < 1048576 && docType != DocumentEnum.DocumentFormat.MS_DOC
-                        && docType != DocumentEnum.DocumentFormat.OTHER && docType != DocumentEnum.DocumentFormat.AUDIO) {
+                documentDTO.setContent(extractTextFromFile(file.getInputStream()));
+                if (file.getSize() < DATABASE_MAX_SIZE_FILE && docType != DocumentEnum.DocumentFormat.MS_DOC
+                        && docType != DocumentEnum.DocumentFormat.AUDIO) {
                     id = documentService.addFile(file);
                 } else {
                     id = "uploadToCloud";
@@ -551,24 +566,30 @@ public class LecturerController {
 
         List<MultiFile> multiFiles = new ArrayList<>();
         // Check if files were uploaded
-        if (files != null && files.length > 0) {
+        if (files != null && files.length > 0 && files.length < 4) {
+            String link;
+            MultiFile multiFile;
             for (MultipartFile supportFile : files) {
                 // Handle each uploaded file
-                if (!supportFile.isEmpty()) {
+                if (!supportFile.isEmpty() && supportFile.getSize() < MAX_SIZE_SUPPORTING_FILE) {
                     try {
-
                         // Get the original file name
                         String originalFileName = supportFile.getOriginalFilename();
+                        String fileExtension = StringUtils.getFilenameExtension(originalFileName);
                         // Generate a unique file name
-                        String uniqueFileName = System.currentTimeMillis() + "_" + FilenameUtils.getBaseName(originalFileName) + "." + FilenameUtils.getExtension(originalFileName);
-                        // Process the uploaded file as needed
-                        String link = storageService.uploadFile(supportFile);
-                        MultiFile multiFile = new MultiFile(uniqueFileName, link);
-                        MultiFile addedFile = multiFileService.addMultiFile(multiFile);
-                        multiFiles.add(addedFile);
+                        if (DocumentEnum.DocumentSupportFilesFormat.getDocType(fileExtension) == DocumentEnum.DocumentSupportFilesFormat.ACCEPT) {
+                            String uniqueFileName = System.currentTimeMillis() + "_" + FilenameUtils.getBaseName(originalFileName) + "." + FilenameUtils.getExtension(originalFileName);
+                            // Process the uploaded file as needed
+                            link = storageService.uploadFileWithName(supportFile, uniqueFileName);
+                            multiFile = new MultiFile(originalFileName, uniqueFileName, link);
+                            multiFiles.add(multiFileService.addMultiFile(multiFile));
+                        } else {
+                            return "exception/404";
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                         // Handle any exceptions that occur during file upload
+                        return "exception/404";
                     }
                 }
             }
@@ -584,7 +605,6 @@ public class LecturerController {
         topicService.addDocumentToTopic(topicId, new ObjectId(document.getId()));
 
         //add course log
-        Course course = topic.getCourse();
         addCourseLog(course.getId(),
                 course.getCourseCode(),
                 course.getCourseName(),
@@ -595,11 +615,24 @@ public class LecturerController {
                 getLoggedInLecturer().getAccount().getEmail(),
                 null, null);
 
+        // Notify student that save this course
+        Notification notification;
+        if(course.getStudents() != null){
+            for (String student : course.getStudents()) {
+                notification = new Notification(
+                        getLoggedInLecturerMail(),
+                        student,
+                        getLoggedInLecturerMail() + " updated new document in " + course.getCourseName(),
+                        "/student/courses/" + course.getId()
+                );
+                notificationService.addNotificationWhenUpdateDocument(notification);
+            }
+        }
         return "redirect:/lecturer/topics/" + topicId + "/documents/add?success";
     }
 
     @GetMapping({"/documents/{documentId}/update"})
-    public String updateDocumentProcess(@PathVariable(required = false) String documentId, final Model model) throws IOException {
+    public String updateDocument(@PathVariable(required = false) String documentId, final Model model) throws IOException {
         Document document = documentService.findById(documentId);
         if (null == document) {
             return "redirect:lecturer/documents/update?error";
@@ -618,11 +651,11 @@ public class LecturerController {
 
     @PostMapping("/documents/update")
     @Transactional
-    public String updateDocument(@ModelAttribute DocumentDto document,
-                                 @RequestParam(value = "deleteCurrentFile", required = false) String deleteCurrentFile,
-                                 @RequestParam(value = "file", required = false) MultipartFile file,
-                                @RequestParam(value = "files", required = false) MultipartFile[] files)
-                                throws IOException, TikaException, SAXException {
+    public String updateDocumentProcess(@ModelAttribute DocumentDto document,
+                                        @RequestParam(value = "deleteCurrentFile", required = false) String deleteCurrentFile,
+                                        @RequestParam(value = "file", required = false) MultipartFile file,
+                                        @RequestParam(value = "files", required = false) MultipartFile[] files)
+            throws Exception {
         Document checkExist = documentService.findById(document.getId());
         if (null == checkExist) {
             return "redirect:/lecturer/documents/" + document.getId() + "/update?error";
@@ -636,18 +669,14 @@ public class LecturerController {
                 checkExist.setContent(convertToPlainText(document.getEditorContent()));
                 documentService.updateDocument(checkExist, null, id);
             } else {
-                if (file != null && !file.isEmpty() && file.getSize() < 104857600) {
+                if (file != null && !file.isEmpty() && file.getSize() < MAX_SIZE_FILE) {
                     String filename = System.currentTimeMillis() + "_" + file.getOriginalFilename();
                     String fileExtension = StringUtils.getFilenameExtension(filename);
                     DocumentEnum.DocumentFormat docType = DocumentEnum.DocumentFormat.getDocType(fileExtension);
                     checkExist.setFileName(file.getOriginalFilename());
-                    if (docType != DocumentEnum.DocumentFormat.OTHER) {
-                        checkExist.setContent(extractTextFromFile(file.getInputStream()));
-                    } else {
-                        checkExist.setContent(null);
-                    }
-                    if (file.getSize() < 1048576 && docType != DocumentEnum.DocumentFormat.MS_DOC
-                            && docType != DocumentEnum.DocumentFormat.OTHER && docType != DocumentEnum.DocumentFormat.AUDIO) {
+                    checkExist.setContent(extractTextFromFile(file.getInputStream()));
+                    if (file.getSize() < DATABASE_MAX_SIZE_FILE && docType != DocumentEnum.DocumentFormat.MS_DOC
+                            && docType != DocumentEnum.DocumentFormat.AUDIO) {
                         checkExist.setCloudFileLink(null);
                         id = documentService.addFile(file);
                     } else {
@@ -665,31 +694,6 @@ public class LecturerController {
                         }
                     }
                 }
-//                List<MultiFile> multiFiles = new ArrayList<>();
-//                // Check if files were uploaded
-//                if (files != null && files.length > 0) {
-//                    for (MultipartFile supportFile : files) {
-//                        // Handle each uploaded file
-//                        if (!supportFile.isEmpty()) {
-//                            try {
-//
-//                                // Get the original file name
-//                                String originalFileName = supportFile.getOriginalFilename();
-//                                // Generate a unique file name
-//                                String uniqueFileName = System.currentTimeMillis() + "_" + FilenameUtils.getBaseName(originalFileName) + "." + FilenameUtils.getExtension(originalFileName);
-//                                // Process the uploaded file as needed
-//                                String link = storageService.uploadFile(supportFile);
-//                                MultiFile multiFile = new MultiFile(uniqueFileName, link);
-//                                MultiFile addedFile = multiFileService.addMultiFile(multiFile);
-//                                multiFiles.add(addedFile);
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                                // Handle any exceptions that occur during file upload
-//                            }
-//                        }
-//                    }
-//                    documentDTO.setMultiFiles(multiFiles);
-//                }
                 if (checkExist.getCloudFileLink() != null && checkExist.getContentId() == null) {
                     storageService.deleteFile(checkExist.getFileName());
                     documentService.updateDocument(checkExist, null, id);
@@ -713,6 +717,65 @@ public class LecturerController {
         }
     }
 
+    @PostMapping("/{documentId}/update_supporting_files")
+    @Transactional
+    public String updateSupportingFiles(@RequestParam(value = "files", required = false) MultipartFile[] files,
+                                        @RequestParam(value = "supportingFiles", required = false) String[] supportingFiles, @PathVariable String documentId) {
+        Document document = documentService.findById(documentId);
+        List<MultiFile> multiFiles = document.getMultipleFiles();
+        if (supportingFiles == null) {
+            supportingFiles = new String[]{""};
+        }
+        int supportingFilesNumber = supportingFiles != null ? supportingFiles.length : 0;
+        int filesNumber = files != null ? files.length : 0;
+
+        int total = supportingFilesNumber + filesNumber;
+
+        if (total < 4) {
+            if (supportingFiles != null) {
+                List<MultiFile> existedMultiFiles = document.getMultipleFiles();
+                for (MultiFile existedMultiFile : existedMultiFiles) {
+                    if (!Arrays.asList(supportingFiles).contains(existedMultiFile.getCloudFileName())) {
+                        // xóa id trong document
+                        MultiFile multiFile = multiFileService.findByCloudFileName(existedMultiFile.getCloudFileName());
+                        documentService.removeMultiFile(documentId, new ObjectId(multiFile.getId()));
+
+                        // xóa file có sẵn
+                        storageService.deleteFile(existedMultiFile.getCloudFileName());
+                        multiFileService.hardDeleteMultiFile(existedMultiFile.getCloudFileName());
+
+                    }
+                }
+            }
+
+            if (files != null && filesNumber > 0) {
+                String uniqueFileName, link;
+                MultiFile multiFile;
+                for (MultipartFile file : files) {
+                    if(file.getSize() < MAX_SIZE_SUPPORTING_FILE){
+                        // Get the original file name
+                        String originalFileName = file.getOriginalFilename();
+                        String fileExtension = StringUtils.getFilenameExtension(originalFileName);
+                        if(DocumentEnum.DocumentSupportFilesFormat.getDocType(fileExtension) == DocumentEnum.DocumentSupportFilesFormat.ACCEPT) {
+                            // Generate a unique file name
+                            uniqueFileName = System.currentTimeMillis() + "_" + FilenameUtils.getBaseName(originalFileName) + "." + FilenameUtils.getExtension(originalFileName);
+                            // Process the uploaded file as needed
+                            link = storageService.uploadFileWithName(file, uniqueFileName);
+                            multiFile = new MultiFile(originalFileName, uniqueFileName, link);
+                            // push file mới vào doc
+                            multiFiles.add(multiFileService.addMultiFile(multiFile));
+                        }
+                    }
+                }
+            }
+
+
+            document.setMultipleFiles(multiFiles);
+            documentService.updateDoc(document);
+        }
+        return "redirect:/lecturer/documents/" + documentId;
+    }
+
     @GetMapping("/documents/{documentId}/delete")
     public String deleteDocument(@PathVariable String documentId) {
         Document document = documentService.findById(documentId);
@@ -720,7 +783,8 @@ public class LecturerController {
             topicService.removeDocumentFromTopic(document.getTopic().getId(), new ObjectId(documentId));
             resourceTypeService.removeDocumentFromResourceType(document.getTopic().getId(), new ObjectId(documentId));
             documentService.softDelete(document);
-            //add course log
+
+            // Add course log
             Course course = document.getTopic().getCourse();
             addCourseLog(course.getId(),
                     course.getCourseCode(),
@@ -752,26 +816,35 @@ public class LecturerController {
         model.addAttribute("totalPage", page.getTotalPages());
         model.addAttribute("documents", page.getContent());
         model.addAttribute("status", status);
-
         return "lecturer/document/lecturer_my-documents";
     }
 
     /*
         Question ans
     */
-    @GetMapping({"/questions/list/{status}/{pageIndex}"})
-    public String viewListOfQuestions(@PathVariable(required = false) Integer pageIndex, final Model model, @PathVariable String status) {
-        // get account authorized
-        Lecturer lecturer = getLoggedInLecturer();
-        List<Question> questions = questionService.findByLecturer(lecturer);
-//        for (Question q : questions) {
-//            q.setAnswers(new HashSet<>(answerService.findByQuestion(q)));
-//        }
-        model.addAttribute("studentQuestions", questions);
+    @GetMapping({"/questions/list"})
+    public String viewListOfQuestions(
+            @RequestParam(required = false, defaultValue = "1") Integer pageIndex,
+            @RequestParam(required = false, defaultValue = "all") String status,
+            @RequestParam(required = false, defaultValue = "") String search,
+            final Model model) {
+        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        QuestionAnswerEnum.Status findStatus = null;
+        if ("replied".equals(status)) {
+            findStatus = QuestionAnswerEnum.Status.REPLIED;
+        } else if ("wait-reply".equals(status)) {
+            findStatus = QuestionAnswerEnum.Status.CREATED;
+        }
+//        List<Question> questions = questionService.findByLecturerMail(getLoggedInLecturerMail());
+        Page<Question> questions = (loggedInEmail != null) ? questionService.findByLecturerAndSearch(loggedInEmail, search, findStatus, pageIndex, PAGE_SIZE) : null;
         // add log
 //        addUserLog("/my_library/my_questions/history");
+        model.addAttribute("studentQuestions", questions.getContent());
         model.addAttribute("status", status);
-
+        model.addAttribute("currentPage", pageIndex);
+        model.addAttribute("search", search);
+        model.addAttribute("totalPages", questions.getTotalPages());
+        model.addAttribute("totalItems", questions.getTotalElements());
         return "lecturer/document/lecturer_questions";
     }
 
@@ -788,9 +861,6 @@ public class LecturerController {
     @PostMapping("/feedbacks/add")
     public String processFeedbackForm(@ModelAttribute("feedback") @Valid FeedbackDto feedback,
                                       BindingResult result) {
-//        if (result.hasErrors()) {
-//            return "student/feedback/student_feedback-add"; // Return to the form with validation errors
-//        }
 
         // Get the logged-in user (you need to implement your user authentication mechanism)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -803,6 +873,7 @@ public class LecturerController {
 
         if (loggedInUser != null) {
             feedback.setAccount(loggedInUser);
+            feedback.setStatus("Pending");
             // Save the feedback to the database
             feedbackService.saveFeedback(new Feedback(feedback));
             return "redirect:/admin/feedbacks/list"; // Redirect to a success page
@@ -827,6 +898,14 @@ public class LecturerController {
             }
         }
         return "redirect:/student";
+    }
+
+    @GetMapping({"/notifications"})
+    public String getNotifications(final Model model) {
+        String lecturerMail = getLoggedInLecturerMail();
+        List<NotificationResponseDto> notificationResponseDtos = notificationService.findAllByToAccount(lecturerMail);
+        model.addAttribute("notifications", notificationResponseDtos);
+        return "lecturer/lecturer_notifications";
     }
 
 }

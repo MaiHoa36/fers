@@ -13,7 +13,10 @@ import fpt.edu.eresourcessystem.service.*;
 import fpt.edu.eresourcessystem.service.s3.ImageService;
 import fpt.edu.eresourcessystem.service.s3.StorageService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +42,9 @@ public class LecturerRestController {
     private final AccountService accountService;
     private final UserLogService userLogService;
     private final ImageService imageService;
+    private final StorageService storageService;
     private final CourseLogService courseLogService;
+    private final MultiFileService multiFileService;
 
     private UserLog addUserLog(String url) {
         UserLog userLog = new UserLog(new UserLogDto(url, getLoggedInLecturer().getAccount().getEmail(), AccountEnum.Role.LECTURER));
@@ -65,6 +70,11 @@ public class LecturerRestController {
         Account loggedInAccount = accountService.findByEmail(loggedInEmail);
         Lecturer loggedInLecturer = lecturerService.findByAccountId(loggedInAccount.getId());
         return loggedInLecturer;
+    }
+
+    public String getLoggedInLecturerMail() {
+        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return loggedInEmail;
     }
 
     @PostMapping(value = "/answer/add", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
@@ -133,7 +143,7 @@ public class LecturerRestController {
         if (null == lecturer) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } else {
-            List<QuestionResponseDto> questionResponseDto = questionService.findNewQuestionForLecturer(lecturer.getAccount().getEmail());
+            List<QuestionResponseDto> questionResponseDto = questionService.findNewQuestionForLecturer(getLoggedInLecturerMail());
             // add log
             addUserLog("/api/lecturer/my_question/new_question");
             ResponseEntity<List<QuestionResponseDto>> responseEntity = new ResponseEntity<>(questionResponseDto, HttpStatus.OK);
@@ -148,7 +158,7 @@ public class LecturerRestController {
         if (null == lecturer) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } else {
-            List<QuestionResponseDto> questionResponseDto = questionService.findRepliedQuestionForLecturer(lecturer.getAccount().getEmail());
+            List<QuestionResponseDto> questionResponseDto = questionService.findRepliedQuestionForLecturer(getLoggedInLecturerMail());
             // add log
             addUserLog("/api/lecturer/my_question/replied_question");
             ResponseEntity<List<QuestionResponseDto>> responseEntity = new ResponseEntity<>(questionResponseDto, HttpStatus.OK);
@@ -216,5 +226,26 @@ public class LecturerRestController {
         }
     }
 
+    @GetMapping("/download")
+    public ResponseEntity<byte[]> downloadFile(@RequestParam("fileName") String fileName) {
+        byte[] content = storageService.downloadFile(fileName);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", fileName);
+        return new ResponseEntity<>(content, headers, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/load_more_question", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<QuestionResponseDto>> loadMoreOtherQuestion(@RequestParam String docId,
+                                                                           @RequestParam int skip) {
+
+        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Document document = documentService.findById(docId);
+        if(null != loggedInEmail && null!= document){
+            List<QuestionResponseDto> questions = questionService.findByDocumentLimitAndSkip(document, 10, skip);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
 }
