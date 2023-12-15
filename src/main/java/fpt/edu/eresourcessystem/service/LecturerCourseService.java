@@ -17,6 +17,6 @@ public interface LecturerCourseService {
 
     List<LecturerCourse> findLecturerCoursesById(Lecturer lecturer);
 
-    List<LecturerCourseResponseDto> findCourseManageHistory(String courseId);
+    List<LecturerCourse> findCourseManageHistory(String courseId);
     LecturerCourse findCurrentLecturer(String courseId);
 }
