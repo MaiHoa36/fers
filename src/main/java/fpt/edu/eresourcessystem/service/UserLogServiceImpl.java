@@ -47,7 +47,7 @@ public class UserLogServiceImpl implements UserLogService{
     public List<UserLog> searchLog(String email, String role, LocalDateTime startDate, LocalDateTime endDate) {
         Criteria criteria = Criteria.where("time").gte(startDate).lte(endDate)
                 .and("email").regex(Pattern.quote(email), "i")
-                .and("role").regex(Pattern.quote(email), "i");
+                .and("role").regex(Pattern.quote(role), "i");
 
         Query query = new Query(criteria);
         return mongoTemplate.find(query, UserLog.class);
