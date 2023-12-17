@@ -1,7 +1,7 @@
 package fpt.edu.eresourcessystem.service;
 
 import com.mongodb.client.result.UpdateResult;
-import fpt.edu.eresourcessystem.dto.Response.LecturerDto;
+import fpt.edu.eresourcessystem.dto.LecturerDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.model.*;
 import fpt.edu.eresourcessystem.repository.LecturerCourseRepository;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 //@AllArgsConstructor
@@ -49,13 +50,13 @@ public class LecturerServiceImpl implements LecturerService {
     public Lecturer updateLecturer(Lecturer lecturer) {
         Optional<Lecturer> foundLecturer = lecturerRepository.findById(lecturer.getId());
         if (foundLecturer.isPresent()) {
-            Lecturer result = lecturerRepository.save(lecturer);
-            return result;
+            return lecturerRepository.save(lecturer);
         }
         return null;
     }
+
     @Override
-    public  Lecturer updateCourseForLecturer(Lecturer lecturer, Course result) {
+    public Lecturer updateCourseForLecturer(Lecturer lecturer, Course result) {
         Query query = new Query(Criteria.where("id").is(lecturer.getId()));
         Update update = new Update().push("courses", new ObjectId(result.getId()));
         mongoTemplate.updateFirst(query, update, Lecturer.class);
@@ -79,19 +80,16 @@ public class LecturerServiceImpl implements LecturerService {
 
     @Override
     public List<Lecturer> findByListLecturerIds(List<String> ids) {
-        List<Lecturer> lecturers = lecturerRepository.findByIds(ids);
-        return lecturers;
+        return lecturerRepository.findByIds(ids);
     }
 
     @Override
     public Lecturer findCurrentCourseLecturer(String courseId) {
         LecturerCourse lecturerCourse = lecturerCourseRepository.findCurrentCourseLecturer(courseId);
         if (null != lecturerCourse) {
-            if (null != lecturerCourse.getId().getLecturerId()) {
-                Optional<Lecturer> lecturer = lecturerRepository.findById(
-                        lecturerCourse.getId().getLecturerId());
-                return lecturer.orElse(null);
-            }
+            Optional<Lecturer> lecturer = lecturerRepository.findById(
+                    lecturerCourse.getId().getLecturerId());
+            return lecturer.orElse(null);
         }
         return null;
     }
@@ -104,8 +102,7 @@ public class LecturerServiceImpl implements LecturerService {
     @Override
     public Page<Lecturer> findLecturerByLecturerIdLike(String lectureId, int pageIndex, int pageSize) {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
-        Page<Lecturer> page = lecturerRepository.findLecturerByIdLike(lectureId, pageable);
-        return page;
+        return lecturerRepository.findLecturerByIdLike(lectureId, pageable);
     }
 
 
@@ -131,22 +128,24 @@ public class LecturerServiceImpl implements LecturerService {
     }
 
     @Override
-    public Page<Course> findListManagingCourse(Lecturer lecturer, String status, int pageIndex, int pageSize) {
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+    public Page<Course> findListManagingCourse(Lecturer lecturer, String search, String status, int pageIndex, int pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.by(Sort.Direction.DESC, "lecturerCourseIds.createdDate"));
         Criteria criteria = new Criteria();
         // Sort by the "time" in descending order to get the most recent documents
         criteria.andOperator(
                 criteria.where("lecturer.id").is(lecturer.getId()),
                 status.equalsIgnoreCase("ALL") ? new Criteria() : criteria.where("status").is(status.toUpperCase()),
-                criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
+                criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED),
+                // Add search conditions for courseCode or courseName using regex
+                new Criteria().orOperator(
+                        Criteria.where("courseCode").regex(Pattern.quote(search), "i"),
+                        Criteria.where("courseName").regex(Pattern.quote(search), "i")
+                )
         );
-        Query query = new Query(criteria).with(Sort.by(Sort.Order.desc("lecturerCourseIds.createdDate")));
-
-        // Use a Pageable to limit the result set to 5 documents
-
-        List<Course> results = mongoTemplate.find(query, Course.class);
-        return PageableExecutionUtils.getPage(results, pageable,
-                () -> mongoTemplate.count(query, Course.class));
+        Query query = new Query(criteria);
+        long total = mongoTemplate.count(query, Course.class);
+        List<Course> courses = mongoTemplate.find(query.with(pageable), Course.class);
+        return new PageImpl<>(courses, pageable, total);
     }
 
     @Override
@@ -171,8 +170,7 @@ public class LecturerServiceImpl implements LecturerService {
 
     @Override
     public Lecturer findLecturerById(String lectureId) {
-        Lecturer lecturer = lecturerRepository.findLecturerById(lectureId);
-        return lecturer;
+        return lecturerRepository.findLecturerById(lectureId);
     }
 
     @Override
@@ -215,8 +213,8 @@ public class LecturerServiceImpl implements LecturerService {
         if (searchValue != null && !searchValue.isEmpty()) {
             // Tìm các tài khoản phù hợp
             Criteria criteria = new Criteria().orOperator(
-                    Criteria.where("name").regex(searchValue, "i"),
-                    Criteria.where("email").regex(searchValue, "i")
+                    Criteria.where("name").regex(Pattern.quote(searchValue), "i"),
+                    Criteria.where("email").regex(Pattern.quote(searchValue), "i")
             );
             Query accountQuery = new Query(criteria);
             List<Account> matchingAccounts = mongoTemplate.find(accountQuery, Account.class);
@@ -269,10 +267,6 @@ public class LecturerServiceImpl implements LecturerService {
 //    }
 
 
-
-
-
-
     @Override
     public int getFilteredCount(String searchValue) {
         if (searchValue == null || searchValue.isEmpty()) {
@@ -283,8 +277,8 @@ public class LecturerServiceImpl implements LecturerService {
         // Tìm các tài khoản phù hợp
         List<Account> matchingAccounts = mongoTemplate.find(
                 Query.query(new Criteria().orOperator(
-                        Criteria.where("name").regex(searchValue, "i"),
-                        Criteria.where("email").regex(searchValue, "i")
+                        Criteria.where("name").regex(Pattern.quote(searchValue), "i"),
+                        Criteria.where("email").regex(Pattern.quote(searchValue), "i")
                 )), Account.class);
 
         // Lấy danh sách ID tài khoản
@@ -299,7 +293,7 @@ public class LecturerServiceImpl implements LecturerService {
 
     public Page<LecturerDto> findAllLecturersWithSearch(String searchValue, Pageable pageable) {
         // Step 1: Query the associated "account" documents based on the email field
-        Query accountQuery = new Query(Criteria.where("email").regex(searchValue, "i"));
+        Query accountQuery = new Query(Criteria.where("email").regex(Pattern.quote(searchValue), "i"));
         List<Account> matchingAccounts = mongoTemplate.find(accountQuery, Account.class);
         List<String> accountIds = matchingAccounts.stream()
                 .map(Account::getId)
@@ -318,9 +312,6 @@ public class LecturerServiceImpl implements LecturerService {
 
         return new PageImpl<>(lecturerDtos, pageable, total);
     }
-
-
-
 
 
 }

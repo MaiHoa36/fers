@@ -2,10 +2,11 @@ package fpt.edu.eresourcessystem.model;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -17,12 +18,14 @@ public class LecturerCourseId {
 
     @NotNull
     private String lecturerId;
+    private String lecturerName;
+    private String lecturerEmail;
 
     @NotNull
     private String courseId;
 
-    private LocalDate createdDate;
-    private LocalDate lastModifiedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime lastModifiedDate;
 
     @Override
     public boolean equals(Object o) {

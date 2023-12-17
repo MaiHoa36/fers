@@ -19,6 +19,7 @@ public class CommonEnum {
         Action(String displayValue) {
             this.displayValue = displayValue;
         }
+
         public String getDisplayValue() {
             return displayValue;
         }

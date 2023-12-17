@@ -2,18 +2,20 @@ package fpt.edu.eresourcessystem.controller.restcontrollers;
 
 
 import fpt.edu.eresourcessystem.dto.AnswerDto;
+import fpt.edu.eresourcessystem.dto.Response.AnswerResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.QuestionResponseDto;
 import fpt.edu.eresourcessystem.dto.UserLogDto;
 import fpt.edu.eresourcessystem.enums.AccountEnum;
 import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
 import fpt.edu.eresourcessystem.model.*;
-import fpt.edu.eresourcessystem.dto.Response.AnswerResponseDto;
 import fpt.edu.eresourcessystem.service.*;
 import fpt.edu.eresourcessystem.service.s3.ImageService;
 import fpt.edu.eresourcessystem.service.s3.StorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,31 +41,37 @@ public class LecturerRestController {
     private final AccountService accountService;
     private final UserLogService userLogService;
     private final ImageService imageService;
+    private final StorageService storageService;
     private final CourseLogService courseLogService;
 
-    private UserLog addUserLog(String url) {
-        UserLog userLog = new UserLog(new UserLogDto(url, getLoggedInLecturer().getAccount().getEmail(), AccountEnum.Role.LECTURER));
-        userLog = userLogService.addUserLog(userLog);
-        return userLog;
+    private void addUserLog(String url) {
+        UserLog userLog = new UserLog(new UserLogDto(url, getLoggedInLecturerMail(), AccountEnum.Role.LECTURER));
+        userLogService.addUserLog(userLog);
     }
 
-    private void addCourseLog(Course course,
+    private void addCourseLog(String courseId, String courseCode, String courseName,
                               CourseEnum.LecturerAction action,
                               CourseEnum.CourseObject object,
                               String objectId,
                               String objectName,
                               String email,
                               String oldContent,
-                              String newContent){
-        CourseLog courseLog = new CourseLog(course,action,object,objectId,objectName,email,oldContent,newContent);
+                              String newContent) {
+        CourseLog courseLog = new CourseLog(courseId, courseCode, courseName, action, object, objectId, objectName, email, oldContent, newContent);
         courseLogService.addCourseLog(courseLog);
     }
+
 
     public Lecturer getLoggedInLecturer() {
         String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Account loggedInAccount = accountService.findByEmail(loggedInEmail);
         Lecturer loggedInLecturer = lecturerService.findByAccountId(loggedInAccount.getId());
         return loggedInLecturer;
+    }
+
+    public String getLoggedInLecturerMail() {
+        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return loggedInEmail;
     }
 
     @PostMapping(value = "/answer/add", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
@@ -90,7 +98,10 @@ public class LecturerRestController {
             addUserLog("/api/lecturer/answers/add/" + answer.getId());
 
             //add course log
-            addCourseLog(document.getTopic().getCourse(),
+            Course course = document.getTopic().getCourse();
+            addCourseLog(course.getId(),
+                    course.getCourseCode(),
+                    course.getCourseName(),
                     CourseEnum.LecturerAction.UPDATE,
                     CourseEnum.CourseObject.DOCUMENT,
                     document.getId(),
@@ -129,7 +140,7 @@ public class LecturerRestController {
         if (null == lecturer) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } else {
-            List<QuestionResponseDto> questionResponseDto = questionService.findNewQuestionForLecturer(lecturer.getAccount().getEmail());
+            List<QuestionResponseDto> questionResponseDto = questionService.findNewQuestionForLecturer(getLoggedInLecturerMail());
             // add log
             addUserLog("/api/lecturer/my_question/new_question");
             ResponseEntity<List<QuestionResponseDto>> responseEntity = new ResponseEntity<>(questionResponseDto, HttpStatus.OK);
@@ -144,7 +155,7 @@ public class LecturerRestController {
         if (null == lecturer) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } else {
-            List<QuestionResponseDto> questionResponseDto = questionService.findRepliedQuestionForLecturer(lecturer.getAccount().getEmail());
+            List<QuestionResponseDto> questionResponseDto = questionService.findRepliedQuestionForLecturer(getLoggedInLecturerMail());
             // add log
             addUserLog("/api/lecturer/my_question/replied_question");
             ResponseEntity<List<QuestionResponseDto>> responseEntity = new ResponseEntity<>(questionResponseDto, HttpStatus.OK);
@@ -212,5 +223,26 @@ public class LecturerRestController {
         }
     }
 
+    @GetMapping("/download")
+    public ResponseEntity<byte[]> downloadFile(@RequestParam("fileName") String fileName) {
+        byte[] content = storageService.downloadFile(fileName);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", fileName);
+        return new ResponseEntity<>(content, headers, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/load_more_question", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<QuestionResponseDto>> loadMoreOtherQuestion(@RequestParam String docId,
+                                                                           @RequestParam int skip) {
+
+        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Document document = documentService.findById(docId);
+        if (null != loggedInEmail && null != document) {
+            List<QuestionResponseDto> questions = questionService.findByDocumentLimitAndSkip(document, 10, skip);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
 }

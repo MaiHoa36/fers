@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin | Feedbacks </title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css"/>
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
@@ -100,9 +101,7 @@
                                 <tr>
                                     <td th:text="${iterStart.index +1}"></td>
                                     <td th:text="${feedback.getAccount().getEmail()}"></td>
-                                    <td> <a class="a-link code-archive-except"
-                                            th:href="@{'/admin/feedbacks/' + ${feedback.getId}}"
-                                            th:text="${feedback.getFeedbackEmotion()}"> </a></td>
+                                    <td th:text="${feedback.getFeedbackEmotion()}"></td>
                                     <td><a class="a-link code-archive-except" th:href="@{'/admin/feedbacks/' + ${feedback.getId}}"
                                            th:text="${feedback.getFeedbackContent()}"> </a></td>
                                     <td th:text="${feedback.getCreatedDate()}"></td>

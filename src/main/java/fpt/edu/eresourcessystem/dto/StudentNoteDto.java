@@ -1,12 +1,10 @@
 package fpt.edu.eresourcessystem.dto;
 
 
-import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.*;
 
 @Data
 @NoArgsConstructor

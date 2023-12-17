@@ -1,36 +1,25 @@
 package fpt.edu.eresourcessystem.controller.restcontrollers;
 
 import fpt.edu.eresourcessystem.dto.CourseDto;
+import fpt.edu.eresourcessystem.dto.LecturerDto;
 import fpt.edu.eresourcessystem.dto.Response.DataTablesResponse;
-import fpt.edu.eresourcessystem.dto.Response.LecturerDto;
 import fpt.edu.eresourcessystem.model.Course;
 import fpt.edu.eresourcessystem.model.Lecturer;
 import fpt.edu.eresourcessystem.service.CourseService;
-import fpt.edu.eresourcessystem.service.FeedbackService;
 import fpt.edu.eresourcessystem.service.LecturerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/librarian")
 public class LibrarianRestController {
-
-    @Autowired
-    private LecturerService lecturerService;
-
-    @Autowired
-    private CourseService courseService;
-
-
-    @Autowired
-    private FeedbackService feedbackService;
+    private final LecturerService lecturerService;
+    private final CourseService courseService;
 
     @GetMapping("/lectures/list")
     @ResponseBody

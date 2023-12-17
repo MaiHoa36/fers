@@ -4,11 +4,12 @@ let fileInput = document.getElementById('fileUploadInput');
 let cancelButton = document.getElementById('cancelUploadButton');
 let file = null;
 let isUploading = false;
-const allowedFormats = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx',
-    'md', 'html', 'txt', 'm4a', 'flac', 'mp3', 'wav', 'wma', 'aac',
+const allowedFormats = ['pdf', 'doc', 'docx', 'ppt', 'pptx',
+    'md', 'html', 'txt', 'm4a', 'flac',
+    'mp3', 'wav', 'wma', 'aac', 'ogg',
     'mp4', 'mov', 'avi', 'flv', 'mkv', 'webm',
-    'jpg', 'jpeg', 'gif', 'png', 'svg',
-    'exe', 'psd', 'eps', 'jar', 'zip', 'rar'];
+    'jpg', 'jpeg', 'gif', 'png', 'svg'
+];
 
 let replaceFileMessage = document.getElementById('replaceFileMessage');
 
@@ -71,7 +72,7 @@ fileInput.addEventListener('change', function (event) {
                     preview = document.createElement('audio');
                     preview.src = e.target.result;
                     preview.controls = true;
-                } else if (file.type === 'application/pdf') {
+                } else if (file.type === 'application/pdf' || file.type.startsWith('text')) {
                     if (fileSizeInMB < 1) {
                         preview = document.createElement('embed');
                         preview.src = e.target.result;
@@ -79,7 +80,7 @@ fileInput.addEventListener('change', function (event) {
                         preview.height = '600px';
                     } else {
                         preview = document.createElement('p');
-                        preview.textContent = 'PDF file larger than 1MB will not be previewed.';
+                        preview.textContent = 'Document file larger than 1MB will not be previewed.';
                     }
                 } else {
                     preview = document.createElement('span');

@@ -91,8 +91,8 @@ $("body").on("click", ".delete-topic", function () {
 });
 
 $("body").on("click", ".delete-lecturer", function () {
-    var topicId = $(this).attr("id");
-    handleDeletion("/librarian/lectures/delete/" + topicId, 'Lecturer is deleted');
+    var lecturerId = $(this).attr("id");
+    handleDeletion("/librarian/lectures/delete/" + lecturerId, 'Lecturer is deleted');
 });
 
 

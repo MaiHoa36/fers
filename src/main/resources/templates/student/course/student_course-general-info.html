@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>E-Resource Lecturer Home</title>
+    <title>FPT E-resources</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -52,14 +53,14 @@
                         <div class="student__course-info-view grid__column-8">
                             <div class="course-details-head">
                                 <div class="course-details-name">
-                                <p class="course-info-name">
-                                    <i class="fa-regular fa-folder"></i>
-                                    <a class="course-info-name" th:href="@{'/student/courses/' + ${course.getId}}"
-                                               th:text="|${course.courseCode} - ${course.courseName}|"></a> </p>
+                                    <p class="course-info-name">
+                                        <i class="fa-regular fa-folder"></i>
+                                        <a class="course-info-name" th:href="@{'/student/courses/' + ${course.getId}}"
+                                           th:text="|${course.courseCode} - ${course.courseName}|"></a></p>
                                 </div>
                                 <div class="course-details-lecturer">
                                     <p class="course-info-lecturer">
-                                        <a href="">  <span class="lecturer-name">Lecturer Name</span> </a> </p>
+                                        <a href=""> <span class="lecturer-name">Lecturer Name</span> </a></p>
                                 </div>
                                 <div class="stu_save-course-link">
                                     <p><a class="unsaved-course" th:if="${saved} == false"
@@ -119,7 +120,9 @@
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footerSection}"></div>
 <!--jquery-->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"
 

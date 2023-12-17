@@ -3,8 +3,6 @@
  */
 package fpt.edu.eresourcessystem.config.security;
 
-import java.io.IOException;
-
 import fpt.edu.eresourcessystem.utils.RedirectUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Component
 public class CustomizeAuthenticationSuccessHandler implements AuthenticationSuccessHandler {

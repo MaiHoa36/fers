@@ -2,37 +2,41 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FPT University E-Resources</title>
-  <!-- CSS -->
-  <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
-  <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>FPT E-Resources | Contact us</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
 
-  <link rel="stylesheet" th:href="@{/css/fragment.css}"/>
-  <link rel="stylesheet" th:href="@{/css/styles/guest.css}">
-  <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/fragment.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/guest.css}">
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
 </head>
 <body>
 <div class="app_container">
 
-  <div th:replace="~{fragments/header::guestHeaderSection}"></div>
-  <!--  Main-->
-  <!--  <div th:replace="~{fragments/main}"></div>-->
-  <section class="contact-us">
-    <div class="container">
-      <h1 class="contact" style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Contact</h1>
-      <p class="address_infor"> <strong>Phòng 107 Tòa nhà Delta</strong></p>
-      <p class="address_infor"> <strong>Trường Đại học FPT, Khu CNC Hòa Lạc, Km29 Đại Lộ Thăng Long, Thạch Thất, Hà Nội</strong></p>
-      <div class="contact-address">
-        <p><strong>Email:</strong> <a href="mailto:thuvien_fu_hoalac@fpt.edu.vn">thuvien_fu_hoalac@fpt.edu.vn</a>
-        </p>
-        <p> <strong>Phone number:</strong> <a href="tel:02466805912">02466 805 912</a></p>
-      </div>
-    </div>
-  </section>
-  <!-- Footer -->
-  <div th:replace="~{fragments/footer :: footerSection}"></div>
+    <div th:replace="~{fragments/header::guestHeaderSection}"></div>
+    <!--  Main-->
+    <!--  <div th:replace="~{fragments/main}"></div>-->
+    <section class="contact-us">
+        <div class="container">
+            <h1 class="contact" style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">
+                Contact</h1>
+            <p class="address_infor"><strong>Phòng 107 Tòa nhà Delta</strong></p>
+            <p class="address_infor"><strong>Trường Đại học FPT, Khu CNC Hòa Lạc, Km29 Đại Lộ Thăng Long, Thạch Thất, Hà
+                Nội</strong></p>
+            <div class="contact-address">
+                <p><strong>Email:</strong> <a
+                        href="mailto:thuvien_fu_hoalac@fpt.edu.vn">thuvien_fu_hoalac@fpt.edu.vn</a>
+                </p>
+                <p><strong>Phone number:</strong> <a href="tel:02466805912">02466 805 912</a></p>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footerSection}"></div>
 </div>
 <script th:src="@{/js/guest.js}"></script>
 </body>

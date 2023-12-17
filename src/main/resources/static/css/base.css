@@ -7,6 +7,8 @@
     --text-color: #000;
     --title-color: #e12b1b;
     --border-color: #dbdbdb;
+    --second-border-color: #f5f1f1;
+    --third-border-color: #c4c2c2;
     --hover-color: #5c7af3;
     --header-hover-color: #d5d5d5;
     --bg-hover-color: #e3e6fc;
@@ -15,17 +17,24 @@
     /*--primary-color: white;*/
     --gradient-color: #114a9d;
     --primary-color: #0a429d;
+    --secondary-color: #38a20f;
+
     --background-btn-color-hover: #0a429d;
     --background-btn-color: #0d55c5;
     --second-background-btn-color-hover: #efdada;
     --second-background-btn-color: #efdddd;
+    --draft-background-btn-color: #c04710;
+    --add-btn-color: #358f10;
+    --edit-btn-color: #358f10;
+    --delete-btn-color: #358f10;
+
     --primary-color-rgb: 210, 68, 2;
-    --primary-btn-color: #419a1d;
+    --primary-btn-color: #079147;
     --lib-dashboard-color: #0a53be;
-    --second-back-ground: rgb(240, 234, 234);
+    --second-back-ground: rgb(234, 227, 227);
     --content-width: 87.5%;
     --link-color: #0b74ec;
-    --checked-background-color:#0a58ca;
+    --checked-background-color: #1853a8;
     --danger-color: #DC3545;
     --disable-link-text-color: #bbb8b8;
 
@@ -235,7 +244,18 @@ li {
 
 .btn-save:hover {
     background-color: var(--primary-btn-color);
-    color: var(--hover-color-2);
+    color: white;
+}
+
+.btn-draft {
+    background-color: var(--draft-background-btn-color);
+    color: white;
+    margin-top: 1rem;
+}
+
+.btn-draft:hover {
+    background-color: var(--primary-btn-color);
+    color: white;
 }
 
 .btn.btn--primary {
@@ -261,6 +281,36 @@ li {
 
 .btn.btn--back:hover {
     background-color: #575656;
+    color: white;
+}
+
+.btn--add {
+    background-color: var(--add-btn-color);
+    color: white;
+}
+
+.btn--add:hover {
+    background-color: var(--primary-btn-color);
+    color: white;
+}
+
+.btn--edit {
+    background-color: var(--edit-btn-color);
+    color: white;
+}
+
+.btn--edit:hover {
+    background-color: var(--primary-btn-color);
+    color: white;
+}
+
+.btn--delete {
+    background-color: #d23535;
+    color: white;
+}
+
+.btn--delete:hover {
+    background-color: #b61c1c;
     color: white;
 }
 
@@ -569,6 +619,10 @@ li {
     height: 100%;
 }
 
+.distance-from-title {
+    margin-top: 1.5rem;
+}
+
 .manager_search-box {
     display: flex;
     flex-direction: column;
@@ -595,5 +649,128 @@ li {
     width: 100%;
 }
 textarea.form-control {
-    min-height: calc(15em + (.75rem + 2px));
+    min-height: calc(10em + (.75rem + 2px));
+}
+
+.border-color-primary {
+    border-bottom: 1px solid var(--primary-color);
+}
+
+.supporting-file-wrapper {
+    border-top: 1px solid var(--border-color);
+    padding-top: 2rem;
+}
+
+.supporting-file-label {
+    margin-bottom: 1rem;
+    font-weight: var(--font-medium);
+}
+
+.supporting-file-download {
+    width: fit-content;
+    margin: 1rem 0 1rem 1rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #dbdbdb;
+    background-color: var(--second-back-ground);
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.supporting-file-download:hover {
+    color: var(--primary-color);
+}
+
+.supporting-file-when-updating {
+    width: fit-content;
+    margin: 1rem 0 0 1rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #dbdbdb;
+    background-color: var(--second-back-ground);
+    border-radius: 2px;
+}
+
+.supporting-file-when-updating:hover{
+    color: black;
+}
+
+#fileSupport {
+    border: 1px var(--border-color) dashed;
+}
+
+.remove-file {
+    cursor: pointer;
+    padding-left: 0.5rem;
+    font-size: 1.3rem;
+}
+.remove-file:hover {
+    color: var(--primary-color);
+}
+
+.add-file {
+    width: fit-content;
+    height: auto;
+    margin: 1rem 1rem 1rem 1rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #dbdbdb;
+    background-color: var(--second-back-ground);
+    border-radius: 2px;
+}
+
+.document-details-head {
+    padding-left: 1rem;
+}
+
+.display-content-wrapper {
+    padding: 0 1rem 0 1rem;
+    width: 100%;
+}
+
+/* overlay form */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Màu overlay */
+    z-index: 9999; /* Đảm bảo overlay nằm trên các phần tử khác trên trang */
+    display: none; /* Ẩn overlay ban đầu */
+}
+
+.loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite; /* Animation quay vòng */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-animation {
+    display: none;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: loading 1s infinite;
+}
+
+@keyframes loading {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

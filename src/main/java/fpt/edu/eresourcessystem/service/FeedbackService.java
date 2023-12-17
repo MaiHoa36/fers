@@ -13,11 +13,11 @@ public interface FeedbackService {
 
     List<Feedback> findAll();
 
-    public Feedback saveFeedback(Feedback feedback) ;
+    public Feedback saveFeedback(Feedback feedback);
 
-     Optional<Feedback> getFeedbackById(String id) ;
+    Optional<Feedback> getFeedbackById(String id);
 
-     void deleteFeedback(String id);
+    void deleteFeedback(String id);
 
     Page<Feedback> findAll(PageRequest pageRequest);
 

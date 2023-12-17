@@ -1,7 +1,10 @@
 package fpt.edu.eresourcessystem.service;
 
-import fpt.edu.eresourcessystem.dto.Response.LecturerDto;
-import fpt.edu.eresourcessystem.model.*;
+import fpt.edu.eresourcessystem.dto.LecturerDto;
+import fpt.edu.eresourcessystem.model.Account;
+import fpt.edu.eresourcessystem.model.Course;
+import fpt.edu.eresourcessystem.model.Document;
+import fpt.edu.eresourcessystem.model.Lecturer;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +18,12 @@ public interface LecturerService {
 
     Lecturer updateLecturer(Lecturer lecturer);
 
-    Lecturer updateCourseForLecturer( Lecturer foundLecturer, Course result);
+    Lecturer updateCourseForLecturer(Lecturer foundLecturer, Course result);
+
     List<Lecturer> findAll();
 
     Lecturer findByAccountId(String accountId);
+
     Lecturer findByEmail(String email);
 
     List<Lecturer> findByListLecturerIds(List<String> ids);
@@ -35,7 +40,7 @@ public interface LecturerService {
 
     boolean removeCourse(String lecturerId, ObjectId courseId);
 
-    Page<Course> findListManagingCourse(Lecturer lecturer, String status, int pageIndex, int pageSize);
+    Page<Course> findListManagingCourse(Lecturer lecturer, String search, String status, int pageIndex, int pageSize);
 
     Page<Document> findListDocuments(Lecturer lecturer, String status, int pageIndex, int pageSize);
 

@@ -1,8 +1,6 @@
 package fpt.edu.eresourcessystem.service;
 
-import fpt.edu.eresourcessystem.model.Course;
 import fpt.edu.eresourcessystem.model.Librarian;
-import fpt.edu.eresourcessystem.repository.CourseRepository;
 import fpt.edu.eresourcessystem.repository.LibrarianRepository;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
@@ -29,8 +27,7 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Override
     public Librarian updateLibrarian(Librarian librarian) {
-        Librarian result = librarianRepository.save(librarian);
-        return result;
+        return librarianRepository.save(librarian);
     }
 
     @Override
@@ -44,8 +41,7 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Override
     public Librarian findByAccountId(String accountId) {
-        Librarian librarian = librarianRepository.findByAccountId(accountId);
-        return librarian;
+        return librarianRepository.findByAccountId(accountId);
     }
 
 

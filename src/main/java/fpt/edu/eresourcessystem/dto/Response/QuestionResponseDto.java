@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,22 +25,36 @@ public class QuestionResponseDto {
     private int totalAnswers;
 
     private String lecturerEmail;
-
+    private String createdDate;
     private String lastModifiedDate;
-    public QuestionResponseDto(Question question){
-        this.questionId= question.getId();
+
+    public QuestionResponseDto(Question question) {
+        this.questionId = question.getId();
         this.questionContent = question.getContent();
-        if(null!=question.getStudent()){
-            this.studentName= question.getStudent().getAccount().getName();
+        if (null != question.getStudent()) {
+            this.studentName = question.getStudent().getAccount().getName();
         }
         this.documentId = question.getDocumentId().getId();
         this.documentTitle = question.getDocumentId().getTitle();
-        if(null!=question.getAnswers()){
+        if (null != question.getAnswers()) {
             this.totalAnswers = question.getAnswers().size();
-        }else {
+        } else {
             this.totalAnswers = 0;
         }
         this.lecturerEmail = question.getLecturer();
-        this.lastModifiedDate = question.getLastModifiedDate();
+        this.createdDate = question.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        this.lastModifiedDate = question.getLastModifiedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof QuestionResponseDto that)) return false;
+        return Objects.equals(getQuestionId(), that.getQuestionId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getQuestionId());
     }
 }

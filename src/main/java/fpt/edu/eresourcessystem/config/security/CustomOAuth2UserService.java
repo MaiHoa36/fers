@@ -10,6 +10,7 @@ import fpt.edu.eresourcessystem.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -25,29 +26,31 @@ import static fpt.edu.eresourcessystem.constants.Constants.VERIFICATION_CODE;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final AccountRepository accountRepository;
     private final StudentService studentService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public CustomOAuth2UserService(AccountRepository accountRepository, StudentService studentService) {
+    public CustomOAuth2UserService(AccountRepository accountRepository, StudentService studentService, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.studentService = studentService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         String clientName = userRequest.getClientRegistration().getClientName();
-        OAuth2User user =  super.loadUser(userRequest);
+        OAuth2User user = super.loadUser(userRequest);
         String email = user.<String>getAttribute("email");
         Account account = accountRepository.findByEmail(email).orElse(null);
-        if(account == null) {
-            Account newAccount = new Account();
-            newAccount.setEmail(email);
-            newAccount.setName(user.<String>getAttribute("name"));
-            newAccount.setRole(AccountEnum.Role.STUDENT);
-            newAccount.setStatus(AccountEnum.Status.ACTIVE);
-            newAccount.setPassword(VERIFICATION_CODE);
-            newAccount.setDeleteFlg(CommonEnum.DeleteFlg.PRESERVED);
-            newAccount.setAccountType(AccountEnum.AccountType.FPT_MAIL_ACC);
+        if (account == null) {
+            Account newAccount = new Account(
+                    email,
+                    user.<String>getAttribute("name"),
+                    AccountEnum.Role.STUDENT
+            );
+            newAccount.setPassword(passwordEncoder.encode(VERIFICATION_CODE));
             account = accountRepository.insert(newAccount);
+
+            // Create new student
             Student student = new Student();
             student.setAccount(account);
             studentService.addStudent(student);

@@ -27,7 +27,7 @@ public class UserDetailsCustom implements UserDetails {
 
     public UserDetailsCustom(String username, String password,
                              boolean isEnabled, boolean accountNonExpired, boolean accountNonLocked,
-                             boolean credentialsNonExpired, List<GrantedAuthority> authorities){
+                             boolean credentialsNonExpired, List<GrantedAuthority> authorities) {
         this.username = username;
         this.password = password;
         this.isEnabled = isEnabled;

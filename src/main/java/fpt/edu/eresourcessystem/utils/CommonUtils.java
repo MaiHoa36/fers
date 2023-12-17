@@ -1,27 +1,20 @@
 package fpt.edu.eresourcessystem.utils;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
-import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
-import org.apache.tika.parser.html.HtmlParser;
-import org.apache.tika.parser.microsoft.ooxml.OOXMLParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import org.apache.tika.parser.txt.TXTParser;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 public class CommonUtils {
@@ -44,7 +37,7 @@ public class CommonUtils {
 //        File file = new File("src/main/1mb.pdf");
 
         Parser parser = new AutoDetectParser();
-        BodyContentHandler handler = new BodyContentHandler(100000000);
+        BodyContentHandler handler = new BodyContentHandler(10000000);
         Metadata metadata = new Metadata();
         ParseContext context = new ParseContext();
         parser.parse(fileBytes, handler, metadata, context);
@@ -65,4 +58,5 @@ public class CommonUtils {
 
         return sb.toString();
     }
+
 }

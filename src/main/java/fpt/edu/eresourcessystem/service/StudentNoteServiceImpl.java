@@ -4,7 +4,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import fpt.edu.eresourcessystem.dto.StudentNoteDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
-import fpt.edu.eresourcessystem.model.DocumentNote;
 import fpt.edu.eresourcessystem.model.StudentNote;
 import fpt.edu.eresourcessystem.repository.StudentNoteRepository;
 import org.springframework.data.domain.Page;
@@ -25,12 +24,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service("studentNoteService")
-public class StudentNoteServiceImpl implements StudentNoteService{
+public class StudentNoteServiceImpl implements StudentNoteService {
 
     private final StudentNoteRepository studentNoteRepository;
     private final MongoTemplate mongoTemplate;
-    private GridFsTemplate template;
-    private GridFsOperations operations;
+    private final GridFsTemplate template;
+    private final GridFsOperations operations;
 
     public StudentNoteServiceImpl(StudentNoteRepository studentNoteRepository, MongoTemplate mongoTemplate, GridFsTemplate template, GridFsOperations operations) {
         this.studentNoteRepository = studentNoteRepository;
@@ -41,9 +40,8 @@ public class StudentNoteServiceImpl implements StudentNoteService{
 
     @Override
     public StudentNote findById(String studentNoteId) {
-        StudentNote studentNote = studentNoteRepository
+        return studentNoteRepository
                 .findByIdAndDeleteFlg(studentNoteId, CommonEnum.DeleteFlg.PRESERVED);
-        return studentNote;
     }
 
     @Override
@@ -56,9 +54,8 @@ public class StudentNoteServiceImpl implements StudentNoteService{
         criteria.and("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED);
         Query query = new Query(criteria).with(Sort.by(Sort.Order.desc("createdDate"))).with(pageable);
         List<StudentNote> results = mongoTemplate.find(query, StudentNote.class);
-        Page<StudentNote> page =  PageableExecutionUtils.getPage(results, pageable,
+        return PageableExecutionUtils.getPage(results, pageable,
                 () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), StudentNote.class));
-        return page;
     }
 
     @Override
@@ -75,16 +72,14 @@ public class StudentNoteServiceImpl implements StudentNoteService{
     }
 
     @Override
-    public StudentNote addStudentNote(StudentNoteDto studentNoteDTO){
+    public StudentNote addStudentNote(StudentNoteDto studentNoteDTO) {
         //search file
         if (null == studentNoteDTO.getId()) {
-                StudentNote result = studentNoteRepository.save(new StudentNote(studentNoteDTO));
-                return result;
+            return studentNoteRepository.save(new StudentNote(studentNoteDTO));
         } else {
             Optional<StudentNote> checkExist = studentNoteRepository.findById(studentNoteDTO.getId());
-            if (!checkExist.isPresent()) {
-                StudentNote result = studentNoteRepository.save(new StudentNote(studentNoteDTO));
-                return result;
+            if (checkExist.isEmpty()) {
+                return studentNoteRepository.save(new StudentNote(studentNoteDTO));
             }
             return null;
         }
@@ -92,14 +87,13 @@ public class StudentNoteServiceImpl implements StudentNoteService{
 
     @Override
     public StudentNote updateStudentNote(StudentNote studentNote) {
-        if (null == studentNote || null==studentNote.getId()){
+        if (null == studentNote || null == studentNote.getId()) {
             return null;
         }
         StudentNote savedStudentNote = studentNoteRepository
                 .findByIdAndDeleteFlg(studentNote.getId(), CommonEnum.DeleteFlg.PRESERVED);
-        if(null != savedStudentNote){
-            StudentNote result =  studentNoteRepository.save(studentNote);
-            return result;
+        if (null != savedStudentNote) {
+            return studentNoteRepository.save(studentNote);
         }
         return null;
     }
@@ -107,7 +101,7 @@ public class StudentNoteServiceImpl implements StudentNoteService{
     @Override
     public boolean softDeleteStudentNote(StudentNote studentNote) {
         StudentNote check = studentNoteRepository.findByIdAndDeleteFlg(studentNote.getId(), CommonEnum.DeleteFlg.PRESERVED);
-        if(null != check){
+        if (null != check) {
             // SOFT DELETE
             studentNote.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
             studentNoteRepository.save(studentNote);
@@ -119,7 +113,7 @@ public class StudentNoteServiceImpl implements StudentNoteService{
     @Override
     public boolean deleteStudentNote(StudentNote studentNote) {
         StudentNote check = studentNoteRepository.findByIdAndDeleteFlg(studentNote.getId(), CommonEnum.DeleteFlg.PRESERVED);
-        if(null != check){
+        if (null != check) {
             studentNoteRepository.delete(studentNote);
             return true;
         }

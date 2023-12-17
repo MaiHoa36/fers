@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository("lecturerCourseRepository")
 public interface LecturerCourseRepository extends MongoRepository<LecturerCourse, LecturerCourseId> {
     Optional<LecturerCourse> findById(LecturerCourseId lecturerCourseId);
+
     @Query("{ 'lecturerCourseId.courseId' : ?0, 'lecturerCourseId.lastModifiedDate' : null }")
     LecturerCourse findCurrentCourseLecturer(String courseId);
 

@@ -5,35 +5,36 @@ import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import fpt.edu.eresourcessystem.dto.DocumentDto;
 import fpt.edu.eresourcessystem.dto.Response.DocumentResponseDto;
-import fpt.edu.eresourcessystem.dto.Response.TopicResponseDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
-import fpt.edu.eresourcessystem.model.*;
+import fpt.edu.eresourcessystem.model.Course;
+import fpt.edu.eresourcessystem.model.Document;
+import fpt.edu.eresourcessystem.model.Lecturer;
 import fpt.edu.eresourcessystem.model.elasticsearch.EsDocument;
 import fpt.edu.eresourcessystem.repository.CourseRepository;
 import fpt.edu.eresourcessystem.repository.DocumentRepository;
 import fpt.edu.eresourcessystem.repository.ResourceTypeRepository;
 import fpt.edu.eresourcessystem.repository.elasticsearch.EsDocumentRepository;
 import org.apache.commons.io.IOUtils;
-import org.apache.tika.exception.TikaException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.xml.sax.SAXException;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service("documentService")
@@ -68,13 +69,10 @@ public class DocumentServiceImpl implements DocumentService {
                 .limit(9)
                 .with(Sort.by(Sort.Order.desc("createdDate")));
         List<Document> documents = mongoTemplate.find(query, Document.class);
-        if (null != documents) {
-            List<DocumentResponseDto> responseList = documents.stream()
-                    .filter(entity -> CommonEnum.DeleteFlg.PRESERVED.equals(entity.getDeleteFlg()))
-                    .map(entity -> new DocumentResponseDto(entity))
-                    .collect(Collectors.toList());
-            return responseList;
-        } else return null;
+        return documents.stream()
+                .filter(entity -> CommonEnum.DeleteFlg.PRESERVED.equals(entity.getDeleteFlg()))
+                .map(DocumentResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -86,33 +84,24 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public List<Document> findByListId(List<String> documentIds) {
         Query query = new Query(Criteria.where("id").in(documentIds));
-        List<Document> documents = mongoTemplate.find(query, Document.class);
-        return documents;
+        return mongoTemplate.find(query, Document.class);
     }
 
     @Override
     public List<Document> findAll() {
-        List<Document> documents = documentRepository.findAll();
-        return documents;
+        return documentRepository.findAll();
     }
 
     @Override
     public List<Document> findByLecturer(Lecturer lecturer) {
-        List<Document> documents = documentRepository.findByCreatedBy(lecturer.getAccount().getEmail());
-        return documents;
+        return documentRepository.findByCreatedBy(lecturer.getAccount().getEmail());
     }
 
     @Override
     public Page<Document> filterAndSearchDocument(String course, String topic, String title, String description, int pageIndex, int pageSize) {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
-        Page<Document> page = documentRepository.filterAndSearchDocument(course, topic, title, description,
+        return documentRepository.filterAndSearchDocument(course, topic, title, description,
                 pageable);
-        return page;
-    }
-
-    @Override
-    public Iterable<EsDocument> searchDocument(String search) {
-        return esDocumentRepository.search(search);
     }
 
     public String addFile(MultipartFile upload) throws IOException {
@@ -140,12 +129,15 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public byte[] getGridFSFileContent(ObjectId id) throws IOException {
         GridFSFile file = template.findOne(new Query(Criteria.where("_id").is(id)));
-        return IOUtils.toByteArray(operations.getResource(file).getInputStream());
+        if (file != null) {
+            return IOUtils.toByteArray(operations.getResource(file).getInputStream());
+        }
+        return null;
     }
 
 
     @Override
-    public Document addDocument(DocumentDto documentDTO, String id) throws IOException, TikaException, SAXException {
+    public Document addDocument(DocumentDto documentDTO, String id) {
         //search file
         if (null == documentDTO.getId()) {
             if (id.equalsIgnoreCase("fileNotFound")) {
@@ -170,7 +162,7 @@ public class DocumentServiceImpl implements DocumentService {
             }
         } else {
             Optional<Document> checkExist = documentRepository.findById(documentDTO.getId());
-            if (!checkExist.isPresent()) {
+            if (checkExist.isEmpty()) {
                 Document result = documentRepository.save(new Document(documentDTO));
                 esDocumentRepository.save(new EsDocument(result));
                 return result;
@@ -180,7 +172,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Document updateDocument(Document document, String currentFileId, String id) throws IOException {
+    public Document updateDocument(Document document, String currentFileId, String id) {
         //search file
         if (null != currentFileId) {
             template.delete(new Query(Criteria.where("_id").is(currentFileId)));
@@ -202,26 +194,23 @@ public class DocumentServiceImpl implements DocumentService {
                 String fileExtension = StringUtils.getFilenameExtension(filename);
                 document.setFileName(filename);
                 document.setSuffix(fileExtension);
-                document.setDocType(DocumentEnum.DocumentFormat.getDocType(fileExtension));
+                if (fileExtension != null) {
+                    document.setDocType(DocumentEnum.DocumentFormat.getDocType(fileExtension));
+                }
                 Document result = documentRepository.save(document);
                 esDocumentRepository.save(new EsDocument(result));
                 return result;
             }
         } else {
-            Optional<Document> checkExist = documentRepository.findById(document.getId());
-            if (!checkExist.isPresent()) {
-                Document result = documentRepository.save(document);
-                esDocumentRepository.save(new EsDocument(result));
-                return result;
-            }
-            return null;
+            Document result = documentRepository.save(document);
+            esDocumentRepository.save(new EsDocument(result));
+            return result;
         }
     }
 
     @Override
     public Document updateDoc(Document document) {
-        Document updateDoc = documentRepository.save(document);
-        return updateDoc;
+        return documentRepository.save(document);
     }
 
     @Override
@@ -233,6 +222,7 @@ public class DocumentServiceImpl implements DocumentService {
             // Soft delete
             document.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
             documentRepository.save(document);
+            esDocumentRepository.delete(new EsDocument(document));
             return true;
         }
         return false;
@@ -281,16 +271,42 @@ public class DocumentServiceImpl implements DocumentService {
         HashMap<String, List<DocumentResponseDto>> topicResponseDtos = new HashMap<>();
         mongoTemplate.find(query, Document.class, "documents").stream().forEach(o -> {
             String topicKey = o.getTopic().getId();
-            if(topicResponseDtos.containsKey(topicKey)){
-                if(topicResponseDtos.get(topicKey) != null){
+            if (topicResponseDtos.containsKey(topicKey)) {
+                if (topicResponseDtos.get(topicKey) != null) {
                     topicResponseDtos.get(topicKey).add(new DocumentResponseDto(o));
                 }
-            }else {
-                topicResponseDtos.put(topicKey,new ArrayList<>());
+            } else {
+                topicResponseDtos.put(topicKey, new ArrayList<>());
                 topicResponseDtos.get(topicKey).add(new DocumentResponseDto(o));
             }
         });
 
         return topicResponseDtos;
+    }
+
+    @Override
+    public void removeMultiFile(String docId, ObjectId multiFileId) {
+        Query query = new Query(Criteria.where("id").is(docId));
+        Update update = new Update().pull("multipleFiles", multiFileId);
+        mongoTemplate.updateFirst(query, update, Document.class);
+    }
+
+    @Override
+    public Page<Document> findByListDocumentIdAndSearch(String search, List<String> documentIds, int pageIndex, int pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+        Criteria criteria = new Criteria();
+        criteria.and("id").in(documentIds);
+        if (search != null && !search.isEmpty()) {
+            Criteria regexCriteria = new Criteria().orOperator(
+                    Criteria.where("title").regex(Pattern.quote(search), "i"),
+                    Criteria.where("description").regex(Pattern.quote(search), "i")
+            );
+            criteria.andOperator(regexCriteria);
+        }
+        Query query = new Query(criteria);
+        query.fields().include("id", "title", "description", "createdDate", "resourceTypes");
+        long total = mongoTemplate.count(query, Document.class);
+        List<Document> documents = mongoTemplate.find(query.with(pageable), Document.class);
+        return new PageImpl<>(documents, pageable, total);
     }
 }

@@ -5,7 +5,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title th:text="${document.getTitle()}"></title>
+    <title th:text="${document.getTitle() + ' | FPT E-resources'}"></title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -60,7 +61,7 @@
                         <div th:replace="~{fragments/sidebar:: studentSidebar('courses')}"></div>
                     </div>
                     <div class="stu_course-content border-start main" id="main">
-                        <div style="width: 100%">
+                        <div class="display-content-wrapper">
                             <div class="document-details-info border-bottom">
                                 <div style="flex: 3">
                                     <div class="doc-info-name h2" style="margin-bottom: 4px">
@@ -68,7 +69,7 @@
                                     <div style="display: flex; width: 100%">
                                     <span class="course-info-lecturer" style="flex: 1; margin-bottom: 4px">
                                         Lecturer:
-                                        <a href="" class="lecturer-name" th:text="${account.name}">
+                                        <a class="lecturer-name" th:text="${account.name}">
                                         </a></span>
                                         <!--                                        <span style="flex: 1">Type: <span class="lecturer-name"-->
                                         <!--                                                                          th:text="${document.resourceType.resourceTypeName}"></span></span>-->
@@ -77,13 +78,14 @@
                                 </div>
 
 
-                                <div class="stu_save-course-link stu_save-doc-link">
-                                    <p><a class="unsaved-doc" th:if="${saved ne null} AND ${saved} == true"
+                                <div th:if="${loggedInUser.role.toString().equals('STUDENT')}"
+                                     class="stu_save-course-link stu_save-doc-link">
+                                    <p th:if="${saved ne null} AND ${saved} == true"><a class="unsaved-doc"
                                           th:attr="docId=${document.getId}">
                                         <i class="fa-solid fa-bookmark"></i>
                                         Unbookmark</a>
                                     </p>
-                                    <p><a class="save-doc" th:if="${saved ne null} AND ${saved} == false"
+                                    <p th:if="${saved ne null} AND ${saved} == false"><a class="save-doc"
                                           th:attr="docId=${document.getId}">
                                         <i class="fa-regular fa-bookmark"></i>
                                         Bookmark</a></p>
@@ -95,7 +97,7 @@
                                 <div style="display: flex">
                                     <th:block th:unless="${document.displayWithFile == true}">
                                         <div class="doc-content-view ck-content" th:utext="${document.editorContent}"
-                                             style="height: 500px; flex: 3; overflow: auto">
+                                             style="max-height: 600px; flex: 3; overflow-y: auto">
                                         </div>
                                     </th:block>
                                     <th:block th:if="${document.displayWithFile == true}">
@@ -173,7 +175,8 @@
                                                 <th:block th:if="${document.docType.toString() eq 'OTHER'}">
                                                     <div class="mt-3 mb-3">
                                                         <span>Attached file: </span>
-                                                        <a th:href="${data}" th:text="${document.fileName}" download></a>
+                                                        <a th:href="${data}" th:text="${document.fileName}"
+                                                           download></a>
                                                     </div>
                                                 </th:block>
                                             </th:block>
@@ -186,9 +189,47 @@
                                     </th:block>
 
                                 </div>
+                                <div class="supporting-file-wrapper"
+                                     th:if="${document.multipleFiles ne null} AND ${document.multipleFiles.size() != 0}">
+                                    <div class="supporting-file-label">Supporting files:</div>
+                                    <div id="fileSupport" class="d-flex">
+                                        <div th:each="supportingFile : ${document.multipleFiles}">
+                                            <div class="supporting-file-download"
+                                                 th:file-name="${supportingFile.cloudFileName}"
+                                                 onclick="downloadFile(this.getAttribute('file-name'))">
+                                                <icon class="fa fa-download"></icon>
+                                                <span th:text="${supportingFile.fileName}"></span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <script>
+                                        function downloadFile(fileName) {
+                                            $.ajax({
+                                                url: '/api/student/download',
+                                                method: 'GET',
+                                                data: {fileName: fileName},
+                                                xhrFields: {
+                                                    responseType: 'blob'
+                                                },
+                                                success: function (data) {
+                                                    var downloadLink = document.createElement('a');
+                                                    downloadLink.href = URL.createObjectURL(data);
+                                                    downloadLink.download = fileName;
+                                                    document.body.appendChild(downloadLink);
+                                                    downloadLink.click();
+                                                },
+                                                error: function () {
+                                                    console.log("Error when download file");
+                                                }
+                                            });
+                                        }
+                                    </script>
+                                </div>
 
 
-                                <div class="stu__navbar-view-doc">
+                                <div class="stu__navbar-view-doc"
+                                     th:if="${loggedInUser.role.toString().equals('STUDENT')}">
                                     <ul class="stu__navbar-view-doc-list border-bottom">
                                         <li class="stu__navbar-view-doc-item" id="link-view-question">
                                             <a href="#question" onclick="viewSection('question')">
@@ -203,29 +244,30 @@
                                     </ul>
                                 </div>
                                 <!--Note section-->
-                                <div th:href="@{'/student/documents/'+${document.id}+'#note'}" id="note"
+                                <div th:if="${loggedInUser.role.toString().equals('STUDENT')}"
+                                     th:href="@{'/student/documents/'+${document.id}+'#note'}" id="note"
                                      class="section-view">
                                     <div class="stu__note-in-doc-view">
-<!--                                        <div class="stu__note-in-doc-content" th:if="${note ne null}">-->
-<!--                                            <div class="stu__note-content">-->
-<!--                                                <div id="note-content" th:utext="${note.noteContent}"></div>-->
-<!--                                            </div>-->
-<!--                                            <div class="view-note-link">-->
-<!--                                                <div class="justify-content-end">-->
-<!--                                                    <a class="edit-Note">Edit</a> <a class="delete-note">Delete</a>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                        <div id="stu__note-in-doc-content-new" style="display:none;">-->
-<!--                                            <div class="stu__note-content">-->
-<!--                                                <div id="new-note-content"></div>-->
-<!--                                            </div>-->
-<!--                                            <div class="view-note-link">-->
-<!--                                                <div class="justify-content-end">-->
-<!--                                                    <a class="edit-note">Edit</a> <a class="delete-note">Delete</a>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                        <!--                                        <div class="stu__note-in-doc-content" th:if="${note ne null}">-->
+                                        <!--                                            <div class="stu__note-content">-->
+                                        <!--                                                <div id="note-content" th:utext="${note.noteContent}"></div>-->
+                                        <!--                                            </div>-->
+                                        <!--                                            <div class="view-note-link">-->
+                                        <!--                                                <div class="justify-content-end">-->
+                                        <!--                                                    <a class="edit-Note">Edit</a> <a class="delete-note">Delete</a>-->
+                                        <!--                                                </div>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
+                                        <!--                                        <div id="stu__note-in-doc-content-new" style="display:none;">-->
+                                        <!--                                            <div class="stu__note-content">-->
+                                        <!--                                                <div id="new-note-content"></div>-->
+                                        <!--                                            </div>-->
+                                        <!--                                            <div class="view-note-link">-->
+                                        <!--                                                <div class="justify-content-end">-->
+                                        <!--                                                    <a class="edit-note">Edit</a> <a class="delete-note">Delete</a>-->
+                                        <!--                                                </div>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
                                         <div class="stu__note-in-doc-textarea">
                                             <form class="form-student-add-doc-notes" method="post" role="form"
                                                   th:object="${documentNote}"
@@ -234,8 +276,8 @@
                                                        readonly hidden>
                                                 <div id="editorWrapper">
                                                     <div class="d-flex justify-content-between">
-                                                        <label for="editor"
-                                                               class=".student_input-label">Content:</label>
+                                                        <!--                                                        <label for="editor"-->
+                                                        <!--                                                               class=".student_input-label">Content:</label>-->
                                                         <label id="error-input-new-note"
                                                                class="student_input-label-note error-input">Content
                                                             require!</label>
@@ -248,17 +290,23 @@
                                                     <a type="button" title="Sending" style="display:none;"
                                                        id="sending-new-note" th:document-id="${document.id}"><i
                                                             class="fas fa-spinner fa-spin"></i> Sending...</a>
-                                                    <button class="btn-save disabled" th:classappend="${documentNote.id ne null} ? 'display-none' : ''" type="button" title="Send" id="send-new-note-button"
+                                                    <button class="btn-save disabled"
+                                                            th:classappend="${documentNote.id ne null} ? 'display-none' : ''"
+                                                            type="button" title="Send" id="send-new-note-button"
                                                             th:document-id="${document.id}"
                                                             onclick="submitFormAddNote(this.getAttribute('document-id'))">
                                                         Save Note
                                                     </button>
-                                                    <button class="btn-save disabled edit-note" th:classappend="${documentNote.id == null} ? 'display-none' : ''" type="button" title="Send" id="send-edit-note-button"
+                                                    <button class="btn-save disabled edit-note"
+                                                            th:classappend="${documentNote.id == null} ? 'display-none' : ''"
+                                                            type="button" title="Send" id="send-edit-note-button"
                                                             th:document-id="${document.id}"
                                                             onclick="submitFormEditNote(this.getAttribute('document-id'))">
                                                         Save changes
                                                     </button>
-                                                    <button class="btn-danger delete-note" th:classappend="${documentNote.id == null} ? 'display-none' : ''" type="button" title="Send" id="send-delete-note-button"
+                                                    <button class="btn-danger delete-note"
+                                                            th:classappend="${documentNote.id == null} ? 'display-none' : ''"
+                                                            type="button" title="Send" id="send-delete-note-button"
                                                             th:document-id="${document.id}"
                                                             onclick="submitDeleteDocumentNote(this.getAttribute('document-id'))">
                                                         Delete
@@ -320,7 +368,7 @@
                                         <!--                                        <h5 class="my-question-header">My questions</h5>-->
                                         <div class="stu__my-question-content" id="my-questions">
                                             <div class="stu__question-content-wrapper"
-                                                 th:if="${myQuestions ne null} AND ${myQuestions.size} > 0"
+                                                 th:if="${myQuestions ne null} AND ${myQuestions.size()} > 0"
                                                  th:each="myQuestion : ${myQuestions}" th:id="${myQuestion.questionId}">
                                                 <h6 class="stu__question-creater-name"><i class="fa-solid fa-user"></i>
                                                     <span th:text="${myQuestion.studentName}"></span>(You)</h6>
@@ -334,9 +382,9 @@
                                                     <label th:id="'update-question-error'+ ${myQuestion.questionId}"
                                                            class="display-none">Please enter something to
                                                         update.</label>
-                                                    <input class="update-question"
-                                                           th:value="${myQuestion.questionContent}"
-                                                           th:id="'update-question-content-'+ ${myQuestion.questionId}">
+                                                    <textarea class="update-question"
+                                                              th:text="${myQuestion.questionContent}"
+                                                              th:id="'update-question-content-'+ ${myQuestion.questionId}"></textarea>
                                                     <button th:id="'close-update-question-'+ ${myQuestion.questionId}"
                                                             type="button" title="exist"
                                                             th:question-id="${myQuestion.questionId}"
@@ -359,9 +407,9 @@
                                                 <!--End Update Question section-->
 
                                                 <div class="justify-content-end link-view-question stu__question-content"
-                                                     th:if="${myQuestion.lastModifiedDate}">
+                                                     th:if="${myQuestion.createdDate}">
                                                     <span class="stu__note-date"
-                                                          th:text="${myQuestion.lastModifiedDate}"></span> <a
+                                                          th:text="${myQuestion.createdDate}"></span> <a
                                                         class="view-note-link-item edit-question"
                                                         th:question-id="${myQuestion.questionId}">Edit</a> |
                                                     <a class="view-note-link-item delete-question"
@@ -380,7 +428,8 @@
                                                    th:question-id="${myQuestion.questionId}"
                                                    onclick="viewMoreReply(this.getAttribute('question-id'))"
                                                    class="view-question-reply stu__question-content"
-                                                   th:classappend="${myQuestion.totalAnswers} == 0 ? 'display-none':''">View all <span
+                                                   th:classappend="${myQuestion.totalAnswers} == 0 ? 'display-none':''">
+                                                    View all <span
                                                         th:id="'number-reply-'+ ${myQuestion.questionId}"
                                                         th:text="${myQuestion.totalAnswers}"></span> reply</p>
                                                 <p style="display:none;"
@@ -446,23 +495,33 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="load-more-question-button">
+                                            <div th:if="${myQuestions.size()} > 0 ">
+                                                <button class="btn btn--hover" id="load-more-my-question"
+                                                        th:current-count="${myQuestions.size()} == 1 ? '0': ${myQuestions.size()}"
+                                                        th:docId="${document.id}"
+                                                        onclick="loadMoreMyQuestion(this.getAttribute('current-count'), this.getAttribute('docId'))">
+                                                    <i id="loading-more-my-question" class="fas fa-spinner fa-spin"
+                                                       style="display: none"></i> Load more
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                     <!-- End My Question Section-->
 
                                     <!-- Others question section-->
                                     <div class="stu__question-in-doc-content"
-                                         th:if="${questions ne null } AND ${questions.size} > 0">
+                                         th:if="${questions ne null } AND ${questions.size()  > 0}"
+                                         id="other-question-content">
                                         <h5 class="others-question-header">Others' questions</h5>
-                                        <div class="stu__question-content-wrapper" th:each="question : ${questions}">
+                                        <div class="stu__question-content-wrapper"
+                                             th:each="question : ${questions}">
                                             <h6 class="stu__question-creater-name"><i class="fa-solid fa-user"></i>
                                                 <span th:text="${question.studentName}"></span></h6>
                                             <p class="stu__question-content question-content"
                                                th:utext="${question.questionContent}"></p>
                                             <p class="stu__answer-date stu__question-content"
-                                               th:text="${question.lastModifiedDate}">Lecturer: <span
-                                                    class="stu__answer-lecturer"
-                                                    th:if="${question.lecturerName ne null}"
-                                                    th:text="${question.lecturerName}"></span></p>
+                                               th:text="${question.createdDate}"></p>
                                             <p th:if="${question.totalAnswers} > 0"
                                                th:id="'view-more-reply-'+${question.questionId}"
                                                th:question-id="${question.questionId}"
@@ -481,8 +540,19 @@
                                             <!--                                        View reply-->
                                             <div class="reply-content"
                                                  th:id="'list-reply-content-'+${question.questionId}">
-
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="load-more-question-button">
+                                        <div th:if="${questions ne null} AND ${questions.size()} > 0">
+                                            <button class="btn btn--hover" id="load-more-other-question"
+                                                    th:current-count="${questions.size()} == 1 ? '0': ${questions.size()}"
+                                                    th:docId="${document.id}"
+                                                    onclick="loadMoreOtherQuestion(this.getAttribute('current-count'), this.getAttribute('docId'))">
+                                                <i id="loading-more-other-question" class="fas fa-spinner fa-spin"
+                                                   style="display: none"></i> Load more
+                                            </button>
                                         </div>
                                     </div>
                                     <!--End Others question section-->
@@ -502,7 +572,10 @@
 <div th:replace="~{fragments/footer :: footerSection}"></div>
 
 <!--jquery-->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"
 

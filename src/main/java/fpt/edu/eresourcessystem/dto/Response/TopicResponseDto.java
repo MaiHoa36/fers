@@ -1,8 +1,9 @@
 package fpt.edu.eresourcessystem.dto.Response;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
@@ -28,10 +29,10 @@ public class TopicResponseDto {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "TopicResponseDto : { " +
-                " id:'" +id +"\'" +
-                ", title: '" + topicTitle +"\'}";
+                " id:'" + id + "\'" +
+                ", title: '" + topicTitle + "\'}";
     }
 
 }

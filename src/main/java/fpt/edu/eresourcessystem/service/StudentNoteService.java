@@ -10,11 +10,16 @@ import java.io.IOException;
 public interface StudentNoteService {
 
     StudentNote findById(String studentNoteId);
+
     Page<StudentNote> getNoteByStudent(String studentId, int pageIndex, int pageSize);
+
     String addFile(MultipartFile file) throws IOException;
 
     StudentNote addStudentNote(StudentNoteDto studentNoteDTO);
+
     StudentNote updateStudentNote(StudentNote studentNote);
+
     boolean deleteStudentNote(StudentNote studentNote);
+
     boolean softDeleteStudentNote(StudentNote studentNote);
 }

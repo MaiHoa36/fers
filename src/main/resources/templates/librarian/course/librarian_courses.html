@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Librarian | Courses</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
@@ -141,7 +142,7 @@
     $(document).ready(function () {
         var showAllBtn = document.querySelector(".lib_show-all-btn");
 
-        showAllBtn.addEventListener("click", function(event) {
+        showAllBtn.addEventListener("click", function (event) {
             event.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết
 
             // Hiển thị bảng
@@ -175,12 +176,12 @@
             ],
             "columnDefs": [
                 {
-                "targets": 0,
-                "orderable": false,
-                "searchable": false,
-                "render": function (data, type, row, meta) {
-                    return meta.row + meta.settings._iDisplayStart + 1;  // For index column (STT)
-                }
+                    "targets": 0,
+                    "orderable": false,
+                    "searchable": false,
+                    "render": function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;  // For index column (STT)
+                    }
                 },
                 {
                     "targets": 3, // Target the description column

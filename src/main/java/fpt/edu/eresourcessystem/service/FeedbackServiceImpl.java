@@ -6,7 +6,6 @@ import fpt.edu.eresourcessystem.repository.FeedbackRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-//import org.springframework.data.elasticsearch.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,23 +24,34 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public List<Feedback> findAll() {
-        List<Feedback> feedbacks = feedbackRepository.findAll();
-        return feedbacks;
+        return feedbackRepository.findAll();
     }
 
     public Feedback saveFeedback(Feedback feedback) {
         // You might want to add additional business logic here
+        if (feedback == null) {
+            throw new IllegalArgumentException("Feed back cannot be null");
+        }
         return feedbackRepository.save(feedback);
     }
 
     // Get a single feedback entry by ID
     public Optional<Feedback> getFeedbackById(String id) {
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("ID cannot be null or empty");
+        }
         return feedbackRepository.findById(id);
     }
 
 
     // Delete a feedback entry
     public void deleteFeedback(String id) {
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("ID cannot be null or empty");
+        }
+        if (!feedbackRepository.existsById(id)) {
+            throw new RuntimeException("Feedback with ID " + id + " does not exist");
+        }
         feedbackRepository.deleteById(id);
     }
 
@@ -81,10 +91,9 @@ public class FeedbackServiceImpl implements FeedbackService {
             Feedback feedback = feedbackOpt.get();
             feedback.setStatus(status);
             feedbackRepository.save(feedback);
-        } else {
-            // Handle the case where feedback is not found
-//            throw new EntityNotFoundException("Feedback not found with ID: " + feedbackId);
-        }
+        }  // Handle the case where feedback is not found
+        //            throw new EntityNotFoundException("Feedback not found with ID: " + feedbackId);
+
     }
 
 }
