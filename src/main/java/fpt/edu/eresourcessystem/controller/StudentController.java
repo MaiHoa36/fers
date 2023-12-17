@@ -120,6 +120,21 @@ public class StudentController {
         return "student/course/student_course-detail";
     }
 
+    @GetMapping({"/courses_saved/{courseId}"})
+    public String viewCourseSavedDetail(@PathVariable(required = false) String courseId, final Model model) {
+        // auth
+        Student student = getLoggedInStudent();
+        Course course = courseService.findByCourseIdSaved(courseId);
+       if (null == course) {
+            return "exception/404";
+        }
+        model.addAttribute("course", course);
+        model.addAttribute("saved", true);
+        // add log
+        addUserLog("/student/courses/" + courseId);
+        return "student/course/student_course-detail";
+    }
+
     /*
         DOCUMENT
     */
@@ -280,31 +295,35 @@ public class StudentController {
      * STUDENT - MY NOTES
      */
 
-    @GetMapping({"/my_library/my_notes/{pageIndex}"})
+    @GetMapping({"/my_library/my_notes"})
     public String viewMyNote(@RequestParam(required = false, defaultValue = "") String search,
-                             @PathVariable Integer pageIndex, final Model model) {
+                             @RequestParam(required = false, defaultValue = "my") String noteType,
+                             @RequestParam(required = false, defaultValue = "1") Integer pageIndex, final Model model) {
         // get account authorized
         Student student = getLoggedInStudent();
-        Page<StudentNote> page = null;
-        if (student != null) {
-            page = studentNoteService.getNoteByStudent(student.getId(), pageIndex, PAGE_SIZE);
+        Page<StudentNote> myNotes = null;
+        Page<DocumentNote> myDocumentNotes = null;
+        if (student != null && "document".equals(noteType)) {
+            myDocumentNotes = documentNoteService.findByStudent(search, student.getId(), pageIndex, 1);
+            model.addAttribute("studentDocumentNotes", myDocumentNotes.getContent());
+        } else if (student != null) {
+            myNotes = studentNoteService.getNoteByStudent(search, student.getId(), pageIndex, 1);
+            model.addAttribute("studentNotes", myNotes.getContent());
+
+        } else {
+            return "exception/404";
         }
-        List<DocumentNote> studentDocumentNotes = null;
-        if (student != null) {
-            studentDocumentNotes = documentNoteService.findByStudent(student.getId());
+        if (null != myNotes) {
+            model.addAttribute("totalPages", myNotes.getTotalPages());
+            model.addAttribute("totalItems", myNotes.getTotalElements());
+        } else {
+            model.addAttribute("totalPages", myDocumentNotes.getTotalPages());
+            model.addAttribute("totalItems", myDocumentNotes.getTotalElements());
         }
-        if (null != page) {
-            List<Integer> pages = CommonUtils.pagingFormat(page.getTotalPages(), pageIndex);
-            model.addAttribute("pages", pages);
-            model.addAttribute("totalPage", page.getTotalPages());
-            model.addAttribute("studentNotes", page.getContent());
-            model.addAttribute("search", search);
-            model.addAttribute("roles", AccountEnum.Role.values());
-            model.addAttribute("currentPage", pageIndex);
-            model.addAttribute("search", search);
-            // document notes model
-            model.addAttribute("studentDocumentNotes", studentDocumentNotes);
-        }
+        model.addAttribute("currentPage", pageIndex);
+        model.addAttribute("search", search);
+        model.addAttribute("noteType", noteType);
+
         return "student/library/student_my-notes";
     }
 

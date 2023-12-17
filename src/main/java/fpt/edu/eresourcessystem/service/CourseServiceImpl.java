@@ -90,7 +90,10 @@ public class CourseServiceImpl implements CourseService {
     public Course findByCourseId(String courseId) {
         return courseRepository.findByIdAndDeleteFlg(courseId, CommonEnum.DeleteFlg.PRESERVED);
     }
-
+    @Override
+    public Course findByCourseIdSaved(String courseId) {
+        return courseRepository.findById(courseId).orElse(null);
+    }
     @Override
     public List<Course> findAll() {
         return courseRepository.findAll();

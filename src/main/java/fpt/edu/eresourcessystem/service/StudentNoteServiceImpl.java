@@ -17,11 +17,13 @@ import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service("studentNoteService")
 public class StudentNoteServiceImpl implements StudentNoteService {
@@ -45,13 +47,21 @@ public class StudentNoteServiceImpl implements StudentNoteService {
     }
 
     @Override
-    public Page<StudentNote> getNoteByStudent(String studentId, int pageIndex, int pageSize) {
+    public Page<StudentNote> getNoteByStudent(String search, String studentId, int pageIndex, int pageSize) {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
         Criteria criteria = new Criteria();
         criteria.and("createdDate").exists(true);
 //        criteria.and("createdBy").is(studentId);
         criteria.and("studentId").is(studentId);
         criteria.and("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED);
+        // Add a condition to search in title, description, or editorContent
+        Criteria textSearchCriteria = new Criteria().orOperator(
+                Criteria.where("title").regex(Pattern.quote(search), "i"),  // "i" for case-insensitive
+                Criteria.where("description").regex(Pattern.quote(search), "i"),
+                Criteria.where("editorContent").regex(Pattern.quote(search), "i")
+        );
+        criteria.andOperator(textSearchCriteria);
+
         Query query = new Query(criteria).with(Sort.by(Sort.Order.desc("createdDate"))).with(pageable);
         List<StudentNote> results = mongoTemplate.find(query, StudentNote.class);
         return PageableExecutionUtils.getPage(results, pageable,

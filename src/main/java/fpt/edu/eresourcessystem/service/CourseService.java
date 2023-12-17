@@ -21,6 +21,7 @@ public interface CourseService {
         LIBRARIAN
      */
     Course findByCourseId(String courseId);
+    Course findByCourseIdSaved(String courseId);
 
     List<Course> findAll();
 

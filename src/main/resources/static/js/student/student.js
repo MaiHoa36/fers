@@ -166,6 +166,14 @@ $(document).ready(function () {
         }
     });
 
+    $("#search-student-note :input").keypress(function (event) {
+        // Kiểm tra xem phím được ấn có phải là Enter không (mã ASCII 13)
+        if (event.which === 13) {
+            $("#pageIndex").val("1");
+            $("#search-student-note").submit();
+        }
+    });
+
     /*
         NAVBAR
      */
@@ -414,12 +422,27 @@ function viewDocumentNote() {
     console.log("view my note")
     $("#documentNote").removeClass('display-none');
     $("#myNote").addClass('display-none');
+    $("#note-type").val("document");
+    $("#pageIndex").val("1");
+    $("#search-student-note").submit();
 }
 
 function viewMyNote() {
     console.log("view document note")
     $("#documentNote").addClass('display-none');
     $("#myNote").removeClass('display-none');
+    $("#note-type").val("my");
+    $("#pageIndex").val("1");
+    $("#search-student-note").submit();
+}
+function pagingInMyNote(clickedElement){
+    var page = $(clickedElement).attr('page');
+    $("#pageIndex").val(page);
+    $("#search-student-note").submit();
+}
+function submitFormSearchNote(){
+    $("#pageIndex").val("1");
+    $("#search-student-note").submit();
 }
 
 function submitDeleteMyNote() {
