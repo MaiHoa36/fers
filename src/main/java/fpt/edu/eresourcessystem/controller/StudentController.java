@@ -173,7 +173,7 @@ public class StudentController {
         if (null != questionId) {
             myQuestionResponseDtos.add(new QuestionResponseDto(questionService.findById(questionId)));
         } else {
-            questionService.findByStudentLimitAndSkip(student, document, 3, 0);
+            myQuestionResponseDtos = questionService.findByStudentLimitAndSkip(student, document, 3, 0);
         }
 
         List<QuestionResponseDto> questionResponseDtos = questionService.findByOtherStudentLimitAndSkip(student, document, 3, 0);
