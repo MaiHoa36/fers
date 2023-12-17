@@ -11,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -32,12 +33,8 @@ public class QuestionDto {
     // Delete flag
     private CommonEnum.DeleteFlg deleteFlg;
     //Audit Log
-    @CreatedBy
     private String createdBy;
-    @CreatedDate
-    private String createdDate;
-    @LastModifiedBy
+    private LocalDateTime createdDate;
     private String lastModifiedBy;
-    @LastModifiedDate
-    private String lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 }

@@ -107,9 +107,9 @@
                                                     <p class="home__note-description"
                                                        th:text="${studentNote.description}"></p>
                                                     <p class="home__note-date">
-                                                        Created: <span th:text="${studentNote.createdDate}"></span>
+                                                        Created: <span th:text="${#temporals.format(studentNote.createdDate, 'dd-MM-yyyy HH:mm:ss')}"></span>
                                                         Last Modified: <span
-                                                            th:text="${studentNote.lastModifiedDate}"></span>
+                                                            th:text="${#temporals.format(studentNote.lastModifiedDate, 'dd-MM-yyyy HH:mm:ss')}"></span>
                                                     </p>
                                                 </div>
                                             </li>
@@ -133,7 +133,7 @@
                                         <div class="stu__question-content-wrapper"
                                              th:each="documentNote : ${studentDocumentNotes}">
                                             <span class="stu__question-content stu__question-date"
-                                                  th:text="${documentNote.lastModifiedDate}"></span>
+                                                  th:text="${#temporals.format(documentNote.lastModifiedDate, 'dd-MM-yyyy HH:mm:ss')}"></span>
                                             <br>
                                             <span>You noted on </span> <a class="stu__question-title"
                                                                           th:text="${documentNote.documentTitle}"></a>

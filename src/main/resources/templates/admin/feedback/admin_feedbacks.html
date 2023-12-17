@@ -105,7 +105,7 @@
                                     <td><a class="a-link code-archive-except"
                                            th:href="@{'/admin/feedbacks/' + ${feedback.getId}}"
                                            th:text="${feedback.getFeedbackContent()}"> </a></td>
-                                    <td th:text="${feedback.getCreatedDate()}"></td>
+                                    <td th:text="${#temporals.format(feedback.createdDate, 'dd-MM-yyyy HH:mm:ss')}"></td>
                                     <td th:text="${feedback.getStatus()}"></td>
                                 </tr>
                             </th:block>

@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,9 +25,9 @@ public class CourseLogDto {
 
     private String createdBy;
 
-    private String createdDate;
+    private LocalDateTime createdDate;
 
     private String lastModifiedBy;
 
-    private String lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 }

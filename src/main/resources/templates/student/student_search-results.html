@@ -108,7 +108,7 @@
                                         </div>
                                         <div class="doc-info grid__column-3 d-flex justify-content-center">
                                             <p><span class="doc-info-date"
-                                                     th:text="${document.lastModifiedDate}"></span>
+                                                     th:text="${#temporals.format(document.lastModifiedDate, 'dd-MM-yyyy HH:mm:ss')}"></span>
                                         </div>
                                     </div>
 

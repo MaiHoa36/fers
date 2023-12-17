@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +23,6 @@ public class AccountResponseDto {
         this.username = account.getUsername();
         this.fullName = account.getName();
         this.role = account.getRole().getDisplayValue();
-        this.lastModifiedDate = account.getLastModifiedDate();
+        this.lastModifiedDate = account.getLastModifiedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));;
     }
 }

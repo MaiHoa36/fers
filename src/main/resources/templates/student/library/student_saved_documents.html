@@ -100,7 +100,7 @@
 
                                             <p class="list-inline-item">
                                                 <span class="doc-info-date"
-                                                      th:text="${doc.createdDate}"></span>
+                                                      th:text="${#temporals.format(doc.createdDate, 'dd-MM-yyyy HH:mm:ss')}"></span>
                                             </p>
                                         </div>
                                         <div class="stu_save-course-link stu_save-doc-link grid__column-3">

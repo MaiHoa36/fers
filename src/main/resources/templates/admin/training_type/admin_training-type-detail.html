@@ -102,9 +102,8 @@
                                 <label th:for="lastModifiedDate">Last modified date:</label>
                             </td>
                             <td>
-                                <input type="text" th:id="lastModifiedDate" class="lib_input form-control"
-                                       th:field="*{lastModifiedDate}" placeholder="Enter Last Modified Date"
-                                       readonly>
+                                <p type="text" th:id="lastModifiedDate" class="lib_input form-control"
+                                   th:text="${#temporals.format(trainingType.lastModifiedDate, 'dd-MM-yyyy HH:mm:ss')}"></p>
                             </td>
                         </tr>
 
