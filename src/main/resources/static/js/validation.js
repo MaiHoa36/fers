@@ -394,7 +394,28 @@ function validate_updateresourceType() {
     });
 }
 
-
+function validate_updateresourceType() {
+    $("#yourFormId").validate({ // Replace 'yourFormId' with the actual ID of your form
+        rules: {
+            feedback: {
+                required: true
+            },
+            feedbackContent: {
+                required: true,
+                minlength: 10 // Example: minimum length of feedback content
+            }
+        },
+        messages: {
+            feedback: {
+                required: "Please select your emotion feedback"
+            },
+            feedbackContent: {
+                required: "Please enter your feedback message",
+                minlength: "Feedback must be at least 10 characters long"
+            }
+        }
+    });
+}
 
 // VALIDATE DOCUMENTS
 function validate_addDocument(){
