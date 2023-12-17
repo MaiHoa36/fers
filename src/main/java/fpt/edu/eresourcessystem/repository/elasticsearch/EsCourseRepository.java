@@ -9,7 +9,8 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 public interface EsCourseRepository extends ElasticsearchRepository<EsCourse, String> {
     @Query("{\"bool\": " +
-            "{\"should\": " +
+            "{\"must\": [{\"term\": {\"status\": \"publish\"}}]," +
+            "\"should\": " +
             "[{\"match_phrase\": {\"code\": \"*?0*\"}}," +
             "{\"match_phrase\": {\"name\": \"*?0*\"}}," +
             "{\"match_phrase\": {\"lecturer\": \"*?0*\"}}," +

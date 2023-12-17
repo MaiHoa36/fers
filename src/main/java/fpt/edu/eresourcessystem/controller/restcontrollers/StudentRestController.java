@@ -456,7 +456,7 @@ public class StudentRestController {
     public ResponseEntity<List<EsDocument>> loadDocument(@RequestParam String search,
                                                          @RequestParam int skip) {
 
-        Page<EsDocument> esDocuments = esDocumentService.searchDocument(search, skip);
+        Page<EsDocument> esDocuments = esDocumentService.searchDocument(search.trim(), skip);
         if (null != esDocuments) {
             return new ResponseEntity<>(esDocuments.stream().toList(), HttpStatus.OK);
         }
@@ -466,7 +466,7 @@ public class StudentRestController {
     @GetMapping(value = "/search_course", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<EsCourse>> loadCourse(@RequestParam String search,
                                                      @RequestParam int skip) {
-        Page<EsCourse> esCourses = esCourseService.searchCourse(search, skip);
+        Page<EsCourse> esCourses = esCourseService.searchCourse(search.trim(), skip);
         if (null != esCourses) {
             return new ResponseEntity<>(esCourses.stream().toList(), HttpStatus.OK);
         }

@@ -432,7 +432,7 @@ public class StudentController {
     @GetMapping({"/search"})
     public String getSearchResults(@RequestParam(required = false, value = "search") String search,
                                    final Model model) {
-        List<EsDocument> esDocuments = esDocumentService.searchDocument(search, 0).stream().toList();
+        List<EsDocument> esDocuments = esDocumentService.searchDocument(search.trim(), 0).stream().toList();
         model.addAttribute("foundDocuments", esDocuments);
         model.addAttribute("search", search);
         return "student/student_search-results";

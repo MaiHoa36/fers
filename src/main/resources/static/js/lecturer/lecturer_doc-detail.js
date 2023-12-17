@@ -277,6 +277,14 @@ const removeFiles = document.getElementsByClassName('remove-file');
 const supportingFileDownload = document.getElementsByClassName('supporting-file-download');
 const loadingAnimation = document.querySelector('.loading-animation');
 
+const allowedFileFormats = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx',
+    'md', 'html', 'txt', 'm4a', 'flac', 'mp3', 'wav', 'wma', 'aac',
+    'mp4', 'mov', 'avi', 'flv', 'mkv', 'webm',
+    'jpg', 'jpeg', 'gif', 'png', 'svg',
+    'exe', 'psd', 'eps', 'jar', 'zip', 'rar',
+    'java', 'c', 'cpp', 'cc', 'cxx', 'cs', 'py', 'js', 'rb', 'swift', 'go', 'php', 'css', 'ts',
+    'ai', 'indd', 'prproj', 'aep', 'xd', 'fla', 'aup', 'puppet', 'dn', 'muse', 'abr'];
+
 const listSupportingFiles = [];
 
 const supportingFileElements = document.getElementsByClassName('supporting-file-download');
@@ -289,10 +297,10 @@ console.log(listSupportingFiles);
 
 newSupportFileInput.addEventListener('change', handleFileSelection);
 
+
 function handleFileSelection() {
     const selectedFiles = newSupportFileInput.files;
     const totalFiles = selectedFiles.length + listSupportingFiles.length;
-
     if (totalFiles > 3) {
         Swal.fire(
             'Error!',
@@ -300,7 +308,38 @@ function handleFileSelection() {
             'error'
         );
         newSupportFileInput.value = null;
+        return;
+    } else {
+        for (let i = 0; i < selectedFiles.length; i++) {
+            if (selectedFiles[i].size / (1024 * 1024) > 50) {
+                Swal.fire(
+                    'Each supporting file size not exceeds 50MB!',
+                    'Please choose a file with a capacity of less than 50MB.',
+                    'error'
+                );
+                newSupportFileInput.value = null;
+                return;
+            }
+
+            let supportFileName = selectedFiles[i].name;
+
+            let spFileExtension = getFileExtension(supportFileName.toLowerCase());
+
+            if (!allowedFileFormats.includes(spFileExtension)) {
+                Swal.fire(
+                    'File format not supported!',
+                    'Please choose another format.',
+                    'error'
+                );
+                newSupportFileInput.value = null;
+                return;
+            }
+        }
     }
+}
+
+function getFileExtension(filename) {
+    return filename.split('.').pop();
 }
 
 function saveFiles() {

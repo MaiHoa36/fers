@@ -413,8 +413,6 @@ function highlightSearchResults() {
 
     var regex = new RegExp(regexString, "gi");
 
-    // Các vòng lặp như trước đây, nhưng sử dụng regex mới
-    // Ví dụ cho titleElements
     for (var i = 0; i < titleElements.length; i++) {
         var titleElement = titleElements[i];
         var highlightedTitle = titleElement.textContent.replace(regex, "<span class='highlight'>$&</span>");

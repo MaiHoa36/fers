@@ -8,7 +8,7 @@ ClassicEditor
                 '|', 'highlight',
                 '|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
                 '|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
-                '|', 'link', 'uploadImage', 'blockQuote', 'codeBlock',
+                '|', 'link', 'blockQuote', 'codeBlock',
                 '|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
             ],
             shouldNotGroupWhenFull: false

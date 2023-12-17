@@ -1,5 +1,6 @@
 package fpt.edu.eresourcessystem.dto;
 
+import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
 import fpt.edu.eresourcessystem.model.MultiFile;
 import fpt.edu.eresourcessystem.model.ResourceType;
@@ -43,6 +44,8 @@ public class DocumentDto {
 
     // Only use when response, no need in requests
     private DocumentEnum.DocumentStatusEnum docStatus;
+    private CourseEnum.Status courseStatus;
+
     private String createdBy;
     private String createdDate;
     private String lastModifiedBy;

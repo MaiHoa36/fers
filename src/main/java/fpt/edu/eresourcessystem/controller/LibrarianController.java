@@ -324,10 +324,10 @@ public class LibrarianController {
     }
 
     /**
-     * @param courseId
-     * @param search
-     * @param model
-     * @return
+     * @param courseId course id
+     * @param search search key
+     * @param model model
+     * @return updated redirect url
      */
     @GetMapping({"/courses/{courseId}/updateLecturers"})
     public String updateLecturersProcess(@PathVariable String courseId, @RequestParam String search, final Model model) {

@@ -88,39 +88,39 @@
                             </ul>
                         </div>
                         <div id="firstSearch">
-<!--                            <ul th:if="${foundDocuments.size() == 0}">-->
-<!--                                <img src="/images/no-result.png" style="width: 100%;">-->
-<!--                            </ul>-->
-<!--                            <ul>-->
-<!--                                <li class="border-bottom" style="margin: 2rem 2rem"-->
-<!--                                    th:each="document : ${foundDocuments}">-->
+                            <ul th:if="${foundDocuments.size() == 0}">
+                                <img src="/images/no-result.png" style="width: 100%;">
+                            </ul>
+                            <ul>
+                                <li class="border-bottom" style="margin: 2rem 2rem"
+                                    th:each="document : ${foundDocuments}">
 
-<!--                                    <div class="d-flex document-view-info ">-->
-<!--                                        <div class="doc-info-head grid__column-9">-->
-<!--                                            <p class="doc-info-title"><a-->
-<!--                                                    th:href="@{'/student/documents/' + ${document.getDocumentId()}}">-->
-<!--                                                <span class="highlighted-title" th:text="${document.title}"></span></a>-->
-<!--                                            </p>-->
-<!--                                            <p class="doc-info-description">-->
-<!--                                                <span class="highlighted-description"-->
-<!--                                                      th:text="${document.description}"></span>-->
-<!--                                            </p>-->
-<!--                                        </div>-->
-<!--                                        <div class="doc-info grid__column-3 d-flex justify-content-center">-->
-<!--                                            <p><span class="doc-info-date"-->
-<!--                                                     th:text="${document.lastModifiedDate}"></span>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                    <div class="d-flex document-view-info ">
+                                        <div class="doc-info-head grid__column-9">
+                                            <p class="doc-info-title"><a
+                                                    th:href="@{'/student/documents/' + ${document.getDocumentId()}}">
+                                                <span class="highlighted-title" th:text="${document.title}"></span></a>
+                                            </p>
+                                            <p class="doc-info-description">
+                                                <span class="highlighted-description"
+                                                      th:text="${document.description}"></span>
+                                            </p>
+                                        </div>
+                                        <div class="doc-info grid__column-3 d-flex justify-content-center">
+                                            <p><span class="doc-info-date"
+                                                     th:text="${document.lastModifiedDate}"></span>
+                                        </div>
+                                    </div>
 
-<!--                                    <div class="doc-info">-->
-<!--                                        <p>-->
-<!--                                            <span class="doc-info-description highlighted-content"-->
-<!--                                                  th:text="${document.content}"></span>-->
-<!--                                        </p>-->
-<!--                                    </div>-->
+                                    <div class="doc-info">
+                                        <p>
+                                            <span class="doc-info-description highlighted-content"
+                                                  th:text="${document.content}"></span>
+                                        </p>
+                                    </div>
 
-<!--                                </li>-->
-<!--                            </ul>-->
+                                </li>
+                            </ul>
                         </div>
                         <div id="results">
                             <ul>

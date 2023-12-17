@@ -300,9 +300,9 @@
 
 .form-lecturer-add-doc-new-reply{
     margin-top: 0.2rem;
-    margin-left: 1.2rem;
+    margin-left: .5rem;
     border-radius: 0.22rem;
-    border: 1px solid #888888;
+    border: 1px solid var(--third-border-color);
     padding: 1rem;
 }
 .input-reply-content{
@@ -408,7 +408,7 @@
     padding-left: 1rem;
 }
 .edit-reply-div input{
-    border: 1px solid #888888;
+    border: 1px solid var(--third-border-color);
     border-radius: 1rem;
     min-width: 70%;
     height: auto;
@@ -437,7 +437,7 @@ label.error {
     border-radius: 0.22rem;
 }
 .update-reply:focus{
-    border: 1px solid #888888;
+    border: 1px solid var(--third-border-color);
     border-radius: 0.22rem;
     outline: none;
     box-shadow: 0 0 4px #9babfc;
