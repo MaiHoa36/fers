@@ -1,12 +1,8 @@
 package fpt.edu.eresourcessystem.service;
 
 import fpt.edu.eresourcessystem.dto.Response.CourseLogResponseDto;
-import fpt.edu.eresourcessystem.enums.CommonEnum;
-import fpt.edu.eresourcessystem.model.Account;
-import fpt.edu.eresourcessystem.model.Course;
 import fpt.edu.eresourcessystem.model.CourseLog;
 import fpt.edu.eresourcessystem.repository.CourseLogRepository;
-import org.bson.types.ObjectId;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,9 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -39,15 +32,13 @@ public class CourseLogServiceImpl implements CourseLogService {
         if (null == courseLog.getCreatedDate()) {
             courseLog.setCreatedBy(LocalDateTime.now().toString());
         }
-        CourseLog result = courseLogRepository.save(courseLog);
-        return result;
+        return courseLogRepository.save(courseLog);
     }
 
     @Override
     public List<CourseLogResponseDto> findAllSortedByCreatedDate() {
         Sort sortByCreatedDate = Sort.by(Sort.Direction.DESC, "createdDate");
-        List<CourseLogResponseDto> courseLogResponseDtos = courseLogRepository.findAll(sortByCreatedDate).stream().map(o -> new CourseLogResponseDto(o)).toList();
-        return courseLogResponseDtos;
+        return courseLogRepository.findAll(sortByCreatedDate).stream().map(CourseLogResponseDto::new).toList();
     }
 
     @Override
@@ -127,8 +118,7 @@ public class CourseLogServiceImpl implements CourseLogService {
                 Criteria.where("objectName").regex(Pattern.quote(search), "i")
         );
         Query query = new Query(criteria);
-        List<CourseLog> result = mongoTemplate.find(query, CourseLog.class, "course_log");
-        return result;
+        return mongoTemplate.find(query, CourseLog.class, "course_log");
     }
 
 }

@@ -1,19 +1,13 @@
 package fpt.edu.eresourcessystem.controller.restcontrollers;
 
 import fpt.edu.eresourcessystem.dto.AccountDto;
-import fpt.edu.eresourcessystem.dto.AnswerDto;
 import fpt.edu.eresourcessystem.dto.Response.AccountResponseDto;
-import fpt.edu.eresourcessystem.dto.Response.AnswerResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.DataTablesResponse;
-import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
 import fpt.edu.eresourcessystem.model.Account;
-import fpt.edu.eresourcessystem.model.Answer;
 import fpt.edu.eresourcessystem.model.Feedback;
-import fpt.edu.eresourcessystem.model.Question;
 import fpt.edu.eresourcessystem.service.AccountService;
 import fpt.edu.eresourcessystem.service.FeedbackService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,8 +18,6 @@ import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,9 +51,9 @@ public class AdminRestController {
     @GetMapping(value = "/account", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
     @Transactional
     public ResponseEntity<AccountResponseDto> getAccountByEmail(@ModelAttribute AccountDto accountDto,
-                                                    @RequestParam String email) {
+                                                                @RequestParam String email) {
         Account account = accountService.findByEmail(email);
-        if(null == account){
+        if (null == account) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         AccountResponseDto accountResponseDto = new AccountResponseDto(account);

@@ -5,6 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>My notes | FPT University E-resources</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -79,7 +80,8 @@
                         <!-- Nav Section-->
                         <div class="stu__navbar-favourite">
                             <ul class="stu__navbar-favourite-list border-bottom">
-                                <li class="stu__navbar-favourite-item stu__navbar-active note-view-link" onclick="viewMyNote()">
+                                <li class="stu__navbar-favourite-item stu__navbar-active note-view-link"
+                                    onclick="viewMyNote()">
                                     <a>
                                         My Notes
                                     </a>
@@ -184,25 +186,27 @@
                                                th:text="'You noted on '+${documentNote.documentTitle}"></a>
 
                                             <p class="student-content-view-brief"><a class="link-view-detailed"
-                                                   th:href="@{'/student/documents/' + ${documentNote.docId} + '#note'}"><i
+                                                                                     th:href="@{'/student/documents/' + ${documentNote.docId} + '#note'}"><i
                                                     class="fa-solid fa-arrow-right"></i> view your note</a></p>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <!-- End Document Note section-->
                         </div>
-                        <!-- End Document Note section-->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-</div>
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footerSection}"></div>
 
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"

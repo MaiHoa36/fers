@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Personal question&answer</title>
+    <title>Questions & answers | FPT E-resources</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -33,37 +34,39 @@
                     </div>
 
                     <div class="stu_courses-content main" id="main">
-                        <form th:action="@{/student/my_library/my_questions/history}" th:method="GET" id="getMyQuestion">
-                        <div class="header__search">
-                            <!--Label-->
-                            <div class="search-label">
-                                <label th:for="search">Search questions</label>
-                            </div>
-                            <input type="text" name="status" th:value="${status}" id="setStatus" hidden>
-                            <input type="text" name="pageIndex" th:value="${currentPage}" id="pageIndex" hidden>
-                            <!-- Input  -->
-                            <div class="header__search-input-wrap">
-                                <input type="text" class="header__search-input"
-                                       placeholder="Enter question content ..."
-                                       name="search"
-                                       th:id="search-text" th:value="${search}">
-                                <!-- Header-search-history -->
-<!--                                <div class="header__search-history">-->
-<!--                                    <h3 class="header__search-history-heading">-->
-<!--                                        Search history-->
-<!--                                    </h3>-->
-<!--                                    <ul class="header__search-history-list">-->
+                        <form th:action="@{/student/my_library/my_questions/history}" th:method="GET"
+                              id="getMyQuestion">
+                            <div class="header__search">
+                                <!--Label-->
+                                <div class="search-label">
+                                    <label th:for="search">Search questions</label>
+                                </div>
+                                <input type="text" name="status" th:value="${status}" id="setStatus" hidden>
+                                <input type="text" name="pageIndex" th:value="${currentPage}" id="pageIndex" hidden>
+                                <!-- Input  -->
+                                <div class="header__search-input-wrap">
+                                    <input type="text" class="header__search-input"
+                                           placeholder="Enter question content ..."
+                                           name="search"
+                                           th:id="search-text" th:value="${search}">
+                                    <!-- Header-search-history -->
+                                    <!--                                <div class="header__search-history">-->
+                                    <!--                                    <h3 class="header__search-history-heading">-->
+                                    <!--                                        Search history-->
+                                    <!--                                    </h3>-->
+                                    <!--                                    <ul class="header__search-history-list">-->
 
-<!--                                        <li class="header__search-history-item">-->
-<!--                                            <a href="">Software</a>-->
-<!--                                        </li>-->
-<!--                                    </ul>-->
-<!--                                </div>-->
+                                    <!--                                        <li class="header__search-history-item">-->
+                                    <!--                                            <a href="">Software</a>-->
+                                    <!--                                        </li>-->
+                                    <!--                                    </ul>-->
+                                    <!--                                </div>-->
+                                </div>
+                                <button class="header__search-btn" type="button" id="button-form-getMyQuestion"
+                                        onclick="submitFormGetQuestion()">
+                                    <i class="header__search-btn-icon fas fa-search"></i>
+                                </button>
                             </div>
-                            <button class="header__search-btn" type="button" id="button-form-getMyQuestion" onclick="submitFormGetQuestion()">
-                                <i class="header__search-btn-icon fas fa-search"></i>
-                            </button>
-                        </div>
                         </form>
                         <div class="stu__navbar-favourite">
                             <ul class="stu__navbar-favourite-list border-bottom">
@@ -90,13 +93,13 @@
                                 </li>
                             </ul>
                         </div>
-<!--                        <div class="view-question-list view-list" id="loading"  style="display:none;">-->
-<!--                            <p th:id="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</p>-->
-<!--                        </div>-->
-<!--                        <div th:id="stu__view-waiting-for-reply-question" style="display: none" class="view-list stu__questions-list-view">-->
-<!--                        </div>-->
-<!--                        <div th:id="stu__view-new-reply-question" style="display: none" class="view-list stu__questions-list-view">-->
-<!--                        </div>-->
+                        <!--                        <div class="view-question-list view-list" id="loading"  style="display:none;">-->
+                        <!--                            <p th:id="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</p>-->
+                        <!--                        </div>-->
+                        <!--                        <div th:id="stu__view-waiting-for-reply-question" style="display: none" class="view-list stu__questions-list-view">-->
+                        <!--                        </div>-->
+                        <!--                        <div th:id="stu__view-new-reply-question" style="display: none" class="view-list stu__questions-list-view">-->
+                        <!--                        </div>-->
                         <div th:id="stu__view-question-history" class="stu__questions-list-view">
                             <div class="stu__question-content">
                                 <div th:if="${param.search} AND ${studentQuestions == null} OR ${studentQuestions.size()} == 0"
@@ -105,50 +108,55 @@
                                 </div>
                                 <div class="stu__view-list-question-content"
                                      th:if="${studentQuestions ne null} AND ${studentQuestions.size()} > 0">
-                                    <p class="number-count count-questions">Total question: <span th:text="${totalItems}"></span> question(s).</p>
+                                    <p class="number-count count-questions">Total question: <span
+                                            th:text="${totalItems}"></span> question(s).</p>
                                     <div class="view-question-list">
                                         <div class="stu__question-content-wrapper"
                                              th:each="studentQuestion : ${studentQuestions}">
                                             <span class="stu__question-content stu__question-date"
-                                            th:text="${#temporals.format(studentQuestion.createdDate, 'dd-MM-yyyy HH:mm:ss')}"></span><br>
+                                                  th:text="${#temporals.format(studentQuestion.createdDate, 'dd-MM-yyyy HH:mm:ss')}"></span><br>
                                             <a class="stu__question-title"
                                                th:text="'You asked on '+${studentQuestion.documentId.title}"></a>
 
                                             <p class="student-content-view-brief"><span
                                                     th:text="${studentQuestion.content}"></span>
                                                 <a class="link-view-detailed"
-                                                      th:href="@{'/student/documents/' + ${studentQuestion.documentId.id} +'?questionId=' + ${studentQuestion.id} + '#' + ${studentQuestion.id}}"><span>view </span> <i
-                                                        class="fa-solid fa-arrow-right"></i></a></p>
+                                                   th:href="@{'/student/documents/' + ${studentQuestion.documentId.id} +'?questionId=' + ${studentQuestion.id} + '#' + ${studentQuestion.id}}"><span>view </span>
+                                                    <i
+                                                            class="fa-solid fa-arrow-right"></i></a></p>
                                         </div>
                                     </div>
-                                    <nav th:if="${totalPages ne null} AND ${totalPages} >1" aria-label="Page navigation example">
+                                    <nav th:if="${totalPages ne null} AND ${totalPages} >1"
+                                         aria-label="Page navigation example">
                                         <ul class="pagination home-courses__pagination-distance">
                                             <li class="pagination-item"
                                                 th:classappend=" ${currentPage == 1} ? 'disabled' : ''">
                                                 <a th:page="${currentPage}-1" onclick="pagingInMyQuestion(this)"
-                                                        class="pagination-item__link" style="cursor: pointer">
+                                                   class="pagination-item__link" style="cursor: pointer">
                                                     <i class="pagination-item__icon fas fa-angle-left"></i>
                                                 </a>
                                             </li>
 
-                                            <li th:each="pageIndex: ${#numbers.sequence(1, totalPages)}" class="pagination-item"
+                                            <li th:each="pageIndex: ${#numbers.sequence(1, totalPages)}"
+                                                class="pagination-item"
                                                 th:classappend=" (${currentPage == pageIndex}) ? 'pagination-item--active' : '' ">
                                                 <th:block th:if="${currentPage - pageIndex == 3 }">
                                                     <span class="pagination-item__link">...</span>
                                                 </th:block>
-                                                <th:block th:if="${currentPage - pageIndex <= 2} AND ${currentPage - pageIndex >= -2}">
+                                                <th:block
+                                                        th:if="${currentPage - pageIndex <= 2} AND ${currentPage - pageIndex >= -2}">
                                                     <a th:page="${pageIndex}" onclick="pagingInMyQuestion(this)"
-                                                            th:text="${pageIndex}" th:value="${pageIndex}"
+                                                       th:text="${pageIndex}" th:value="${pageIndex}"
                                                        class="pagination-item__link" style="cursor: pointer"></a>
                                                 </th:block>
                                                 <th:block th:if="${pageIndex - currentPage == 3 }">
                                                     <span class="pagination-item__link">...</span>
                                                 </th:block>
                                             </li>
-                                            <li  class="pagination-item"
-                                                 th:classappend="${currentPage == totalPages} ? 'disabled' : ''">
+                                            <li class="pagination-item"
+                                                th:classappend="${currentPage == totalPages} ? 'disabled' : ''">
                                                 <a th:page="${currentPage}+1" onclick="pagingInMyQuestion(this)"
-                                                        class="pagination-item__link" style="cursor: pointer">
+                                                   class="pagination-item__link" style="cursor: pointer">
                                                     <i class="pagination-item__icon fas fa-angle-right"></i>
                                                 </a>
                                             </li>
@@ -167,7 +175,9 @@
 <div th:replace="~{fragments/footer :: footerSection}"></div>
 
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"

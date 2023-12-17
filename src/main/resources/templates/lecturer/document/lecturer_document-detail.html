@@ -7,6 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title th:text="'Lecturer | ' + ${document.getTitle()}"></title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -20,6 +21,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.1.81/pdf.min.js"
             integrity="sha512-RV+l/3iMDTmIt64ztJmriqLRZl2IwGHcG+655gFxUa20Uq9GljEsY3wibq5BZkGzRlMbYFHUPelVQvWvZxP38w=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- SweetAlert từ CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
 </head>
 
 <body class="app_container">
@@ -41,7 +46,7 @@
                     <div class="stu_course-content main" id="main-lecturer">
                         <div class="document-details-head">
                             <a th:href="@{/lecturer}">Home</a>
-                            <span> &gt; <a th:href="@{/lecturer/courses/list/all/1}">Courses management</a></span>
+                            <span> &gt; <a th:href="@{/lecturer/courses/list}">Courses management</a></span>
                             <span> &gt; <a th:href="@{'/lecturer/courses/' + ${topic.course.id}}"
                                            th:text="${topic.course.courseCode}"></a></span>
                             <span> &gt; <a th:href="@{'/lecturer/topics/' + ${topic.id}}"
@@ -370,6 +375,7 @@
             button.textContent = "Read more";
         }
     }
+
     const overlay = document.getElementById('overlay');
 </script>
 </body>

@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Getter
@@ -23,7 +22,7 @@ public class LecturerCourseResponseDto {
     private String startDate;
     private String endDate;
 
-    public LecturerCourseResponseDto(Lecturer lecturer, LecturerCourse lecturerCourse){
+    public LecturerCourseResponseDto(Lecturer lecturer, LecturerCourse lecturerCourse) {
         this.lecturerId = lecturer.getId();
         this.lecturerName = lecturer.getAccount().getName();
         this.lecturerEmail = lecturer.getAccount().getEmail();

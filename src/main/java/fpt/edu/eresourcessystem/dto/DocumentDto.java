@@ -1,12 +1,16 @@
 package fpt.edu.eresourcessystem.dto;
 
+import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
 import fpt.edu.eresourcessystem.model.MultiFile;
 import fpt.edu.eresourcessystem.model.ResourceType;
 import fpt.edu.eresourcessystem.model.Topic;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -40,6 +44,8 @@ public class DocumentDto {
 
     // Only use when response, no need in requests
     private DocumentEnum.DocumentStatusEnum docStatus;
+    private CourseEnum.Status courseStatus;
+
     private String createdBy;
     private String createdDate;
     private String lastModifiedBy;

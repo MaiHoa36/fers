@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <title>Admin | User logs</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css"/>
@@ -29,12 +30,13 @@
     <link rel="stylesheet" th:href="@{/css/table.css}">
 
     <style>
-       .export {
+        .export {
             float: right;
-       }
-       .dt-buttons {
-           /*padding-bottom: 50px;*/
-       }
+        }
+
+        .dt-buttons {
+            /*padding-bottom: 50px;*/
+        }
     </style>
 
 </head>
@@ -58,7 +60,8 @@
                             <div class="manager_search-box">
                                 <label>Filter by role:</label>
                                 <div class="d-flex">
-                                    <select class="lib_filter lib_search-content" onchange="filterByRole()" id="role" th:name="role">
+                                    <select class="lib_filter lib_search-content" onchange="filterByRole()" id="role"
+                                            th:name="role">
                                         <option value="all">All</option>
                                         <option th:each="role : ${roles}"
                                                 th:selected="(${roleSearch} == ${role.getDisplayValue()})"
@@ -94,12 +97,14 @@
                                 <div class="manager_search-box">
                                     <label>Search email, url: </label>
                                     <div class="d-flex">
-                                        <input class="lib_search-content" placeholder="Enter here..." th:id="search-text"
+                                        <input class="lib_search-content" placeholder="Enter here..."
+                                               th:id="search-text"
                                                th:name="search" th:value="${search}" type="text"/>
-                                        <button class="lib_search-btn-wrapper lib_search-btn" >
+                                        <button class="lib_search-btn-wrapper lib_search-btn">
                                             <i class="lib_search-btn-icon fas fa-search"></i>
                                         </button>
-                                        <a class="btn lib_show-all-btn" th:href="@{/admin/user_log/tracking}">Show all</a>
+                                        <a class="btn lib_show-all-btn" th:href="@{/admin/user_log/tracking}">Show
+                                            all</a>
                                     </div>
                                 </div>
                             </div>

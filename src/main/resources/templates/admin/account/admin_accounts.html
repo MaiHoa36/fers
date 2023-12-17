@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <title>Admin | Accounts</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css"/>
@@ -13,10 +14,12 @@
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
 
     <!-- Custom styles for this template -->
-    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+
     <link rel="stylesheet" th:href="@{/css/fragment.css}"/>
-    <link rel="stylesheet" th:href="@{/css/styles/admin.css}">
     <link th:href="@{/css/table.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/admin.css}">
+
 
     <!-- SweetAlert từ CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -28,7 +31,8 @@
             width: 70%;
             margin: 0 auto;
         }
-        .table-view tr td:last-child{
+
+        .table-view tr td:last-child {
             width: 20%;
         }
     </style>
@@ -70,7 +74,7 @@
 
                                     <input class="lib_search-content" placeholder="Enter here.." th:id="search-text"
                                            th:name="search" th:value="${search}" type="text"/>
-                                    <button class="lib_search-btn-wrapper lib_search-btn" >
+                                    <button class="lib_search-btn-wrapper lib_search-btn">
                                         <i class="lib_search-btn-icon fas fa-search"></i>
                                     </button>
                                     <a class="btn lib_show-all-btn" th:href="@{/admin/accounts/list}">Show all</a>
@@ -96,7 +100,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Role</th>
-<!--                            <th>Campus</th>-->
+                            <!--                            <th>Campus</th>-->
                             <!--                                <th></th>-->
                             </thead>
                             <tbody>
@@ -105,10 +109,10 @@
                                     <td th:text="${iterStart.index +1}"></td>
                                     <td><a class="a-link" th:href="@{'/admin/accounts/' + ${account.getId} + '/update'}"
                                            th:text="${account.name}"></a></td>
-                                    <td ><a class="a-link" th:href="@{'/admin/accounts/' + ${account.getId} + '/update'}"
-                                            th:text="${account.email}"></a></td>
+                                    <td><a class="a-link" th:href="@{'/admin/accounts/' + ${account.getId} + '/update'}"
+                                           th:text="${account.email}"></a></td>
                                     <td th:text="${account.role}"></td>
-<!--                                    <td th:text="${account.campus}"></td>-->
+                                    <!--                                    <td th:text="${account.campus}"></td>-->
                                     <!--                                    <td colspan="2">-->
                                     <!--                                        <a class="update-account"-->
                                     <!--                                           th:href="@{'/admin/accounts/'+${account.accountId} + '/update'}">Update</a>-->
@@ -157,7 +161,9 @@
 <!-- Footer -->
 <div class="row" th:replace="~{fragments/footer :: footerSection}"></div>
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!--Bootstrap script-->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>

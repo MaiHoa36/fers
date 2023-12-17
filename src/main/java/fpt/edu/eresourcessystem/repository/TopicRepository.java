@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository("topicRepository")
-public interface TopicRepository extends MongoRepository<Topic,String> {
+public interface TopicRepository extends MongoRepository<Topic, String> {
 
     @Override
     List<Topic> findAll();

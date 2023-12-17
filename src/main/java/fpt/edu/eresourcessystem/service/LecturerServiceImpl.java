@@ -1,7 +1,7 @@
 package fpt.edu.eresourcessystem.service;
 
 import com.mongodb.client.result.UpdateResult;
-import fpt.edu.eresourcessystem.dto.Response.LecturerDto;
+import fpt.edu.eresourcessystem.dto.LecturerDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.model.*;
 import fpt.edu.eresourcessystem.repository.LecturerCourseRepository;
@@ -50,13 +50,13 @@ public class LecturerServiceImpl implements LecturerService {
     public Lecturer updateLecturer(Lecturer lecturer) {
         Optional<Lecturer> foundLecturer = lecturerRepository.findById(lecturer.getId());
         if (foundLecturer.isPresent()) {
-            Lecturer result = lecturerRepository.save(lecturer);
-            return result;
+            return lecturerRepository.save(lecturer);
         }
         return null;
     }
+
     @Override
-    public  Lecturer updateCourseForLecturer(Lecturer lecturer, Course result) {
+    public Lecturer updateCourseForLecturer(Lecturer lecturer, Course result) {
         Query query = new Query(Criteria.where("id").is(lecturer.getId()));
         Update update = new Update().push("courses", new ObjectId(result.getId()));
         mongoTemplate.updateFirst(query, update, Lecturer.class);
@@ -80,19 +80,16 @@ public class LecturerServiceImpl implements LecturerService {
 
     @Override
     public List<Lecturer> findByListLecturerIds(List<String> ids) {
-        List<Lecturer> lecturers = lecturerRepository.findByIds(ids);
-        return lecturers;
+        return lecturerRepository.findByIds(ids);
     }
 
     @Override
     public Lecturer findCurrentCourseLecturer(String courseId) {
         LecturerCourse lecturerCourse = lecturerCourseRepository.findCurrentCourseLecturer(courseId);
         if (null != lecturerCourse) {
-            if (null != lecturerCourse.getId().getLecturerId()) {
-                Optional<Lecturer> lecturer = lecturerRepository.findById(
-                        lecturerCourse.getId().getLecturerId());
-                return lecturer.orElse(null);
-            }
+            Optional<Lecturer> lecturer = lecturerRepository.findById(
+                    lecturerCourse.getId().getLecturerId());
+            return lecturer.orElse(null);
         }
         return null;
     }
@@ -105,8 +102,7 @@ public class LecturerServiceImpl implements LecturerService {
     @Override
     public Page<Lecturer> findLecturerByLecturerIdLike(String lectureId, int pageIndex, int pageSize) {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
-        Page<Lecturer> page = lecturerRepository.findLecturerByIdLike(lectureId, pageable);
-        return page;
+        return lecturerRepository.findLecturerByIdLike(lectureId, pageable);
     }
 
 
@@ -133,7 +129,7 @@ public class LecturerServiceImpl implements LecturerService {
 
     @Override
     public Page<Course> findListManagingCourse(Lecturer lecturer, String search, String status, int pageIndex, int pageSize) {
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize,Sort.by(Sort.Direction.DESC, "lecturerCourseIds.createdDate"));
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.by(Sort.Direction.DESC, "lecturerCourseIds.createdDate"));
         Criteria criteria = new Criteria();
         // Sort by the "time" in descending order to get the most recent documents
         criteria.andOperator(
@@ -174,8 +170,7 @@ public class LecturerServiceImpl implements LecturerService {
 
     @Override
     public Lecturer findLecturerById(String lectureId) {
-        Lecturer lecturer = lecturerRepository.findLecturerById(lectureId);
-        return lecturer;
+        return lecturerRepository.findLecturerById(lectureId);
     }
 
     @Override
@@ -272,10 +267,6 @@ public class LecturerServiceImpl implements LecturerService {
 //    }
 
 
-
-
-
-
     @Override
     public int getFilteredCount(String searchValue) {
         if (searchValue == null || searchValue.isEmpty()) {
@@ -321,9 +312,6 @@ public class LecturerServiceImpl implements LecturerService {
 
         return new PageImpl<>(lecturerDtos, pageable, total);
     }
-
-
-
 
 
 }

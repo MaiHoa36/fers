@@ -5,10 +5,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin | Training Type </title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" /><link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
 
 
@@ -41,24 +43,25 @@
             <div class="d-flex justify-content-center">
                 <div class="lib_data-list-wrapper">
                     <div class="lib_search-container">
-<!--                        <form class="d-flex" th:action="@{/admin/trainingtypes/list/1}" method="get" th:id="search-form">-->
-                            <div class="d-flex">
-                                <div class="manager_search-box">
-                                    <label th:for="search-text">Search name, description:</label>
-                                    <div class="d-flex">
-                                        <input class="lib_search-content" type="text" placeholder="Enter here..."
-                                               th:name="search" th:id="search-text" th:value="${search}"/>
-                                        <button class="lib_search-btn-wrapper lib_search-btn">
-                                            <i class="lib_search-btn-icon fas fa-search"></i>
-                                        </button>
-                                        <div class="manager_search-box">
-                                            <a class="btn lib_show-all-btn" th:href="@{/admin/trainingtypes/list}">Show all</a>
-                                        </div>
+                        <!--                        <form class="d-flex" th:action="@{/admin/trainingtypes/list/1}" method="get" th:id="search-form">-->
+                        <div class="d-flex">
+                            <div class="manager_search-box">
+                                <label th:for="search-text">Search name, description:</label>
+                                <div class="d-flex">
+                                    <input class="lib_search-content" type="text" placeholder="Enter here..."
+                                           th:name="search" th:id="search-text" th:value="${search}"/>
+                                    <button class="lib_search-btn-wrapper lib_search-btn">
+                                        <i class="lib_search-btn-icon fas fa-search"></i>
+                                    </button>
+                                    <div class="manager_search-box">
+                                        <a class="btn lib_show-all-btn" th:href="@{/admin/trainingtypes/list}">Show
+                                            all</a>
                                     </div>
                                 </div>
-
                             </div>
-<!--                        </form>-->
+
+                        </div>
+                        <!--                        </form>-->
                         <div>
                             <a class="lib_btn-add" type="button" th:href="@{/admin/trainingtypes/add}">
                                 <i class="fa-solid fa-plus"></i>
@@ -84,7 +87,8 @@
                                 <td th:text="${iterStat.index+1}">1</td>
                                 <td><a class="a-link" th:href="@{'/admin/trainingtypes/' + ${trainingType.id}}"
                                        th:text="${trainingType.trainingTypeName}"></a></td>
-                                <td><span class="code-archive-except" th:text="${trainingType.trainingTypeDescription}"> </span></td>
+                                <td><span class="code-archive-except"
+                                          th:text="${trainingType.trainingTypeDescription}"> </span></td>
                                 <td th:text="${trainingType.getCourses().size()}">
                                 </td>
 
@@ -124,11 +128,11 @@
 
         var table = $('#filterTable-training').DataTable();
 
-        $('#search-text').on('keyup', function() {
+        $('#search-text').on('keyup', function () {
             table.search(this.value).draw();
         });
 
-        $("label").each(function() {
+        $("label").each(function () {
             if ($(this).text().indexOf('Search:') >= 0) {
                 $(this).css('display', 'none');
             }

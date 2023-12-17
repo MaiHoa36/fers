@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Librarian | Courses</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
@@ -42,11 +43,11 @@
                                                    id="searchStartDate" name="startDate"
                                                    th:value="${startDate}"
                                                    placeholder="From date"/>
-<!--                                            <span class="input-group-append">-->
-<!--                                                <span class="lib_search-btn-wrapper lib_search-btn">-->
-<!--                                                    <i class="fa-regular fa-calendar-days "></i>-->
-<!--                                                </span>-->
-<!--                                                </span>-->
+                                            <!--                                            <span class="input-group-append">-->
+                                            <!--                                                <span class="lib_search-btn-wrapper lib_search-btn">-->
+                                            <!--                                                    <i class="fa-regular fa-calendar-days "></i>-->
+                                            <!--                                                </span>-->
+                                            <!--                                                </span>-->
                                         </div>
 
                                         <div class="input-group date" style="margin-left: 0.5rem">
@@ -54,11 +55,11 @@
                                                    id="searchEndDate" name="endDate"
                                                    th:value="${endDate}"
                                                    placeholder="To date"/>
-<!--                                            <span class="input-group-append">-->
-<!--                                       <span class="lib_search-btn-wrapper lib_search-btn">-->
-<!--                                                    <i class="fa-regular fa-calendar-days "></i>-->
-<!--                                                </span>-->
-<!--                                                </span>-->
+                                            <!--                                            <span class="input-group-append">-->
+                                            <!--                                       <span class="lib_search-btn-wrapper lib_search-btn">-->
+                                            <!--                                                    <i class="fa-regular fa-calendar-days "></i>-->
+                                            <!--                                                </span>-->
+                                            <!--                                                </span>-->
                                         </div>
                                     </div>
                                 </div>
@@ -88,41 +89,42 @@
                                 </div>
 
 
-<!--                                <div class="d-flex">-->
-<!--                                    <div class="manager_search-box">-->
-<!--                                        <div class="d-flex">-->
-<!--                                            <button class="btn btn-save" type="submit">-->
-<!--                                                <i class="lib_search-btn-icon fas fa-search"></i>Search-->
-<!--                                            </button>-->
-<!--                                            <a class="btn lib_show-all-btn" th:href="@{/librarian/course-logs}">Show-->
-<!--                                                all</a>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                                <!--                                <div class="d-flex">-->
+                                <!--                                    <div class="manager_search-box">-->
+                                <!--                                        <div class="d-flex">-->
+                                <!--                                            <button class="btn btn-save" type="submit">-->
+                                <!--                                                <i class="lib_search-btn-icon fas fa-search"></i>Search-->
+                                <!--                                            </button>-->
+                                <!--                                            <a class="btn lib_show-all-btn" th:href="@{/librarian/course-logs}">Show-->
+                                <!--                                                all</a>-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
                             </div>
 
                         </div>
                     </form>
-<!--                    <form th:action="@{/librarian/courses_report}" method="get">-->
-<!--                        <label>Search course code, course name, lecturer email:</label>-->
-<!--                        <input type="text" name="search" th:value="${search}">-->
+                    <!--                    <form th:action="@{/librarian/courses_report}" method="get">-->
+                    <!--                        <label>Search course code, course name, lecturer email:</label>-->
+                    <!--                        <input type="text" name="search" th:value="${search}">-->
 
-<!--                        <label>Start Date:</label>-->
-<!--                        <input type="date" name="startDate" th:value="${startDate}">-->
+                    <!--                        <label>Start Date:</label>-->
+                    <!--                        <input type="date" name="startDate" th:value="${startDate}">-->
 
-<!--                        <label>End Date:</label>-->
-<!--                        <input type="date" name="endDate" th:value="${endDate}">-->
+                    <!--                        <label>End Date:</label>-->
+                    <!--                        <input type="date" name="endDate" th:value="${endDate}">-->
 
-<!--                        <label>Size:</label>-->
-<!--                        <input type="number" name="size" th:value="${size}" min="1">-->
-<!--                        <button type="submit">Search</button>-->
-<!--                        <button type="button" class="btn btn-save export-button" data-toggle="modal" id="exportButton">-->
-<!--                            Export-->
-<!--                        </button>-->
-<!--                    </form>-->
+                    <!--                        <label>Size:</label>-->
+                    <!--                        <input type="number" name="size" th:value="${size}" min="1">-->
+                    <!--                        <button type="submit">Search</button>-->
+                    <!--                        <button type="button" class="btn btn-save export-button" data-toggle="modal" id="exportButton">-->
+                    <!--                            Export-->
+                    <!--                        </button>-->
+                    <!--                    </form>-->
                     <!-- Button to trigger the modal -->
                     <div class="div-export">
-                        <button type="button" class="btn btn--hover export-button" data-toggle="modal" id="exportButton">
+                        <button type="button" class="btn btn--hover export-button" data-toggle="modal"
+                                id="exportButton">
                             Export
                         </button>
                     </div>
@@ -201,7 +203,8 @@
                                    th:text="${i + 1}">1</a>
                             </li>
                             <li th:if="${currentPage < totalPages - 1}">
-                                <a class="paginate_button" th:href="@{/librarian/courses_report(search=${search}, size=${size}, startDate=${startDate}, endDate=${endDate}, page=${currentPage + 1})}">Next
+                                <a class="paginate_button"
+                                   th:href="@{/librarian/courses_report(search=${search}, size=${size}, startDate=${startDate}, endDate=${endDate}, page=${currentPage + 1})}">Next
                                     &raquo;</a>
                             </li>
                         </ul>

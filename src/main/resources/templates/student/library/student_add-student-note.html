@@ -5,7 +5,8 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>New note | FPT University E-resources</title>
+    <title>New note | FPT E-resources</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -65,7 +66,8 @@
                                         <label for="editor"
                                                class="student_input-label student_input-label-doc">Content:</label>
                                     </div>
-                                    <p class="error" th:if="${#fields.hasErrors('editorContent')}" th:errors="*{editorContent}"></p>
+                                    <p class="error" th:if="${#fields.hasErrors('editorContent')}"
+                                       th:errors="*{editorContent}"></p>
                                     <p class="error-input">Content can not be empty.</p>
                                     <textarea id="editor"
                                               th:field="*{editorContent}" minlength="1"></textarea>
@@ -88,7 +90,9 @@
 <div class="row" th:replace="~{fragments/footer :: footerSection}"></div>
 
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 <!--Bootstrap script-->
@@ -147,12 +151,13 @@
     document.querySelector('#submitAllData').addEventListener('click', () => {
         console.log(newEditor.getData());
     });
-    function submitFormCreateNote(){
+
+    function submitFormCreateNote() {
         var content = newEditor.getData();
         var title = $("#noteTitle");
-        if($.trim(title) == "" || $.trim(content) == ''){
+        if ($.trim(title) == "" || $.trim(content) == '') {
             $(".error-input").css("display", "block");
-        }else {
+        } else {
             $("#add-new-mmy-note").submit();
         }
     }

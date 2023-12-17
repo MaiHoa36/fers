@@ -1,17 +1,8 @@
 package fpt.edu.eresourcessystem;
 
-import com.cksource.ckfinder.servlet.CKFinderServlet;
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.io.IOException;
-import java.nio.file.Files;
 
 @SpringBootApplication
 @EnableMongoAuditing

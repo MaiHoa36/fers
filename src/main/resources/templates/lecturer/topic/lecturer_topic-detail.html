@@ -6,6 +6,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Lecturer | Topic details</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -33,7 +34,7 @@
                     <div class="lec__courses-content main" id="main-lecturer">
                         <div class="course-details-head">
                             <a th:href="@{/lecturer}">Home</a>
-                            <span> &gt; <a th:href="@{/lecturer/courses/list/all/1}"> Courses management</a> </span>
+                            <span> &gt; <a th:href="@{/lecturer/courses/list}"> Courses management</a> </span>
                             <span> &gt; <a th:href="@{'/lecturer/courses/' + ${courseId}}"
                                            th:text="${courseCode}"></a> </span>
                             <span> &gt; <a th:href="@{'/lecturer/topics/' + ${topic.id}}"

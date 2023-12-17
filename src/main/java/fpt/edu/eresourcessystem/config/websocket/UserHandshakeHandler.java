@@ -13,6 +13,7 @@ import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import java.security.Principal;
 import java.util.Map;
+
 @Log4j2
 @Component
 public class UserHandshakeHandler extends DefaultHandshakeHandler {

@@ -4,11 +4,12 @@ let fileInput = document.getElementById('fileUploadInput');
 let cancelButton = document.getElementById('cancelUploadButton');
 let file = null;
 let isUploading = false;
-const allowedFormats = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'java',
+const allowedFormats = ['pdf', 'doc', 'docx', 'ppt', 'pptx',
     'md', 'html', 'txt', 'm4a', 'flac',
     'mp3', 'wav', 'wma', 'aac', 'ogg',
     'mp4', 'mov', 'avi', 'flv', 'mkv', 'webm',
-    'jpg', 'jpeg', 'gif', 'png', 'svg'];
+    'jpg', 'jpeg', 'gif', 'png', 'svg'
+];
 
 let replaceFileMessage = document.getElementById('replaceFileMessage');
 

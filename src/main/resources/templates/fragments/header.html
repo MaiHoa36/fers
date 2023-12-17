@@ -18,7 +18,8 @@
                     th:notification-email="${loggedInUser.email}"
                     onclick="getNotifications(this.getAttribute('notification-email'))">
                     <th:block th:unless="${notificationNumber == null}">
-                        <p class="notification-number" id="notification-number-librarian" th:text="${notificationNumber}"></p>
+                        <p class="notification-number" id="notification-number-librarian"
+                           th:text="${notificationNumber}"></p>
                     </th:block>
                     <a class="header__navbar-item-link">
                         <i class="header__navbar-icon fas fa-bell"></i>
@@ -84,7 +85,8 @@
                     th:notification-email="${loggedInUser.email}"
                     onclick="getAdminNotifications(this.getAttribute('notification-email'))">
                     <th:block th:unless="${notificationNumber == null}">
-                        <p style="display: none" class="notification-number" id="notification-number-admin" th:text="${notificationNumber}"></p>
+                        <p style="display: none" class="notification-number" id="notification-number-admin"
+                           th:text="${notificationNumber}"></p>
                     </th:block>
                     <a class="header__navbar-item-link">
                         <i class="header__navbar-icon fas fa-bell"></i>
@@ -93,7 +95,8 @@
                     <!--Notifications Header-->
                     <div class="header__notify header__bridge" id="notificationBoxAdmin" style="z-index: 1111">
                         <div class="header__notify-header">
-                            <h3 class="d-flex justify-content-between" style="margin-top:0; margin-right: 10px"><span>Received Notifications</span><span style="cursor: pointer"><i class="fa-solid fa-remove"></i></span></h3>
+                            <h3 class="d-flex justify-content-between" style="margin-top:0; margin-right: 10px"><span>Received Notifications</span><span
+                                    style="cursor: pointer"><i class="fa-solid fa-remove"></i></span></h3>
                         </div>
                         <div th:unless="${notificationNumber == null}">
                             <ul class="header__notify-list">
@@ -156,7 +159,8 @@
                         th:notification-email="${loggedInUser.email}"
                         onclick="getNotifications(this.getAttribute('notification-email'))">
                         <th:block th:unless="${notificationNumber == null}">
-                        <p style="display: none" class="notification-number" id="notification-number-lecturer" th:text="${notificationNumber}"></p>
+                            <p style="display: none" class="notification-number" id="notification-number-lecturer"
+                               th:text="${notificationNumber}"></p>
                         </th:block>
                         <a class="header__navbar-item-link">
                             <i class="header__navbar-icon fas fa-bell"></i>
@@ -165,7 +169,9 @@
                         <!--Notifications Header-->
                         <div class="header__notify header__bridge" id="notificationBoxLecturer" style="z-index: 1111">
                             <div class="header__notify-header">
-                                <h3 class="d-flex justify-content-between" style="margin-top:0; margin-right: 10px"><span>Received Notifications</span><span style="cursor: pointer"><i class="fa-solid fa-remove"></i></span></h3>
+                                <h3 class="d-flex justify-content-between" style="margin-top:0; margin-right: 10px">
+                                    <span>Received Notifications</span><span style="cursor: pointer"><i
+                                        class="fa-solid fa-remove"></i></span></h3>
                             </div>
                             <div th:unless="${notificationNumber == null}">
                                 <ul class="header__notify-list">
@@ -191,7 +197,8 @@
                     </li>
                     <li class="header__navbar-item header__navbar-user header__navbar-user-appearance">
                         <div class="header__navbar-user-wrap">
-                            <img th:src="@{/images/role_avatar/lecturer_female.jpg}" alt="" class="header__navbar-user-img">
+                            <img th:src="@{/images/role_avatar/lecturer_female.jpg}" alt=""
+                                 class="header__navbar-user-img">
                             <th:block th:if="${loggedInUser ne null}">
                                 <span class="header__navbar-user-name" th:text="${loggedInUser.name}"></span> <span
                                     class="header__navbar-user-role">(Lecturer)</span>
@@ -263,7 +270,8 @@
                         th:notification-email="${loggedInUser.email}"
                         onclick="getStudentNotifications(this.getAttribute('notification-email'))">
                         <th:block th:unless="${notificationNumber == null}">
-                            <p style="display: none" class="notification-number" id="notification-number-student" th:text="${notificationNumber}"></p>
+                            <p style="display: none" class="notification-number" id="notification-number-student"
+                               th:text="${notificationNumber}"></p>
                         </th:block>
                         <a class="header__navbar-item-link">
                             <i class="header__navbar-icon fas fa-bell"></i>
@@ -272,7 +280,9 @@
                         <!--Notifications Header-->
                         <div class="header__notify header__bridge" id="notificationBoxStudent">
                             <div class="header__notify-header">
-                                <h3 class="d-flex justify-content-between" style="margin-top:0; margin-right: 10px"><span>Received Notifications</span><span style="cursor: pointer"><i class="fa-solid fa-remove"></i></span></h3>
+                                <h3 class="d-flex justify-content-between" style="margin-top:0; margin-right: 10px">
+                                    <span>Received Notifications</span><span style="cursor: pointer"><i
+                                        class="fa-solid fa-remove"></i></span></h3>
                             </div>
                             <div th:unless="${notificationNumber == null}">
                                 <ul class="header__notify-list">
@@ -306,7 +316,7 @@
                                     class="header__navbar-user-role">(Student)</span>
 
                             </div>
-                            <div class="header__navbar-user-option-list header__bridge">
+                            <div th:unless="${loggedInUser.role.toString() eq 'STUDENT'}" class="header__navbar-user-option-list header__bridge">
                                 <div class="header__navbar-user-profile">
                                     <div class="header__navbar-user-profile-img-wrapper">
                                         <img th:src="@{/images/role_avatar/student.png}" alt=""
@@ -317,14 +327,9 @@
                                         <p th:text="${loggedInUser.dateOfBirth}"></p>
                                     </div>
                                 </div>
-                                <div class="student__log-out" th:unless="${loggedInUser.role.toString() eq 'STUDENT'}">
+                                <div class="student__log-out">
                                     <a th:href="@{/}">
                                         Back to dashboard
-                                    </a>
-                                </div>
-                                <div class="student__log-out">
-                                    <a th:href="@{/logout}">
-                                        Log out
                                     </a>
                                 </div>
                             </div>

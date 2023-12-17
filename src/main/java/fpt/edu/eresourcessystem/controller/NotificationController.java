@@ -2,13 +2,18 @@ package fpt.edu.eresourcessystem.controller;
 
 import fpt.edu.eresourcessystem.controller.advices.GlobalControllerAdvice;
 import fpt.edu.eresourcessystem.dto.NotificationDto;
-import fpt.edu.eresourcessystem.dto.QuestionDto;
 import fpt.edu.eresourcessystem.dto.Response.NotificationResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.QuestionResponseDto;
 import fpt.edu.eresourcessystem.enums.AccountEnum;
 import fpt.edu.eresourcessystem.enums.NotificationEnum;
-import fpt.edu.eresourcessystem.model.*;
-import fpt.edu.eresourcessystem.service.*;
+import fpt.edu.eresourcessystem.model.Answer;
+import fpt.edu.eresourcessystem.model.Feedback;
+import fpt.edu.eresourcessystem.model.Notification;
+import fpt.edu.eresourcessystem.model.Question;
+import fpt.edu.eresourcessystem.service.AnswerService;
+import fpt.edu.eresourcessystem.service.FeedbackService;
+import fpt.edu.eresourcessystem.service.NotificationService;
+import fpt.edu.eresourcessystem.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SendToUser;
@@ -44,10 +49,9 @@ public class NotificationController {
             notificationDto.setLink("/lecturer/documents/" + question.getDocumentId().getId() + "#" + question.getId());
         }
         Notification notification = notificationService.addNotification(notificationDto);
-        NotificationResponseDto notificationResponseDto = new NotificationResponseDto(
+        return new NotificationResponseDto(
                 notification
         );
-        return notificationResponseDto;
     }
 
     @MessageMapping("/studentReply")
@@ -62,10 +66,9 @@ public class NotificationController {
             notificationDto.setLink("/lecturer/documents/" + answer.getDocumentId().getId() + "#" + answer.getQuestion().getId());
         }
         Notification notification = notificationService.addNotification(notificationDto);
-        NotificationResponseDto notificationResponseDto = new NotificationResponseDto(
+        return new NotificationResponseDto(
                 notification
         );
-        return notificationResponseDto;
     }
 
     @MessageMapping("/reply")
@@ -81,10 +84,9 @@ public class NotificationController {
             notificationDto.setLink("/student/documents/" + answer.getDocumentId().getId() + "#" + answer.getQuestion().getId());
         }
         Notification notification = notificationService.addNotification(notificationDto);
-        NotificationResponseDto notificationResponseDto = new NotificationResponseDto(
+        return new NotificationResponseDto(
                 notification
         );
-        return notificationResponseDto;
     }
 
     @MessageMapping("/question")
@@ -103,13 +105,14 @@ public class NotificationController {
             Feedback feedback = feedbackService.getFeedbackById(notificationDto.getFeedbackId()).orElse(null);
             notificationDto.setFeedback(feedback);
             notificationDto.setTo("admin");
-            notificationDto.setLink("/admin/feedbacks/" + feedback.getId());
+            if (feedback != null) {
+                notificationDto.setLink("/admin/feedbacks/" + feedback.getId());
+            }
         }
         Notification notification = notificationService.addNotification(notificationDto);
-        NotificationResponseDto notificationResponseDto = new NotificationResponseDto(
+        return new NotificationResponseDto(
                 notification
         );
-        return notificationResponseDto;
     }
 
     @GetMapping("/notifications/{nId}")

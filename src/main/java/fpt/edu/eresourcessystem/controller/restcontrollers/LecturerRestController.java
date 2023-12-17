@@ -2,18 +2,17 @@ package fpt.edu.eresourcessystem.controller.restcontrollers;
 
 
 import fpt.edu.eresourcessystem.dto.AnswerDto;
+import fpt.edu.eresourcessystem.dto.Response.AnswerResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.QuestionResponseDto;
 import fpt.edu.eresourcessystem.dto.UserLogDto;
 import fpt.edu.eresourcessystem.enums.AccountEnum;
 import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
 import fpt.edu.eresourcessystem.model.*;
-import fpt.edu.eresourcessystem.dto.Response.AnswerResponseDto;
 import fpt.edu.eresourcessystem.service.*;
 import fpt.edu.eresourcessystem.service.s3.ImageService;
 import fpt.edu.eresourcessystem.service.s3.StorageService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,12 +43,10 @@ public class LecturerRestController {
     private final ImageService imageService;
     private final StorageService storageService;
     private final CourseLogService courseLogService;
-    private final MultiFileService multiFileService;
 
-    private UserLog addUserLog(String url) {
-        UserLog userLog = new UserLog(new UserLogDto(url, getLoggedInLecturer().getAccount().getEmail(), AccountEnum.Role.LECTURER));
-        userLog = userLogService.addUserLog(userLog);
-        return userLog;
+    private void addUserLog(String url) {
+        UserLog userLog = new UserLog(new UserLogDto(url, getLoggedInLecturerMail(), AccountEnum.Role.LECTURER));
+        userLogService.addUserLog(userLog);
     }
 
     private void addCourseLog(String courseId, String courseCode, String courseName,
@@ -60,7 +57,7 @@ public class LecturerRestController {
                               String email,
                               String oldContent,
                               String newContent) {
-        CourseLog courseLog = new CourseLog(courseId,courseCode,courseName, action, object, objectId, objectName, email, oldContent, newContent);
+        CourseLog courseLog = new CourseLog(courseId, courseCode, courseName, action, object, objectId, objectName, email, oldContent, newContent);
         courseLogService.addCourseLog(courseLog);
     }
 
@@ -241,7 +238,7 @@ public class LecturerRestController {
 
         String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Document document = documentService.findById(docId);
-        if(null != loggedInEmail && null!= document){
+        if (null != loggedInEmail && null != document) {
             List<QuestionResponseDto> questions = questionService.findByDocumentLimitAndSkip(document, 10, skip);
             return new ResponseEntity<>(questions, HttpStatus.OK);
         }

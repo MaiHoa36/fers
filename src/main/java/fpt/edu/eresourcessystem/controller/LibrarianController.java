@@ -2,9 +2,8 @@ package fpt.edu.eresourcessystem.controller;
 
 
 import fpt.edu.eresourcessystem.controller.advices.GlobalControllerAdvice;
-import fpt.edu.eresourcessystem.dto.CourseDto;
 import fpt.edu.eresourcessystem.dto.AccountDto;
-import fpt.edu.eresourcessystem.dto.Response.LecturerCourseResponseDto;
+import fpt.edu.eresourcessystem.dto.CourseDto;
 import fpt.edu.eresourcessystem.enums.AccountEnum;
 import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.model.*;
@@ -19,7 +18,6 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -31,8 +29,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,8 +39,6 @@ import static fpt.edu.eresourcessystem.constants.Constants.VERIFICATION_CODE;
 @RequiredArgsConstructor
 @RequestMapping("/librarian")
 public class LibrarianController {
-
-    private final JavaMailSender javaMailSender;
     private final GlobalControllerAdvice globalControllerAdvice;
     private final AccountService accountService;
     private final LibrarianService librarianService;
@@ -53,8 +47,7 @@ public class LibrarianController {
     private final CourseService courseService;
     private final LecturerCourseService lecturerCourseService;
     private final TrainingTypeService trainingTypeService;
-    private final  CourseLogService courseLogService;
-
+    private final CourseLogService courseLogService;
     private final ExportFileExcelUtil excelExporter;
 
     @Autowired
@@ -67,8 +60,7 @@ public class LibrarianController {
         }
         Account loggedInAccount = accountService.findByEmail(loggedInEmail);
         if (loggedInAccount != null) {
-            Librarian loggedInLibrarian = librarianService.findByAccountId(loggedInAccount.getId());
-            return loggedInLibrarian;
+            return librarianService.findByAccountId(loggedInAccount.getId());
         } else return null;
     }
 
@@ -102,7 +94,7 @@ public class LibrarianController {
 
     /**
      * @param courseDTO course service model
-     * @param lecturer lecturer
+     * @param lecturer  lecturer
      * @return add course successfully page
      */
     @PostMapping("/courses/add")
@@ -131,21 +123,21 @@ public class LibrarianController {
                 Account account = accountService.findByEmail(lecturer);
                 Lecturer foundLecturer;
                 if (null != account) { // co account
-                     foundLecturer = lecturerService.findByAccountId(account.getId());
-                     if (foundLecturer== null) {
-                         account.setRole(AccountEnum.Role.LECTURER);
-                         accountService.updateAccount(account);
-                         Lecturer lecturer2 = new Lecturer();
-                         lecturer2.setAccount(account);
-                         foundLecturer = lecturerService.addLecturer(lecturer2);
-                     }
+                    foundLecturer = lecturerService.findByAccountId(account.getId());
+                    if (foundLecturer == null) {
+                        account.setRole(AccountEnum.Role.LECTURER);
+                        accountService.updateAccount(account);
+                        Lecturer lecturer2 = new Lecturer();
+                        lecturer2.setAccount(account);
+                        foundLecturer = lecturerService.addLecturer(lecturer2);
+                    }
                 } else { // k co account
                     AccountDto accountDto = new AccountDto();
                     accountDto.setEmail(lecturer);
                     accountDto.setPassword(VERIFICATION_CODE);
                     accountDto.setRole(AccountEnum.Role.LECTURER);
                     Account account1 = accountService.addAccount(accountDto);
-                        // save account
+                    // save account
                     Lecturer lecturer1 = new Lecturer();
                     lecturer1.setAccount(account1);
                     foundLecturer = lecturerService.addLecturer(lecturer1);
@@ -191,10 +183,7 @@ public class LibrarianController {
                             lecturerService.updateCourseForLecturer(foundLecturer, result);
                             trainingTypeService.addCourseToTrainingType(courseDTO.getTrainingType().getId(), result);
                             emailService.sendCourseAssignmentEmail(lecturer, course.getCourseName());
-                            if (null != result) {
-                                return "redirect:/librarian/courses/add?success";
-
-                            }
+                            return "redirect:/librarian/courses/add?success";
                         }
                     }
                 }
@@ -214,9 +203,9 @@ public class LibrarianController {
     }
 
     /**
-     * @param courseId
-     * @param model
-     * @return
+     * @param courseId course Id
+     * @param model model
+     * @return update layout
      */
     @GetMapping({"/courses/{courseId}/update"})
     public String updateCourseProcess(@PathVariable String courseId,
@@ -239,12 +228,11 @@ public class LibrarianController {
     }
 
     /**
-     * @param course
-     * @param model
-     * @return
+     * @param course course
+     * @return updated redirect
      */
     @PostMapping("/courses/update")
-    public String updateCourse(@ModelAttribute Course course, final Model model) {
+    public String updateCourse(@ModelAttribute Course course) {
         Course checkExist = courseService.findByCourseId(course.getId());
         if (null == checkExist) {
             return "redirect:/librarian/courses/" + course.getId() + "/update?error";
@@ -260,7 +248,7 @@ public class LibrarianController {
     }
 
     /**
-     * @return
+     * @return no data first screen
      */
     @GetMapping({"/courses/list"})
     public String showCourses() {
@@ -270,7 +258,7 @@ public class LibrarianController {
     @GetMapping("/courses/list/{pageIndex}")
     String showCoursesByPage(@PathVariable Integer pageIndex,
                              @RequestParam(required = false, defaultValue = "") String search,
-                             final Model model, HttpServletRequest request) {
+                             final Model model) {
         Page<Course> page;
         page = courseService.findByCodeOrNameOrDescription(search, search, search, pageIndex, PAGE_SIZE);
         List<Integer> pages = CommonUtils.pagingFormat(page.getTotalPages(), pageIndex);
@@ -283,9 +271,9 @@ public class LibrarianController {
     }
 
     /**
-     * @param courseId
-     * @param model
-     * @return
+     * @param courseId courseId
+     * @param model model
+     * @return course detail
      */
     @GetMapping({"/courses/{courseId}"})
     public String showCourseDetail(@PathVariable String courseId, final Model model) {
@@ -294,7 +282,7 @@ public class LibrarianController {
         List<Account> accounts = accountService.findAllLecturer();
         boolean checkLecturerCourse = course.getLecturer().getId() != null;
         // find course's management history
-        List<LecturerCourse>  lecturerCourses = lecturerCourseService.findCourseManageHistory(courseId);
+        List<LecturerCourse> lecturerCourses = lecturerCourseService.findCourseManageHistory(courseId);
         LecturerCourse currentLecturerCourse = lecturerCourseService.findCurrentLecturer(courseId);
         System.out.println(currentLecturerCourse);
         model.addAttribute("course", course);
@@ -306,8 +294,8 @@ public class LibrarianController {
     }
 
     /**
-     * @param courseId
-     * @return
+     * @param courseId courseId
+     * @return after delete redirect url
      */
     @GetMapping("/courses/{courseId}/delete")
     public String deleteCourse(@PathVariable String courseId) {
@@ -320,9 +308,9 @@ public class LibrarianController {
     }
 
     /**
-     * @param courseId
-     * @param model
-     * @return
+     * @param courseId course id
+     * @param model model
+     * @return after add redirect url
      */
     @GetMapping({"/courses/{courseId}/addLecturers"})
     public String addLecturersProcess(@PathVariable String courseId, final Model model) {
@@ -336,10 +324,10 @@ public class LibrarianController {
     }
 
     /**
-     * @param courseId
-     * @param search
-     * @param model
-     * @return
+     * @param courseId course id
+     * @param search search key
+     * @param model model
+     * @return updated redirect url
      */
     @GetMapping({"/courses/{courseId}/updateLecturers"})
     public String updateLecturersProcess(@PathVariable String courseId, @RequestParam String search, final Model model) {
@@ -367,11 +355,11 @@ public class LibrarianController {
         Course course = courseService.findByCourseId(courseId);
         boolean removed1 = courseService.removeLecture(courseId);
         boolean removed = lecturerService.removeCourse(course.getLecturer().getId(), new ObjectId(courseId));
-        if(removed1 || removed){
+        if (removed1 || removed) {
             // update old lecturer course
             LecturerCourse oldLecturerCourse = lecturerCourseService.findCurrentLecturer(courseId);
             LecturerCourse newLecturerCourse = new LecturerCourse();
-            if(null != oldLecturerCourse){
+            if (null != oldLecturerCourse) {
                 lecturerCourseService.delete(oldLecturerCourse);
                 LecturerCourseId lecturerCourseId = oldLecturerCourse.getId();
                 System.out.println(oldLecturerCourse.getId().getLecturerName());
@@ -439,9 +427,9 @@ public class LibrarianController {
             LecturerCourseId lecturerCourseId = new LecturerCourseId();
             lecturerCourseId.setLecturerId(savedLecturer.getId());
             lecturerCourseId.setLecturerEmail(savedLecturer.getAccount().getEmail());
-            if(null != savedLecturer.getAccount().getName()){
+            if (null != savedLecturer.getAccount().getName()) {
                 lecturerCourseId.setLecturerName(savedLecturer.getAccount().getName());
-            }else {
+            } else {
                 lecturerCourseId.setLecturerName(savedLecturer.getAccount().getUsername());
             }
             // set course Id that added
@@ -463,8 +451,8 @@ public class LibrarianController {
 //                course.setLecturerCourseIds(lecturerCourseIds);
                 course.setLecturer(savedLecturer);
                 // update course lecturers
-      //          course = courseService.updateCourse(course);
-                course = courseService.updateLectureId(course.getId(),savedLecturer);
+                //          course = courseService.updateCourse(course);
+                course = courseService.updateLectureId(course.getId(), savedLecturer);
             }
 
             lecturerService.addCourseToLecturer(savedLecturer.getId(), new ObjectId(courseId));
@@ -475,26 +463,12 @@ public class LibrarianController {
     }
 
     @GetMapping({"/lectures"})
-    public String showLectures(final Model model) {
+    public String showLectures() {
         return "librarian/lecture/librarian_lectures";
     }
 
-    @GetMapping({"/lectures/list"})
-    public String showLecture(final Model model) {
-//        List<Lecturer> lecturers = lecturerService.findAll();
-//        List<LecturerDto> lecturerDtos = lecturers.stream()
-//                .map(LecturerDto::new)
-//                .collect(Collectors.toList());
-//
-//        model.addAttribute("lecturers", lecturerDtos);
-    //    return "redirect:/api/librarian/lectures/list?start=0&length=2&draw=1";
-        return "librarian/lecture/librarian_lectures";
-    }
-
-    @GetMapping("/lectures/list/{pageIndex}")
-    String showLectureByPage(@PathVariable Integer pageIndex,
-                             @RequestParam(required = false, defaultValue = "") String search,
-                             final Model model, HttpServletRequest request) {
+    @GetMapping("/lectures/list")
+    String showLectureByPage() {
         return "librarian/lecture/librarian_lectures";
     }
 
@@ -541,7 +515,7 @@ public class LibrarianController {
     }
 
     @PostMapping("/lectures/update")
-    public String updateLecture(@ModelAttribute("lecturer") Lecturer updatedLecture, final Model model) {
+    public String updateLecture(@ModelAttribute("lecturer") Lecturer updatedLecture) {
         // Check if the lectureId is valid (you can add additional validation)
         if (updatedLecture == null) {
             return "redirect:/error"; // Redirect to an error page or handle invalid ID
@@ -603,7 +577,7 @@ public class LibrarianController {
         Account loggedInAccount = globalControllerAdvice.getLoggedInAccount();
         if (loggedInAccount != null) {
             Student existStudent = studentService.findByAccountId(loggedInAccount.getId());
-            if(existStudent == null){
+            if (existStudent == null) {
                 Student student = new Student();
                 student.setAccount(loggedInAccount);
                 studentService.addStudent(student);
@@ -611,12 +585,13 @@ public class LibrarianController {
         }
         return "redirect:/student";
     }
+
     @GetMapping("/login_as_lecturer")
     public String loginAsLecturer() {
         Account loggedInAccount = globalControllerAdvice.getLoggedInAccount();
         if (loggedInAccount != null) {
             Lecturer existLecturer = lecturerService.findByAccountId(loggedInAccount.getId());
-            if(existLecturer == null){
+            if (existLecturer == null) {
                 Lecturer lecturer = new Lecturer();
                 lecturer.setAccount(loggedInAccount);
                 lecturerService.addLecturer(lecturer);
@@ -634,11 +609,11 @@ public class LibrarianController {
 
     @GetMapping("/courses_report")
     public String viewCourseLogs(
-            @RequestParam(name = "search", required = false,defaultValue = "") String search,
+            @RequestParam(name = "search", required = false, defaultValue = "") String search,
             @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate startDate,
-            @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-mm-dd")  LocalDate endDate,
+            @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate endDate,
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue =  "10") int size,
+            @RequestParam(name = "size", defaultValue = "10") int size,
             Model model
     ) {
         Page<CourseLog> listCourseLog = courseLogService
@@ -650,11 +625,11 @@ public class LibrarianController {
         model.addAttribute("totalItems", listCourseLog.getTotalElements());
         model.addAttribute("search", search);
         System.out.println(listCourseLog.getTotalPages());
-        if(null!=startDate){
+        if (null != startDate) {
             model.addAttribute("startDate", startDate);
         }
-        if(null!=endDate){
-        model.addAttribute("endDate", endDate);
+        if (null != endDate) {
+            model.addAttribute("endDate", endDate);
         }
 
         model.addAttribute("size", size);
@@ -664,8 +639,8 @@ public class LibrarianController {
     @GetMapping("/export-course-logs")
     public void exportCourseLogs(HttpServletResponse response,
                                  @RequestParam(name = "search", required = false) String search,
-                                 @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-mm-dd")  LocalDate startDate,
-                                 @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-mm-dd")  LocalDate endDate,
+                                 @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate startDate,
+                                 @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate endDate,
                                  @RequestParam(name = "page", defaultValue = "0") int page,
                                  @RequestParam(name = "size", defaultValue = "10") int size,
                                  @RequestParam(name = "exportAll", defaultValue = "current") String exportAll) throws IOException {
@@ -676,7 +651,7 @@ public class LibrarianController {
             String headerValue = "attachment; filename=course_logs.xlsx";
             response.setHeader(headerKey, headerValue);
             excelExporter.export(response.getOutputStream(), logs.getContent());
-        }else {
+        } else {
             List<CourseLog> logs = courseLogService.getLogsBySearchAndDateListAll(search, startDate, endDate);
             response.setContentType("application/octet-stream");
             String headerKey = "Content-Disposition";

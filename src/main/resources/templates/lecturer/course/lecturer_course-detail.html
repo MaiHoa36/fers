@@ -6,6 +6,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Lecturer | Course details</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -32,7 +33,7 @@
                     <div class="lec__courses-content main" id="main-lecturer">
                         <div class="course-details-head">
                             <a th:href="@{/lecturer}">Home</a>
-                            <span> &gt; <a th:href="@{/lecturer/courses/list/all/1}"> Courses management</a> </span>
+                            <span> &gt; <a th:href="@{/lecturer/courses/list}"> Courses management</a> </span>
                             <span> &gt; <a th:text="|${course.courseCode} - ${course.courseName}|"></a> </span>
                         </div>
                         <div class="align-items-center course-detail-info-title">
@@ -72,7 +73,9 @@
                                         th:value="${status}"
                                         th:text="${status.getDisplayValue()}"></option>
                             </select>
-                            <button type="submit" class="btn btn-save border-0" style="margin: 0 0 0 2rem; height: 30px">Save</button>
+                            <button type="submit" class="btn btn-save border-0"
+                                    style="margin: 0 0 0 2rem; height: 30px">Save
+                            </button>
                         </form>
                         <div class="add-lick-course-detail">
                             <div class="d-inline-block">
@@ -167,7 +170,8 @@
                                                     <div style="flex: 1; display: flex; justify-content: center; min-width: fit-content">
                                                         <div>
 
-                                                            <a class="lec__add-doc-icon" th:if="${course.topics.size() > 0}"
+                                                            <a class="lec__add-doc-icon"
+                                                               th:if="${course.topics.size() > 0}"
                                                                th:href="@{'/lecturer/resource_types/' + ${rtype.id} +'/documents/add'}">
                                                                 + <span>Add
                                                                 document </span></a>
@@ -235,6 +239,7 @@
 <script src="/js/lecturer/lecturer.js"></script>
 <script>
     let content = document.getElementById("content");
+
     function toggleContent() {
         let button = document.getElementById("readMoreBtn");
         if (content.classList.contains("doc-info-description")) {

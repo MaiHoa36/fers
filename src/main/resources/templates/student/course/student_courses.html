@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Course | FPT University E-resources</title>
+    <title>Courses | FPT E-resources</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -41,7 +42,7 @@
                                 <!-- Input  -->
                                 <div class="header__search-input-wrap">
                                     <input type="text" class="header__search-input"
-                                           placeholder="Enter course ..."
+                                           placeholder="Enter course name or course code..."
                                            name="search"
                                            th:id="search-text" th:value="${search}">
                                     <!-- Header-search-history -->
@@ -56,26 +57,26 @@
                                         </ul>
                                     </div>
                                 </div>
-<!--                                <div class="header__search-select">-->
-<!--                                    <select class="search-course-select" name="filter">-->
-<!--                                        <option class="search-course-option" name="filter" value="all" th:id="filter"-->
-<!--                                                th:selected="'all'==(${filter}) OR ''==(${filter})">-->
-<!--                                            <span class="">All results</span>-->
-<!--                                            <i class="fas fa-check"></i>-->
-<!--                                        </option>-->
-<!--                                        <option class="search-course-option" name="filter" value="name"-->
-<!--                                                th:selected="'name'==(${filter})"-->
-<!--                                        >-->
-<!--                                            <span class="">By name</span>-->
-<!--                                            <i class="fas fa-check"></i>-->
-<!--                                        </option>-->
-<!--                                        <option class="search-course-option" name="filter" value="code"-->
-<!--                                                th:selected="'code'==(${filter})">-->
-<!--                                            <span class="">By code</span>-->
-<!--                                            <i class="fas fa-check"></i>-->
-<!--                                        </option>-->
-<!--                                    </select>-->
-<!--                                </div>-->
+                                <!--                                <div class="header__search-select">-->
+                                <!--                                    <select class="search-course-select" name="filter">-->
+                                <!--                                        <option class="search-course-option" name="filter" value="all" th:id="filter"-->
+                                <!--                                                th:selected="'all'==(${filter}) OR ''==(${filter})">-->
+                                <!--                                            <span class="">All results</span>-->
+                                <!--                                            <i class="fas fa-check"></i>-->
+                                <!--                                        </option>-->
+                                <!--                                        <option class="search-course-option" name="filter" value="name"-->
+                                <!--                                                th:selected="'name'==(${filter})"-->
+                                <!--                                        >-->
+                                <!--                                            <span class="">By name</span>-->
+                                <!--                                            <i class="fas fa-check"></i>-->
+                                <!--                                        </option>-->
+                                <!--                                        <option class="search-course-option" name="filter" value="code"-->
+                                <!--                                                th:selected="'code'==(${filter})">-->
+                                <!--                                            <span class="">By code</span>-->
+                                <!--                                            <i class="fas fa-check"></i>-->
+                                <!--                                        </option>-->
+                                <!--                                    </select>-->
+                                <!--                                </div>-->
                                 <button class="header__search-btn" type="submit">
                                     <i class="header__search-btn-icon fas fa-search"></i>
                                 </button>
@@ -84,11 +85,15 @@
 
 
                         <div class="stu__courses-list-view">
+                            <div th:unless="${param.search}" class="d-flex justify-content-center">
+                                <img src="/images/student/search_course.png" style="width: 60%; margin-right: 10%">
+                            </div>
                             <div th:if="${param.search} AND ${courses == null} OR ${totalPages == 0}">
                                 <p class="number-count count-courses"> Result: 0 course.</p>
                             </div>
                             <div th:if="${courses ne null} AND ${courses.size() > 0}" class="list-course-content">
-                                <p class="number-count count-courses">Result: <span th:text="${courses.size()}"></span> course(s).</p>
+                                <p class="number-count count-courses">Result: <span th:text="${courses.size()}"></span>
+                                    course(s).</p>
                                 <div class="home-courses">
                                     <div class="home__course-content">
                                         <ul class="home__course-list">
@@ -101,7 +106,8 @@
                                                     <p class="home__course-description"
                                                        th:text="${course.description}"></p>
                                                     <ul class="home__course-lecturer-list">
-                                                        <li class="home__course-lecturer-item" th:if="${course.lecturer ne null}">
+                                                        <li class="home__course-lecturer-item"
+                                                            th:if="${course.lecturer ne null}">
                                                             <a class="home__course-lecturer-link"
                                                                href="">
                                                                 <span>Lecturer: </span>
@@ -113,31 +119,37 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <nav th:if="${totalPages ne null} AND ${totalPages} >1" aria-label="Page navigation example">
+                                    <nav th:if="${totalPages ne null} AND ${totalPages} >1"
+                                         aria-label="Page navigation example">
                                         <ul class="pagination home-courses__pagination-distance">
                                             <li class="pagination-item"
                                                 th:classappend=" ${currentPage == 1} ? 'disabled' : ''">
-                                                <a class="pagination-item__link previous-page-stu-course-number" style="cursor: pointer">
+                                                <a class="pagination-item__link previous-page-stu-course-number"
+                                                   style="cursor: pointer">
                                                     <i class="pagination-item__icon fas fa-angle-left"></i>
                                                 </a>
                                             </li>
 
-                                            <li th:each="pageIndex: ${#numbers.sequence(1, totalPages)}" class="pagination-item"
+                                            <li th:each="pageIndex: ${#numbers.sequence(1, totalPages)}"
+                                                class="pagination-item"
                                                 th:classappend=" (${currentPage == pageIndex}) ? 'pagination-item--active' : '' ">
                                                 <th:block th:if="${currentPage - pageIndex == 3 }">
                                                     <span class="pagination-item__link">...</span>
                                                 </th:block>
-                                                <th:block th:if="${currentPage - pageIndex <= 2} AND ${currentPage - pageIndex >= -2}">
+                                                <th:block
+                                                        th:if="${currentPage - pageIndex <= 2} AND ${currentPage - pageIndex >= -2}">
                                                     <a th:text="${pageIndex}" th:value="${pageIndex}"
-                                                       class="pagination-item__link page-stu-course-number" style="cursor: pointer"></a>
+                                                       class="pagination-item__link page-stu-course-number"
+                                                       style="cursor: pointer"></a>
                                                 </th:block>
                                                 <th:block th:if="${pageIndex - currentPage == 3 }">
                                                     <span class="pagination-item__link">...</span>
                                                 </th:block>
                                             </li>
-                                            <li  class="pagination-item"
-                                                    th:classappend="${currentPage == totalPages} ? 'disabled' : ''">
-                                                <a class="pagination-item__link next-page-stu-course-number" style="cursor: pointer">
+                                            <li class="pagination-item"
+                                                th:classappend="${currentPage == totalPages} ? 'disabled' : ''">
+                                                <a class="pagination-item__link next-page-stu-course-number"
+                                                   style="cursor: pointer">
                                                     <i class="pagination-item__icon fas fa-angle-right"></i>
                                                 </a>
                                             </li>
@@ -157,7 +169,9 @@
 
 
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"
 

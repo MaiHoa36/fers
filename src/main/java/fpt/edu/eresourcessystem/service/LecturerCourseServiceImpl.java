@@ -1,6 +1,5 @@
 package fpt.edu.eresourcessystem.service;
 
-import fpt.edu.eresourcessystem.dto.Response.LecturerCourseResponseDto;
 import fpt.edu.eresourcessystem.model.Lecturer;
 import fpt.edu.eresourcessystem.model.LecturerCourse;
 import fpt.edu.eresourcessystem.model.LecturerCourseId;
@@ -12,18 +11,14 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service("lecturerCourseService")
 @RequiredArgsConstructor
-public class LecturerCourseServiceImpl implements LecturerCourseService{
+public class LecturerCourseServiceImpl implements LecturerCourseService {
     private final LecturerCourseRepository lecturerCourseRepository;
     private final MongoTemplate mongoTemplate;
-    private final LecturerRepository lecturerRepository;
 
     @Override
     public LecturerCourse findById(LecturerCourseId lecturerCourseId) {
@@ -33,12 +28,11 @@ public class LecturerCourseServiceImpl implements LecturerCourseService{
 
     @Override
     public LecturerCourse add(LecturerCourse lecturerCourse) {
-        if(null!=lecturerCourse && null!=lecturerCourse.getId()){
-            if(null!=findById(lecturerCourse.getId())){
+        if (null != lecturerCourse && null != lecturerCourse.getId()) {
+            if (null != findById(lecturerCourse.getId())) {
                 return null;
-            }else {
-                LecturerCourse result = lecturerCourseRepository.save(lecturerCourse);
-                return result;
+            } else {
+                return lecturerCourseRepository.save(lecturerCourse);
             }
         }
         return null;
@@ -52,8 +46,7 @@ public class LecturerCourseServiceImpl implements LecturerCourseService{
     @Override
     public List<LecturerCourse> findLecturerCoursesById(Lecturer lecturer) {
 
-        List<LecturerCourse> lecturerCourseList = lecturerCourseRepository.findLecturerCoursesById(lecturer);
-        return lecturerCourseList;
+        return lecturerCourseRepository.findLecturerCoursesById(lecturer);
     }
 
     @Override
@@ -64,8 +57,7 @@ public class LecturerCourseServiceImpl implements LecturerCourseService{
                 .and("id.createdDate").exists(true)
                 .and("id.lastModifiedDate").exists(true);
         query.addCriteria(criteria);
-        List<LecturerCourse> lecturerCourses = mongoTemplate.find(query, LecturerCourse.class);
-        return lecturerCourses;
+        return mongoTemplate.find(query, LecturerCourse.class);
     }
 
     @Override
@@ -76,8 +68,7 @@ public class LecturerCourseServiceImpl implements LecturerCourseService{
                 .and("id.createdDate").exists(true)
                 .and("id.lastModifiedDate").exists(false);
         query.addCriteria(criteria);
-        LecturerCourse lecturerCourses = mongoTemplate.findOne(query, LecturerCourse.class);
-        return lecturerCourses;
+        return mongoTemplate.findOne(query, LecturerCourse.class);
     }
 
 

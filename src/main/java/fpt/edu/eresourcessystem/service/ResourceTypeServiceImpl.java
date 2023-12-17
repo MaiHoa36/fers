@@ -30,28 +30,24 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
 
     @Override
     public List<ResourceType> findAll() {
-        List<ResourceType> ResourceTypes = resourceTypeRepository.findAll();
-        return ResourceTypes;
+        return resourceTypeRepository.findAll();
     }
 
     @Override
     public List<ResourceType> findByCourseId(String courseId) {
         Query query = new Query(Criteria.where("courseId").is(courseId));
-        List<ResourceType> ResourceTypes = mongoTemplate.find(query, ResourceType.class);
-        return ResourceTypes;
+        return mongoTemplate.find(query, ResourceType.class);
     }
 
     @Override
     public ResourceType addResourceType(ResourceType ResourceType) {
         ResourceType resourceType = new ResourceType(ResourceType);
         if (null == resourceType.getId()) {
-            ResourceType result = resourceTypeRepository.insert(resourceType);
-            return result;
+            return resourceTypeRepository.insert(resourceType);
         } else {
             Optional<ResourceType> checkExist = resourceTypeRepository.findById(resourceType.getId());
-            if (!checkExist.isPresent()) {
-                ResourceType result = resourceTypeRepository.save(resourceType);
-                return result;
+            if (checkExist.isEmpty()) {
+                return resourceTypeRepository.save(resourceType);
             }
             return null;
         }
@@ -67,8 +63,7 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
     public ResourceType updateResourceType(ResourceType ResourceType) {
         Optional<ResourceType> checkExist = resourceTypeRepository.findById(ResourceType.getId());
         if (checkExist.isPresent()) {
-            ResourceType result = resourceTypeRepository.save(ResourceType);
-            return result;
+            return resourceTypeRepository.save(ResourceType);
         }
         return null;
     }

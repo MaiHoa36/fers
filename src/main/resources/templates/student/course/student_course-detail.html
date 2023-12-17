@@ -5,7 +5,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title th:text="${course.courseCode} + ' - ' + ${course.courseName}"></title>
+    <title th:text="${course.courseCode} + ' - ' + ${course.courseName} + ' | FPT E-resources'"></title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -69,9 +70,9 @@
                             <div class="topic-view-list-link">
                                 <div class="links-container">
                                     <a th:each="topic : ${course.topics}" class='link-view-detail-topic'
-                                           th:topic-id="${topic.id}"
-                                           th:id="'link-view-detail-' + ${topic.id}"
-                                           onclick=getByTopic(this.getAttribute("topic-id"))
+                                       th:topic-id="${topic.id}"
+                                       th:id="'link-view-detail-' + ${topic.id}"
+                                       onclick=getByTopic(this.getAttribute("topic-id"))
                                        th:text="${topic.topicTitle}"></a>
                                     </li>
                                 </div>
@@ -167,7 +168,8 @@
 
                                         </span>
                                         </a></p>
-                                    <div th:if="${loggedInUser.role.toString().equals('STUDENT')}" class="stu_save-course-link">
+                                    <div th:if="${loggedInUser.role.toString().equals('STUDENT')}"
+                                         class="stu_save-course-link">
                                         <p><a class="unsaved-course" th:if="${saved ne null} AND ${saved} == true"
                                               th:attr="courseId=${course.getId}">
                                             <i class="fa-solid fa-bookmark"></i>
@@ -216,7 +218,9 @@
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footerSection}"></div>
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"

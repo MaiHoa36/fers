@@ -54,6 +54,7 @@
 }
 .stu_save-doc-link{
     cursor: pointer;
+    margin-top: 1rem;
 }
 .student__course-info-view{
     padding: 0.7rem 2rem 2rem 3rem;
@@ -327,7 +328,7 @@ stu__navbar-view-doc-item:hover a{
     margin: 0.2rem 0.2rem 0.5rem 1.5rem;
     padding: 16px;
     border-radius: 5px;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .16);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
 }
 .stu__question-creater-name{
     align-items: center;
@@ -338,8 +339,7 @@ stu__navbar-view-doc-item:hover a{
 .form-student-add-doc-new-question{
     margin-top: 0.2rem;
     border-radius: 0.22rem;
-    margin-left: 1.5rem;
-    border: 1px solid #888888;
+    border: 1px solid var(--third-border-color);
     display: none;
     padding: 1rem;
 }
@@ -390,9 +390,9 @@ stu__navbar-view-doc-item:hover a{
 }
 .form-student-add-doc-new-reply{
     margin-top: 1rem;
-    margin-left: 1.2rem;
+    margin-left: .5rem;
     border-radius: 0.22rem;
-    border: 1px solid #888888;
+    border: 1px solid var(--third-border-color);
     padding: 1rem;
 }
 .input-reply-content{
@@ -486,7 +486,7 @@ stu__navbar-view-doc-item:hover a{
 }
 
 .edit-question-div input{
-    border: 1px solid #888888;
+    border: 1px solid var(--third-border-color);
     border-radius: 1rem;
     min-width: 70%;
     height: auto;
@@ -500,7 +500,7 @@ stu__navbar-view-doc-item:hover a{
     padding-left: 1rem;
 }
 .edit-reply-div input{
-    border: 1px solid #888888;
+    border: 1px solid var(--third-border-color);
     border-radius: 1rem;
     min-width: 70%;
     height: auto;
@@ -531,7 +531,7 @@ stu__navbar-view-doc-item:hover a{
     border-radius: 0.22rem;
 }
 .update-reply:focus{
-    border: 1px solid #888888;
+    border: 1px solid var(--third-border-color);
     border-radius: 0.22rem;
     outline: none;
     box-shadow: 0 0 4px #9babfc;
@@ -545,7 +545,7 @@ stu__navbar-view-doc-item:hover a{
     border-radius: 0.22rem;
 }
 .update-question:focus{
-    border: 1px solid #888888;
+    border: 1px solid var(--third-border-color);
     border-radius: 0.22rem;
     outline: none;
     box-shadow: 0 0 4px #9babfc;

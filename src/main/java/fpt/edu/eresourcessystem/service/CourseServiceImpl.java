@@ -55,7 +55,7 @@ public class CourseServiceImpl implements CourseService {
                 List<ResourceType> resourceTypes = new ArrayList<>();
                 List<String> defaultRt = Arrays.stream(DocumentEnum.DefaultTopicResourceTypes.values())
                         .map(DocumentEnum.DefaultTopicResourceTypes::getDisplayValue)
-                        .collect(Collectors.toList());
+                        .toList();
                 for (String rt : defaultRt) {
                     resourceType = new ResourceType(rt, result);
                     resourceTypes.add(resourceTypeService.addResourceType(resourceType));
@@ -88,8 +88,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course findByCourseId(String courseId) {
-        Course course = courseRepository.findByIdAndDeleteFlg(courseId, CommonEnum.DeleteFlg.PRESERVED);
-        return course;
+        return courseRepository.findByIdAndDeleteFlg(courseId, CommonEnum.DeleteFlg.PRESERVED);
     }
 
     @Override
@@ -133,8 +132,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course findByCourseCode(String courseCode) {
-        Course course = courseRepository.findByCourseCode(courseCode);
-        return course;
+        return courseRepository.findByCourseCode(courseCode);
     }
 
     @Override
@@ -186,8 +184,7 @@ public class CourseServiceImpl implements CourseService {
         // Use a Pageable to limit the result set to 5 documents
         PageRequest pageable = PageRequest.of(0, 5);
         query.with(pageable);
-        List<Course> results = mongoTemplate.find(query, Course.class);
-        return results;
+        return mongoTemplate.find(query, Course.class);
     }
 
     /*
@@ -212,9 +209,10 @@ public class CourseServiceImpl implements CourseService {
 
             // check topic existed in course
             boolean checkTopicExist = false;
-            for (int i = 0; i < topics.size(); i++) {
-                if (topics.get(i).equals(topic.getId())) {
+            for (Topic value : topics) {
+                if (value.getId().equals(topic.getId())) {
                     checkTopicExist = true;
+                    break;
                 }
             }
             // check topic not existed in course
@@ -262,9 +260,10 @@ public class CourseServiceImpl implements CourseService {
 
             // check topic existed in course
             boolean checkTopicExist = false;
-            for (int i = 0; i < resourceTypes.size(); i++) {
-                if (resourceTypes.get(i).equals(resourceType.getId())) {
+            for (ResourceType type : resourceTypes) {
+                if (type.getId().equals(resourceType.getId())) {
                     checkTopicExist = true;
+                    break;
                 }
             }
             // check topic not existed in course
@@ -302,8 +301,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> findByListId(List<String> courseIds) {
         Query query = new Query(Criteria.where("id").in(courseIds));
-        List<Course> courses = mongoTemplate.find(query, Course.class);
-        return courses;
+        return mongoTemplate.find(query, Course.class);
     }
 
     @Override
@@ -314,17 +312,15 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Page<Course> findByCodeOrNameOrDescription(String code, String name, String description, int pageIndex, int pageSize) {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
-        Page<Course> page = courseRepository.findByCourseCodeLikeOrCourseNameLikeOrDescriptionLike(code, name, description,
+        return courseRepository.findByCourseCodeLikeOrCourseNameLikeOrDescriptionLike(code, name, description,
                 pageable);
-        return page;
     }
 
     @Override
     public Page<Course> findByStatus(String status, int pageIndex, int pageSize) {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
-        Page<Course> page = courseRepository.findByStatus(status,
+        return courseRepository.findByStatus(status,
                 pageable);
-        return page;
     }
 
 
@@ -341,9 +337,8 @@ public class CourseServiceImpl implements CourseService {
 
         Query query = new Query(criteria).with(pageable);
         List<Course> results = mongoTemplate.find(query, Course.class);
-        Page<Course> page = PageableExecutionUtils.getPage(results, pageable,
+        return PageableExecutionUtils.getPage(results, pageable,
                 () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Course.class));
-        return page;
     }
 
     @Override
@@ -352,15 +347,14 @@ public class CourseServiceImpl implements CourseService {
         Criteria criteria = new Criteria();
         criteria.orOperator(
                 Criteria.where("courseName").regex(Pattern.quote(courseName.trim()), "i"),
-                criteria.where("status").is(CourseEnum.Status.PUBLISH),
-                criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
+                Criteria.where("status").is(CourseEnum.Status.PUBLISH),
+                Criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
         );
 
         Query query = new Query(criteria).with(pageable);
         List<Course> results = mongoTemplate.find(query, Course.class);
-        Page<Course> page = PageableExecutionUtils.getPage(results, pageable,
+        return PageableExecutionUtils.getPage(results, pageable,
                 () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Course.class));
-        return page;
     }
 
     @Override
@@ -369,8 +363,8 @@ public class CourseServiceImpl implements CourseService {
         Criteria criteria = new Criteria();
         criteria.orOperator(
                 Criteria.where("courseCode").regex(Pattern.quote(courseCode.trim()), "i"),
-                criteria.where("status").is(CourseEnum.Status.PUBLISH),
-                criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
+                Criteria.where("status").is(CourseEnum.Status.PUBLISH),
+                Criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
         );
 
         Query query = new Query(criteria).with(pageable);
@@ -378,9 +372,8 @@ public class CourseServiceImpl implements CourseService {
 //        Page<Course> page = new PageImpl<>(results, pageable, total);
 //        return page;
         List<Course> results = mongoTemplate.find(query, Course.class);
-        Page<Course> page = PageableExecutionUtils.getPage(results, pageable,
+        return PageableExecutionUtils.getPage(results, pageable,
                 () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Course.class));
-        return page;
     }
 
     @Override

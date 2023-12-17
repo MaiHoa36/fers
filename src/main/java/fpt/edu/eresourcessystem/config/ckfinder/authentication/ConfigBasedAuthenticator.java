@@ -1,12 +1,10 @@
 package fpt.edu.eresourcessystem.config.ckfinder.authentication;
 
 import com.cksource.ckfinder.authentication.Authenticator;
-
 import fpt.edu.eresourcessystem.config.ckfinder.config.CustomConfig;
-import org.springframework.context.ApplicationContext;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.springframework.context.ApplicationContext;
 
 /**
  * WARNING: Your authenticator should never simply return true. By doing so,

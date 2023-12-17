@@ -32,6 +32,7 @@ public class CourseEnum {
             return displayValue;
         }
     }
+
     public enum LecturerAction {
         CHANGE_STATUS("change status"),
         UPDATE("update"),
@@ -64,7 +65,6 @@ public class CourseEnum {
             return displayValue;
         }
     }
-
 
 
 }

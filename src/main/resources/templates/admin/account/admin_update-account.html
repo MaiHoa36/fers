@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Librarian | Update account</title>
+    <title>Admin | Update account</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
 
 
     <!-- Bootstrap core CSS -->
@@ -51,14 +52,14 @@
             </div>
             <div class="lib_content">
                 <div class="add-form">
-<!--                    <div th:if="${param.success}">-->
-<!--                        <div class="alert alert-info">Save account successful !!!</div>-->
-<!--                    </div>-->
-<!--                    <div th:if="${param.error}">-->
-<!--                        <div class="alert alert-danger">Please account information again !!!-->
-<!--                            Account not exist or AccountId existed.-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <!--                    <div th:if="${param.success}">-->
+                    <!--                        <div class="alert alert-info">Save account successful !!!</div>-->
+                    <!--                    </div>-->
+                    <!--                    <div th:if="${param.error}">-->
+                    <!--                        <div class="alert alert-danger">Please account information again !!!-->
+                    <!--                            Account not exist or AccountId existed.-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
                     <div class="add-form-content">
                         <form method="post" role="form" th:action="@{/admin/accounts/update}"
                               th:object="${account}" th:id="update-account">
@@ -73,7 +74,8 @@
 
                                 <tr class="lib_input-wrapper d-none">
                                     <td class="lib_input-label"><label th:for="username">Username</label></td>
-                                    <td><input type="text"  th:id="username" class="lib_input form-control" th:field="*{username}"
+                                    <td><input type="text" th:id="username" class="lib_input form-control"
+                                               th:field="*{username}"
                                                placeholder="Enter username" required>
 
                                     </td>
@@ -123,20 +125,20 @@
                                         </th:block>
                                     </td>
                                 </tr>
-<!--                                <tr class="lib_input-wrapper">-->
-<!--&lt;!&ndash;                                    <td class="lib_input-label"><label th:for="status">Campus</label></td>&ndash;&gt;-->
-<!--                                </tr>-->
-<!--                                <tr class="lib_input-wrapper">-->
-<!--                                    <td class="lib_input-label"><label th:for="campus">Campus</label></td>-->
-<!--                                    <td><select class="lib_input" th:field="*{campus}" th:id="campus">-->
-<!--                                        <option-->
-<!--                                                th:each="campus : ${campuses}"-->
-<!--                                                th:text="${campus.getDisplayValue()}"-->
-<!--                                                th:value="${campus}">-->
-<!--                                        </option>-->
-<!--                                    </select>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
+                                <!--                                <tr class="lib_input-wrapper">-->
+                                <!--&lt;!&ndash;                                    <td class="lib_input-label"><label th:for="status">Campus</label></td>&ndash;&gt;-->
+                                <!--                                </tr>-->
+                                <!--                                <tr class="lib_input-wrapper">-->
+                                <!--                                    <td class="lib_input-label"><label th:for="campus">Campus</label></td>-->
+                                <!--                                    <td><select class="lib_input" th:field="*{campus}" th:id="campus">-->
+                                <!--                                        <option-->
+                                <!--                                                th:each="campus : ${campuses}"-->
+                                <!--                                                th:text="${campus.getDisplayValue()}"-->
+                                <!--                                                th:value="${campus}">-->
+                                <!--                                        </option>-->
+                                <!--                                    </select>-->
+                                <!--                                    </td>-->
+                                <!--                                </tr>-->
                                 <tr class="lib_input-wrapper">
                                     <td class="lib_input-label"><label for="role">Role</label></td>
                                     <td>
@@ -148,23 +150,25 @@
                                         </select>
                                     </td>
                                 </tr>
-<!--                                <tr id="isAdminCheckbox" class="" th:if="(${account.role.getDisplayValue() == 'LIBRARIAN'})">-->
-<!--                                    <td></td>-->
-<!--                                    <td>-->
-<!--                                        <input type="checkbox" name="isAdmin" id="isAdmin"-->
-<!--                                        th:checked="${isAdmin}"-->
-<!--                                        >-->
-<!--                                        <label for="isAdmin">Is Admin</label>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
+                                <!--                                <tr id="isAdminCheckbox" class="" th:if="(${account.role.getDisplayValue() == 'LIBRARIAN'})">-->
+                                <!--                                    <td></td>-->
+                                <!--                                    <td>-->
+                                <!--                                        <input type="checkbox" name="isAdmin" id="isAdmin"-->
+                                <!--                                        th:checked="${isAdmin}"-->
+                                <!--                                        >-->
+                                <!--                                        <label for="isAdmin">Is Admin</label>-->
+                                <!--                                    </td>-->
+                                <!--                                </tr>-->
 
                                 <tr>
                                     <td></td>
                                     <td>
                                         <button type="submit" class="btn lib_btn-save">Update</button>
-<!--                                        <button type="button" class="btn lib_btn-delete" >Delete</button>-->
-                                        <button type="button" class="btn lib_btn-delete delete-account" th:id="${account.getId}">Delete</button>
-<!--                                        <a class="delete-account" th:id="${account.getId}">Delete</a>-->
+                                        <!--                                        <button type="button" class="btn lib_btn-delete" >Delete</button>-->
+                                        <button type="button" class="btn lib_btn-delete delete-account"
+                                                th:id="${account.getId}">Delete
+                                        </button>
+                                        <!--                                        <a class="delete-account" th:id="${account.getId}">Delete</a>-->
                                     </td>
                                 </tr>
                             </table>
@@ -179,7 +183,9 @@
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footerSection}"></div>
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"

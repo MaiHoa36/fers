@@ -28,7 +28,7 @@ public class UserLogDto {
     private AccountEnum.Role role;
     private String email;
 
-    public UserLogDto(String url, String email , AccountEnum.Role role) {
+    public UserLogDto(String url, String email, AccountEnum.Role role) {
         this.url = url;
         this.role = role;
         this.email = email;

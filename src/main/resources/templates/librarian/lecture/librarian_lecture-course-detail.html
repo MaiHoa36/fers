@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Librarian | Course detail</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
 
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
     <!-- Bootstrap core CSS -->
@@ -13,7 +14,8 @@
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css">
 
     <!-- Custom styles for this template -->
 
@@ -57,7 +59,7 @@
                     </tr>
                     <tr>
                         <th>Description</th>
-                        <td class="paragraph" th:text="${course.description}"> </td>
+                        <td class="paragraph" th:text="${course.description}"></td>
                     </tr>
                     <tr>
                         <th>Lecturer
@@ -66,18 +68,21 @@
                         </th>
                         <td th:if="${checkLecturerCourse}">
                             <p th:text="${course.getLecturer().getAccount().getName()} + ' - ' + ${course.getLecturer().getAccount().getEmail()} "></p>
-                            <p><a class="btn-info" th:href="@{'/librarian/courses/'+${course.getId()}+'/remove-lecture'}">Remove</a>
+                            <p><a class="btn-info"
+                                  th:href="@{'/librarian/courses/'+${course.getId()}+'/remove-lecture'}">Remove</a>
                             </p>
                         </td>
                         <td th:unless="${checkLecturerCourse}">
-                            <form method="post" th:field="*{accounts}" th:action="@{'/librarian/courses/' + ${course.getId()} + '/add-lecture'}">
+                            <form method="post" th:field="*{accounts}"
+                                  th:action="@{'/librarian/courses/' + ${course.getId()} + '/add-lecture'}">
                                 <!--                                <input type="text" id="lecturerEmail" name="lecturerEmail"  placeholder="Email" />-->
-                                <select id="select-multiple-account" class=" wia-filter-value selectpicker show-tick"  data-style="btn-white" name="lecturerId"  data-live-search="true"  >
+                                <select id="select-multiple-account" class=" wia-filter-value selectpicker show-tick"
+                                        data-style="btn-white" name="lecturerId" data-live-search="true">
                                     <option selected disabled th:value="0">Choose a lecturer</option>
                                     <option th:each="account : ${accounts}" th:value="${account.getId()}"
                                             th:text="${account.getEmail()}"></option>
                                 </select>
-                                <button type="submit" class="btn-info">Add </button>
+                                <button type="submit" class="btn-info">Add</button>
                             </form>
                         </td>
 
@@ -85,7 +90,8 @@
                     <tr>
                         <th></th>
                         <td>
-                            <a class="update-course" th:href="@{'/librarian/courses/'+${course.getId}+'/update'}">Edit course information</a>
+                            <a class="update-course" th:href="@{'/librarian/courses/'+${course.getId}+'/update'}">Edit
+                                course information</a>
                             | <a class="delete-course" th:id="${course.getId}" style="cursor: pointer">Delete</a>
 
                         </td>

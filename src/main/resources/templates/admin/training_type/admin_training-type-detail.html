@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>View Training Type</title>
+    <title>Admin | Training Type Details</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -62,7 +63,7 @@
 
                 <form method="post" role="form" th:action="@{/admin/trainingtypes/update}"
                       th:object="${trainingType}" th:id="update-trainingType">
-                    <table th:object="${trainingType}" >
+                    <table th:object="${trainingType}">
                         <tr class="lib_input-wrapper">
                             <td class="lib_input-label">
                                 <!--                            <label th:for="id">Training Type ID</label>-->
@@ -94,7 +95,6 @@
                                       placeholder="Enter Training Type Description" required></textarea>
                             </td>
                         </tr>
-
 
 
                         <tr class="lib_input-wrapper">
@@ -136,7 +136,7 @@
                     <tr th:each="course : ${trainingType.courses}">
                         <td th:text="${course.getCourseName()}"></td>
                         <td th:text="${course.getCourseCode()}"></td>
-                        <td  class="code-archive-except" th:text="${course.getDescription()}"></td>
+                        <td class="code-archive-except" th:text="${course.getDescription()}"></td>
                         <td th:text="${#dates.format(course.getCreatedDate(), 'dd/MM/yyyy HH:mm')}"></td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(trainingType.courses)}">
@@ -154,7 +154,9 @@
 <div th:replace="~{fragments/footer :: footerSection}"></div>
 
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!--Bootstrap script-->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
 
@@ -169,6 +171,7 @@
 <script th:inline="javascript">
 
     validateUpdateTrainingType();
+
     function showUpdateNotification() {
         var successMessage = [[${success}]];
         var errorMessage = [[${error}]];
@@ -189,7 +192,7 @@
     }
 
     // Call the function when the page loads
-    $(document).ready(function() {
+    $(document).ready(function () {
         showUpdateNotification();
 
     });

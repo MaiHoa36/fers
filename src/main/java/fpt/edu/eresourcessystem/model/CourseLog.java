@@ -1,13 +1,15 @@
 package fpt.edu.eresourcessystem.model;
 
-import fpt.edu.eresourcessystem.dto.CourseLogDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.enums.CourseEnum;
-import lombok.*;
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +40,7 @@ public class CourseLog {
     private String createdBy;
     @CreatedDate
     private LocalDateTime createdDate;
+
     public CourseLog(String courseId, String courseCode, String courseName, CourseEnum.LecturerAction action,
                      CourseEnum.CourseObject object, String objectId, String objectName, String email,
                      String oldContent, String newContent) {
@@ -53,7 +56,8 @@ public class CourseLog {
         this.newContent = newContent;
         this.deleteFlg = CommonEnum.DeleteFlg.PRESERVED;
     }
-    public String createDateToString(){
+
+    public String createDateToString() {
         return this.createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 }

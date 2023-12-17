@@ -2,6 +2,7 @@ package fpt.edu.eresourcessystem.model;
 
 import fpt.edu.eresourcessystem.dto.DocumentDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
+import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -59,6 +60,7 @@ public class Document {
     private List<String> questions;
 
     private DocumentEnum.DocumentStatusEnum status;
+    private CourseEnum.Status courseStatus;
 
     @DocumentReference(lazy = true)
     private List<Rate> rates;
@@ -109,11 +111,11 @@ public class Document {
         return Objects.hash(getId());
     }
 
-    public int getRate(){
+    public int getRate() {
         int sum = 0;
-        for(Rate rate:this.rates){
-            sum =+ rate.getRate();
+        for (Rate rate : this.rates) {
+            sum += rate.getRate();
         }
-        return sum/this.rates.size();
+        return sum / this.rates.size();
     }
 }

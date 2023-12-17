@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -24,24 +25,21 @@ public class ImageService {
 
     private final AmazonS3 s3Client;
 
-    private String localLocation = System.getProperty("user.dir");
-
     public ImageService(AmazonS3 s3Client) {
         this.s3Client = s3Client;
     }
 
     public String uploadImage(MultipartFile file) throws IOException {
+        File fileObj = convertMultiPartFileToFile(file);
         String fileName = file.getOriginalFilename();
-        String ext = fileName.substring(fileName.indexOf("."));
+        String ext = null;
+        if (fileName != null) {
+            ext = fileName.substring(fileName.indexOf("."));
+        }
         String uuidFileName = "ckeditor_image_" + UUID.randomUUID() + ext;
-        String localPath = localLocation + "/uploads/" + uuidFileName;
-        File localFile = new File(localPath);
-        file.transferTo(localFile);
-        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileName, localFile);
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, uuidFileName, fileObj);
         s3Client.putObject(putObjectRequest);
-        String s3Url = s3Client.getUrl(bucketName, fileName).toString();
-        localFile.delete();
-        return s3Url;
+        return s3Client.getUrl(bucketName, fileName).toString();
     }
 
 
@@ -49,8 +47,7 @@ public class ImageService {
         S3Object s3Object = s3Client.getObject(bucketName, fileName);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
         try {
-            byte[] content = IOUtils.toByteArray(inputStream);
-            return content;
+            return IOUtils.toByteArray(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,7 +62,7 @@ public class ImageService {
 
 
     private File convertMultiPartFileToFile(MultipartFile file) {
-        File convertedFile = new File(file.getOriginalFilename());
+        File convertedFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
         try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
             fos.write(file.getBytes());
         } catch (IOException e) {

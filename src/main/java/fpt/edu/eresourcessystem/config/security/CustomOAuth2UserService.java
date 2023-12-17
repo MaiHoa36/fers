@@ -38,20 +38,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         String clientName = userRequest.getClientRegistration().getClientName();
-        OAuth2User user =  super.loadUser(userRequest);
+        OAuth2User user = super.loadUser(userRequest);
         String email = user.<String>getAttribute("email");
         Account account = accountRepository.findByEmail(email).orElse(null);
-        if(account == null) {
-            Account newAccount = new Account();
-            newAccount.setEmail(email);
-            newAccount.setName(user.<String>getAttribute("name"));
-            newAccount.setRole(AccountEnum.Role.STUDENT);
-            newAccount.setStatus(AccountEnum.Status.ACTIVE);
+        if (account == null) {
+            Account newAccount = new Account(
+                    email,
+                    user.<String>getAttribute("name"),
+                    AccountEnum.Role.STUDENT
+            );
             newAccount.setPassword(passwordEncoder.encode(VERIFICATION_CODE));
-            newAccount.setDeleteFlg(CommonEnum.DeleteFlg.PRESERVED);
-            newAccount.setAccountType(AccountEnum.AccountType.FPT_MAIL_ACC);
             account = accountRepository.insert(newAccount);
 
+            // Create new student
             Student student = new Student();
             student.setAccount(account);
             studentService.addStudent(student);

@@ -1,6 +1,5 @@
 package fpt.edu.eresourcessystem.repository;
 
-import fpt.edu.eresourcessystem.model.Document;
 import fpt.edu.eresourcessystem.model.Feedback;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+
 @Repository("feedbackRepository")
 public interface FeedbackRepository extends MongoRepository<Feedback, String> {
     @Override

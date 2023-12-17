@@ -5,7 +5,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title th:text="${document.getTitle()}"></title>
+    <title th:text="${document.getTitle() + ' | FPT E-resources'}"></title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
@@ -77,13 +78,14 @@
                                 </div>
 
 
-                                <div th:if="${loggedInUser.role.toString().equals('STUDENT')}" class="stu_save-course-link stu_save-doc-link">
-                                    <p><a class="unsaved-doc" th:if="${saved ne null} AND ${saved} == true"
+                                <div th:if="${loggedInUser.role.toString().equals('STUDENT')}"
+                                     class="stu_save-course-link stu_save-doc-link">
+                                    <p th:if="${saved ne null} AND ${saved} == true"><a class="unsaved-doc"
                                           th:attr="docId=${document.getId}">
                                         <i class="fa-solid fa-bookmark"></i>
                                         Unbookmark</a>
                                     </p>
-                                    <p><a class="save-doc" th:if="${saved ne null} AND ${saved} == false"
+                                    <p th:if="${saved ne null} AND ${saved} == false"><a class="save-doc"
                                           th:attr="docId=${document.getId}">
                                         <i class="fa-regular fa-bookmark"></i>
                                         Bookmark</a></p>
@@ -226,7 +228,8 @@
                                 </div>
 
 
-                                <div class="stu__navbar-view-doc" th:if="${loggedInUser.role.toString().equals('STUDENT')}">
+                                <div class="stu__navbar-view-doc"
+                                     th:if="${loggedInUser.role.toString().equals('STUDENT')}">
                                     <ul class="stu__navbar-view-doc-list border-bottom">
                                         <li class="stu__navbar-view-doc-item" id="link-view-question">
                                             <a href="#question" onclick="viewSection('question')">
@@ -241,7 +244,8 @@
                                     </ul>
                                 </div>
                                 <!--Note section-->
-                                <div th:if="${loggedInUser.role.toString().equals('STUDENT')}" th:href="@{'/student/documents/'+${document.id}+'#note'}" id="note"
+                                <div th:if="${loggedInUser.role.toString().equals('STUDENT')}"
+                                     th:href="@{'/student/documents/'+${document.id}+'#note'}" id="note"
                                      class="section-view">
                                     <div class="stu__note-in-doc-view">
                                         <!--                                        <div class="stu__note-in-doc-content" th:if="${note ne null}">-->
@@ -379,7 +383,7 @@
                                                            class="display-none">Please enter something to
                                                         update.</label>
                                                     <textarea class="update-question"
-                                                           th:text="${myQuestion.questionContent}"
+                                                              th:text="${myQuestion.questionContent}"
                                                               th:id="'update-question-content-'+ ${myQuestion.questionId}"></textarea>
                                                     <button th:id="'close-update-question-'+ ${myQuestion.questionId}"
                                                             type="button" title="exist"
@@ -497,7 +501,8 @@
                                                         th:current-count="${myQuestions.size()} == 1 ? '0': ${myQuestions.size()}"
                                                         th:docId="${document.id}"
                                                         onclick="loadMoreMyQuestion(this.getAttribute('current-count'), this.getAttribute('docId'))">
-                                                    <i id="loading-more-my-question" class="fas fa-spinner fa-spin" style="display: none"></i>  Load more
+                                                    <i id="loading-more-my-question" class="fas fa-spinner fa-spin"
+                                                       style="display: none"></i> Load more
                                                 </button>
                                             </div>
                                         </div>
@@ -545,7 +550,8 @@
                                                     th:current-count="${questions.size()} == 1 ? '0': ${questions.size()}"
                                                     th:docId="${document.id}"
                                                     onclick="loadMoreOtherQuestion(this.getAttribute('current-count'), this.getAttribute('docId'))">
-                                                <i id="loading-more-other-question" class="fas fa-spinner fa-spin"  style="display: none"></i>  Load more
+                                                <i id="loading-more-other-question" class="fas fa-spinner fa-spin"
+                                                   style="display: none"></i> Load more
                                             </button>
                                         </div>
                                     </div>

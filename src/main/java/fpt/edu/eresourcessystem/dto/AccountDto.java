@@ -17,7 +17,6 @@ import java.time.LocalDate;
 @ToString
 public class AccountDto {
 
-    @NotNull
     private String id;
 
     private String password;

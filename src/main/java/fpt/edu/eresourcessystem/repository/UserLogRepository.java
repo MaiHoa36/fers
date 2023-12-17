@@ -13,5 +13,6 @@ public interface UserLogRepository extends MongoRepository<UserLog, String> {
     List<UserLog> findAll();
 
     List<UserLog> findByEmail(String email);
+
     List<UserLog> findByUrl(String url);
 }

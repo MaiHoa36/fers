@@ -1,17 +1,13 @@
 package fpt.edu.eresourcessystem.controller;
 
-import fpt.edu.eresourcessystem.controller.advices.GlobalControllerAdvice;
 import fpt.edu.eresourcessystem.dto.UserLogDto;
 import fpt.edu.eresourcessystem.enums.AccountEnum;
 import fpt.edu.eresourcessystem.model.Account;
-import fpt.edu.eresourcessystem.model.Student;
 import fpt.edu.eresourcessystem.model.UserLog;
 import fpt.edu.eresourcessystem.service.AccountService;
-import fpt.edu.eresourcessystem.service.NotificationService;
 import fpt.edu.eresourcessystem.service.UserLogService;
 import fpt.edu.eresourcessystem.utils.RedirectUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Role;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -24,16 +20,6 @@ import static fpt.edu.eresourcessystem.constants.UrlConstants.ACCESS_DENIED;
 public class AuthenticationController {
     private final AccountService accountService;
     private final UserLogService userLogService;
-    private final NotificationService notificationService;
-
-    private UserLog addUserLog(String url) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        Account loggedInUser = accountService.findByEmail(currentPrincipalName);
-        UserLog userLog = new UserLog(new UserLogDto(url,authentication.getName(),loggedInUser.getRole()));
-        userLog = userLogService.addUserLog(userLog);
-        return userLog;
-    }
 
     @GetMapping({"/", "/home"})
     public String goHomePage() {
@@ -69,8 +55,8 @@ public class AuthenticationController {
             // log user action
             String currentPrincipalName = authentication.getName();
             Account loggedInUser = accountService.findByEmail(currentPrincipalName);
-            UserLogDto userLogDto = new UserLogDto("/login",authentication.getName(), loggedInUser.getRole());
-            UserLog userLog = userLogService.addUserLog(new UserLog(userLogDto));
+            UserLogDto userLogDto = new UserLogDto("/login", authentication.getName(), loggedInUser.getRole());
+            userLogService.addUserLog(new UserLog(userLogDto));
             return redirect;
         }
         return "guest/guest_login";
@@ -83,8 +69,8 @@ public class AuthenticationController {
         Account loggedInUser = accountService.findByEmail(currentPrincipalName);
 
         // log user action
-        UserLogDto userLogDto = new UserLogDto("/logout",authentication.getName(), loggedInUser.getRole());
-        UserLog userLog = userLogService.addUserLog(new UserLog(userLogDto) );
+        UserLogDto userLogDto = new UserLogDto("/logout", authentication.getName(), loggedInUser.getRole());
+        userLogService.addUserLog(new UserLog(userLogDto));
         return "redirect:/login";
     }
 
@@ -95,7 +81,6 @@ public class AuthenticationController {
         }
         return null;
     }
-
 
 
 }

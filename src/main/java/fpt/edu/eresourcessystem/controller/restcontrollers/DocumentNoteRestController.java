@@ -18,6 +18,7 @@ public class DocumentNoteRestController {
         this.documentNoteService = documentNoteService;
         this.studentService = studentService;
     }
+
     public Student getLoggedInStudent() {
         return studentService.findAll().get(0);
     }
@@ -34,17 +35,17 @@ public class DocumentNoteRestController {
     }
 
     @PutMapping("/{noteId}/update")
-    public ResponseEntity<DocumentNote> updateStudentNote(@PathVariable(name = "noteId", required = false) String noteId, @RequestBody DocumentNote documentNote){
+    public ResponseEntity<DocumentNote> updateStudentNote(@PathVariable(name = "noteId", required = false) String noteId, @RequestBody DocumentNote documentNote) {
         DocumentNote result = documentNoteService.updateDocumentNote(documentNote);
         return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/{noteId}/delete")
     public ResponseEntity<DocumentNote> delete(@PathVariable(name = "noteId", required = false) String noteId) {
-        if(null!= noteId){
+        if (null != noteId) {
             DocumentNote documentNote = documentNoteService.findById(noteId);
             boolean delete = documentNoteService.deleteDocumentNote(documentNote);
-            if(delete){
+            if (delete) {
                 return ResponseEntity.ok(documentNote);
             }
             return null;
@@ -52,6 +53,7 @@ public class DocumentNoteRestController {
         return null;
 
     }
+
     @GetMapping("/{noteId}")
     public DocumentNote getNoteDetail(@PathVariable(name = "noteId", required = false) String noteId) {
         DocumentNote documentNote = documentNoteService.findById(noteId);

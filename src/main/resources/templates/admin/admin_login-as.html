@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin | Login as another account</title>
+    <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
 
     <link rel="stylesheet" th:href="@{/assets/fontawesome-6.4.2/css/all.css}"/>
     <!-- Bootstrap core CSS -->
@@ -59,7 +60,8 @@
                                                                            placeholder="Enter email" required>
                                         <div class="mt-2">
                                             <button type="submit" class="btn--size-s-2"
-                                                    onclick="checkAccount()">Check account</button>
+                                                    onclick="checkAccount()">Check account
+                                            </button>
                                             <div id="loadingAnimation" style="display: none;">
                                                 <!-- Add your loading animation here -->
                                                 Loading...
@@ -74,7 +76,8 @@
                                             <label for="username">Username:</label>
                                         </div>
                                         <div class="manager_right-side">
-                                            <input type="text" id="username" class="lib_input form-control manager_right-side_element" readonly>
+                                            <input type="text" id="username"
+                                                   class="lib_input form-control manager_right-side_element" readonly>
                                         </div>
                                     </div>
                                     <div class="d-flex">
@@ -82,7 +85,8 @@
                                             <label for="name">Full name:</label>
                                         </div>
                                         <div class="manager_right-side">
-                                            <input type="text" id="name" class="lib_input form-control manager_right-side_element" readonly>
+                                            <input type="text" id="name"
+                                                   class="lib_input form-control manager_right-side_element" readonly>
                                         </div>
                                     </div>
                                     <div class="d-flex">
@@ -90,13 +94,16 @@
                                             <label>Role:</label>
                                         </div>
                                         <div class="manager_right-side">
-                                            <input type="text" id="role" class="lib_input form-control manager_right-side_element" readonly>
+                                            <input type="text" id="role"
+                                                   class="lib_input form-control manager_right-side_element" readonly>
                                         </div>
                                     </div>
                                     <div class="d-flex">
                                         <div class="lib_input-label manager_left-side"></div>
                                         <div class="manager_right-side">
-                                            <button type="submit" class="btn lib_btn-save" onclick="loginAccount()">Login as this account</button>
+                                            <button type="submit" class="btn lib_btn-save" onclick="loginAccount()">
+                                                Login as this account
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -114,13 +121,14 @@
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footerSection}"></div>
 <!--jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"
 
         crossorigin="anonymous"></script>
-
 
 
 <!--Validate-->
@@ -137,8 +145,8 @@
         $.ajax({
             url: '/api/admin/account', // Replace with your server-side API endpoint
             method: 'GET',
-            data: { email: email },
-            success: function(response) {
+            data: {email: email},
+            success: function (response) {
                 loadingAnimation.hide();
                 // Update the fields with the retrieved account information
                 $('#username').val(response.username);
@@ -148,7 +156,7 @@
                 // Show the account information section
                 $('#accountInfo').show();
             },
-            error: function() {
+            error: function () {
                 loadingAnimation.hide();
                 // Handle error cases
                 Swal.fire(

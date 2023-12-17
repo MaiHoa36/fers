@@ -5,7 +5,7 @@ import fpt.edu.eresourcessystem.repository.AdminRepository;
 import org.springframework.stereotype.Service;
 
 @Service("adminService")
-public class AdminServiceImpl implements AdminService{
+public class AdminServiceImpl implements AdminService {
     private final AdminRepository adminRepository;
 
     public AdminServiceImpl(AdminRepository adminRepository) {
@@ -19,24 +19,17 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public Admin updateAdmin(Admin admin) {
-        if(null==admin.getAccount()){
-            return null;
-        }else {
-            Admin checkExist = adminRepository.findByAccountId(admin.getAccount().getId());
-            if(null!=checkExist){
-                Admin result = adminRepository.save(admin);
-                return result;
-            }
+        Admin checkExist = adminRepository.findByAccountId(admin.getAccount().getId());
+        if (null != checkExist) {
+            return adminRepository.save(admin);
         }
         return null;
     }
 
     @Override
     public Admin findByAccountId(String accountId) {
-        Admin admin = adminRepository.findByAccountId(accountId);
-        return admin;
+        return adminRepository.findByAccountId(accountId);
     }
-
 
 
 }

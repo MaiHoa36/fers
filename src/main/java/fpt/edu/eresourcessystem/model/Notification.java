@@ -4,7 +4,10 @@ import fpt.edu.eresourcessystem.dto.NotificationDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.enums.NotificationEnum;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
@@ -82,7 +85,7 @@ public class Notification {
         this.deleteFlg = CommonEnum.DeleteFlg.PRESERVED;
     }
 
-    public Notification(String fromAccount, String toAccount, String notificationContent, String linkToView){
+    public Notification(String fromAccount, String toAccount, String notificationContent, String linkToView) {
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
         this.notificationContent = notificationContent;

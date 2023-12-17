@@ -19,21 +19,22 @@
                     <div th:if="${param.error}" class="alert alert-danger" role="alert">Invalid account
                     </div>
 
-<!--                    <div class="auth-form__group ">-->
-<!--                        <input type="email" name="username" class="auth-form__input" placeholder="Your Email">-->
-<!--                    </div>-->
-<!--                    <div class="auth-form__group ">-->
-<!--                        <input type="password" name="password" class="auth-form__input" placeholder="Enter Password">-->
-<!--                    </div>-->
+                    <!--                    <div class="auth-form__group ">-->
+                    <!--                        <input type="email" name="username" class="auth-form__input" placeholder="Your Email">-->
+                    <!--                    </div>-->
+                    <!--                    <div class="auth-form__group ">-->
+                    <!--                        <input type="password" name="password" class="auth-form__input" placeholder="Enter Password">-->
+                    <!--                    </div>-->
                     <div class="auth-form__socials">
-                        <a th:href="@{/oauth2/authorization/google}"
+                        <a th:href="@{/oauth2/authorization/google}" style="height: 48px"
                            class="btn btn-login btn-primary auth-form__socials--google">
                             <i class="auth-form__socials-google-icon fab fa-google"></i>
                             <span class="auth-form__socials-title">
-                        Login with Google
+                        Login with FPT edu mail
                         </span>
                         </a>
-                        <a href="https://feid.fpt.edu.vn/Account/Login" class="btn btn-login btn--with-icon auth-form__socials--feid">
+                        <a href="https://feid.fpt.edu.vn/Account/Login" style="height: 48px"
+                           class="btn btn-login btn--with-icon auth-form__socials--feid">
                             <i class="auth-form__socials-feid-icon fa-solid fa-envelope"></i>
                             <span class="auth-form__socials-title">
                         Login with FEID
@@ -59,10 +60,10 @@
                     <!--                        </div>-->
                     <!--                    </div>-->
 
-                                        <div class="auth-form__controls mb-5">
-                                            <a href="/" id="closeLoginForm" class="btn btn--hover ">Back</a>
-                                                                    <button type="submit" class="btn btn--primary auth-form__controls-login ">Login</button>
-                                        </div>
+                    <div class="auth-form__controls mb-5 d-flex justify-content-center">
+                        <a href="/" id="closeLoginForm" class="btn btn--hover ">Back</a>
+                        <button type="submit" class="d-none btn btn--primary auth-form__controls-login ">Login</button>
+                    </div>
                 </div>
             </div>
 
