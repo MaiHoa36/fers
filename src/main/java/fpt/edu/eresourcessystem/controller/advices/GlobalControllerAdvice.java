@@ -3,9 +3,13 @@ package fpt.edu.eresourcessystem.controller.advices;
 import fpt.edu.eresourcessystem.model.Account;
 import fpt.edu.eresourcessystem.service.AccountService;
 import fpt.edu.eresourcessystem.service.NotificationService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class GlobalControllerAdvice {
@@ -44,5 +48,11 @@ public class GlobalControllerAdvice {
             return null;
         }
         return accountService.findByEmail(loggedInEmail);
+    }
+    @ExceptionHandler(NumberFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleNumberFormatException(NumberFormatException ex, Model model) {
+        model.addAttribute("errorMessage", "Invalid page index format/number format.");
+        return "exception/404";
     }
 }
