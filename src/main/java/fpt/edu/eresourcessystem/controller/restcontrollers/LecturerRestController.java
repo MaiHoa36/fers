@@ -43,12 +43,10 @@ public class LecturerRestController {
     private final ImageService imageService;
     private final StorageService storageService;
     private final CourseLogService courseLogService;
-    private final MultiFileService multiFileService;
 
-    private UserLog addUserLog(String url) {
-        UserLog userLog = new UserLog(new UserLogDto(url, getLoggedInLecturer().getAccount().getEmail(), AccountEnum.Role.LECTURER));
-        userLog = userLogService.addUserLog(userLog);
-        return userLog;
+    private void addUserLog(String url) {
+        UserLog userLog = new UserLog(new UserLogDto(url, getLoggedInLecturerMail(), AccountEnum.Role.LECTURER));
+        userLogService.addUserLog(userLog);
     }
 
     private void addCourseLog(String courseId, String courseCode, String courseName,

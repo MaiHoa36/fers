@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public class CustomOAuth2User implements OAuth2User {
-    private String oauth2ClientName;
-    private OAuth2User oauth2User;
-    private List<GrantedAuthority> authorities;
+    private final String oauth2ClientName;
+    private final OAuth2User oauth2User;
+    private final List<GrantedAuthority> authorities;
 
 
     public CustomOAuth2User(OAuth2User oauth2User, String oauth2ClientName, List<GrantedAuthority> authorities) {
@@ -36,7 +36,7 @@ public class CustomOAuth2User implements OAuth2User {
     }
 
     public String getEmail() {
-        return oauth2User.<String>getAttribute("email");
+        return oauth2User.getAttribute("email");
     }
 
     public String getOauth2ClientName() {

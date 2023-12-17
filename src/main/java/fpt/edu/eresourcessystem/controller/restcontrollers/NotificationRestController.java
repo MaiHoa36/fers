@@ -20,7 +20,6 @@ public class NotificationRestController {
 
     @GetMapping("/{accountId}")
     public List<NotificationResponseDto> getNotifications(@PathVariable(name = "accountId", required = false) String accountId) {
-        List<NotificationResponseDto> notificationResponseDtos = notificationService.findByToAccount(accountId);
-        return notificationResponseDtos;
+        return notificationService.findByToAccount(accountId);
     }
 }

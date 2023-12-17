@@ -32,20 +32,17 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public List<Topic> findAll() {
-        List<Topic> topics = topicRepository.findAll();
-        return topics;
+        return topicRepository.findAll();
     }
 
     @Override
     public Topic addTopic(Topic topic) {
         if (null == topic.getId()) {
-            Topic result = topicRepository.save(topic);
-            return result;
+            return topicRepository.save(topic);
         } else {
             Optional<Topic> checkExist = topicRepository.findById(topic.getId());
-            if (!checkExist.isPresent()) {
-                Topic result = topicRepository.save(topic);
-                return result;
+            if (checkExist.isEmpty()) {
+                return topicRepository.save(topic);
             }
             return null;
         }
@@ -61,8 +58,7 @@ public class TopicServiceImpl implements TopicService {
     public Topic updateTopic(Topic topic) {
         Optional<Topic> checkExist = topicRepository.findById(topic.getId());
         if (checkExist.isPresent()) {
-            Topic result = topicRepository.save(topic);
-            return result;
+            return topicRepository.save(topic);
         }
         return null;
     }
@@ -129,13 +125,10 @@ public class TopicServiceImpl implements TopicService {
 //        query.fields().include("id", "topic", "title", "description", "lastModifiedDate");
 //        List<Document> documents = mongoTemplate.find(query, Document.class);
         Optional<Topic> topic = topicRepository.findById(topicId);
-        if (topic.isPresent()) {
-            List<DocumentResponseDto> responseList = topic.get().getDocuments().stream()
-                    .filter(entity -> CommonEnum.DeleteFlg.PRESERVED.equals(entity.getDeleteFlg()))
-                    .map(entity -> new DocumentResponseDto(entity))
-                    .collect(Collectors.toList());
-            return responseList;
-        } else return null;
+        return topic.map(value -> value.getDocuments().stream()
+                .filter(entity -> CommonEnum.DeleteFlg.PRESERVED.equals(entity.getDeleteFlg()))
+                .map(DocumentResponseDto::new)
+                .collect(Collectors.toList())).orElse(null);
 
     }
 }

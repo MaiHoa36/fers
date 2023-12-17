@@ -28,8 +28,8 @@ public class StudentNoteServiceImpl implements StudentNoteService {
 
     private final StudentNoteRepository studentNoteRepository;
     private final MongoTemplate mongoTemplate;
-    private GridFsTemplate template;
-    private GridFsOperations operations;
+    private final GridFsTemplate template;
+    private final GridFsOperations operations;
 
     public StudentNoteServiceImpl(StudentNoteRepository studentNoteRepository, MongoTemplate mongoTemplate, GridFsTemplate template, GridFsOperations operations) {
         this.studentNoteRepository = studentNoteRepository;
@@ -40,9 +40,8 @@ public class StudentNoteServiceImpl implements StudentNoteService {
 
     @Override
     public StudentNote findById(String studentNoteId) {
-        StudentNote studentNote = studentNoteRepository
+        return studentNoteRepository
                 .findByIdAndDeleteFlg(studentNoteId, CommonEnum.DeleteFlg.PRESERVED);
-        return studentNote;
     }
 
     @Override
@@ -55,9 +54,8 @@ public class StudentNoteServiceImpl implements StudentNoteService {
         criteria.and("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED);
         Query query = new Query(criteria).with(Sort.by(Sort.Order.desc("createdDate"))).with(pageable);
         List<StudentNote> results = mongoTemplate.find(query, StudentNote.class);
-        Page<StudentNote> page = PageableExecutionUtils.getPage(results, pageable,
+        return PageableExecutionUtils.getPage(results, pageable,
                 () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), StudentNote.class));
-        return page;
     }
 
     @Override
@@ -77,13 +75,11 @@ public class StudentNoteServiceImpl implements StudentNoteService {
     public StudentNote addStudentNote(StudentNoteDto studentNoteDTO) {
         //search file
         if (null == studentNoteDTO.getId()) {
-            StudentNote result = studentNoteRepository.save(new StudentNote(studentNoteDTO));
-            return result;
+            return studentNoteRepository.save(new StudentNote(studentNoteDTO));
         } else {
             Optional<StudentNote> checkExist = studentNoteRepository.findById(studentNoteDTO.getId());
-            if (!checkExist.isPresent()) {
-                StudentNote result = studentNoteRepository.save(new StudentNote(studentNoteDTO));
-                return result;
+            if (checkExist.isEmpty()) {
+                return studentNoteRepository.save(new StudentNote(studentNoteDTO));
             }
             return null;
         }
@@ -97,8 +93,7 @@ public class StudentNoteServiceImpl implements StudentNoteService {
         StudentNote savedStudentNote = studentNoteRepository
                 .findByIdAndDeleteFlg(studentNote.getId(), CommonEnum.DeleteFlg.PRESERVED);
         if (null != savedStudentNote) {
-            StudentNote result = studentNoteRepository.save(studentNote);
-            return result;
+            return studentNoteRepository.save(studentNote);
         }
         return null;
     }

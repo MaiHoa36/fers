@@ -1,13 +1,11 @@
 package fpt.edu.eresourcessystem.controller;
 
-import fpt.edu.eresourcessystem.controller.advices.GlobalControllerAdvice;
 import fpt.edu.eresourcessystem.dto.AccountDto;
 import fpt.edu.eresourcessystem.dto.TrainingTypeDto;
 import fpt.edu.eresourcessystem.enums.AccountEnum;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.model.*;
 import fpt.edu.eresourcessystem.service.*;
-import fpt.edu.eresourcessystem.service.security.CustomizeUserDetailsService;
 import fpt.edu.eresourcessystem.utils.CommonUtils;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -18,7 +16,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -40,10 +37,7 @@ import static fpt.edu.eresourcessystem.constants.UrlConstants.*;
 @AllArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
-    private final GlobalControllerAdvice globalControllerAdvice;
     private final AuthenticationController authenticationController;
-
-    private final CustomizeUserDetailsService customizeUserDetailsService;
     private final AccountService accountService;
     private final AdminService adminService;
     private final LibrarianService librarianService;
@@ -90,33 +84,9 @@ public class AdminController {
         return "admin/account/admin_accounts";
     }
 
-
-    @GetMapping("/systemLog")
-    String manageSystemLog() {
-        return "admin/system_log/admin_system_logs";
-    }
-
     @GetMapping("/systemLog/userLog")
     String viewUserLog() {
         return "admin/system_log/admin_user_logs";
-    }
-
-    @GetMapping("/systemLog/courseLog")
-    String viewCourseLog() {
-        return "admin/system_log/admin_course_logs";
-    }
-
-    @GetMapping("/systemLog/documentLog")
-    String viewDocumentLog() {
-        return "admin/system_log/admin_document_logs";
-    }
-
-    /*
-        This function to display detail of courses for admin
-     */
-    @GetMapping("/course/{courseId}")
-    String getCourseByLibrarian(@PathVariable String courseId, final Model model) {
-        return "admin/course_creator/admin_course_detail";
     }
 
     /*
@@ -124,13 +94,8 @@ public class AdminController {
      */
     @GetMapping("/course_creator/list")
     String findCourseByLibrarianList(final Model model) {
-
-//        List<Account> librarianList = accountService.findAllLibrarian();
-
         List<Librarian> librarians = librarianService.findAll();
         model.addAttribute("librarians", librarians);
-//        model.addAttribute("librarians", librarian);
-//        model.addAttribute("courses", courses);
 
         return "admin/course_creator/admin_course_creators";
     }
@@ -173,7 +138,7 @@ public class AdminController {
     }
 
     @PostMapping("/accounts/add")
-    public String addAccount(@ModelAttribute AccountDto accountDTO) {
+    public String addAccount(@ModelAttribute AccountDto accountDTO, final Model model) {
         String email = accountDTO.getEmail();
         accountDTO.setPassword(VERIFICATION_CODE);
         AccountEnum.Role role = accountDTO.getRole();
@@ -259,7 +224,7 @@ public class AdminController {
                     Librarian librarian = librarianService.findByAccountId(accountDTO.getId());
                     if (librarian == null) {
                         Librarian newLibrarian = new Librarian();
-                        librarian.setAccount(account);
+                        newLibrarian.setAccount(account);
                         librarianService.addLibrarian(newLibrarian);
                     } else {
                         librarianService.updateLibrarian(librarian);
@@ -269,7 +234,7 @@ public class AdminController {
                     Student student = studentService.findByAccountId(account.getId());
                     if (null == student) {
                         Student newStudent = new Student();
-                        student.setAccount(account);
+                        newStudent.setAccount(account);
                         studentService.updateStudent(newStudent);
                     }
                 }
@@ -277,7 +242,7 @@ public class AdminController {
                     Lecturer lecturer = lecturerService.findByAccountId(account.getId());
                     if (null == lecturer) {
                         Lecturer newLecturer = new Lecturer();
-                        lecturer.setAccount(account);
+                        newLecturer.setAccount(account);
                         lecturerService.addLecturer(newLecturer);
                     } else {
                         lecturerService.updateLecturer(lecturer);
@@ -346,7 +311,7 @@ public class AdminController {
         foundAccount.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
         Account account = accountService.updateAccount(foundAccount);
         if (null == account) {
-            return "redirect: /admin/accounts/updated/" + accountId + "?error";
+            return "redirect: /admin/accounts/updated/" + accountId + ERROR_PARAM;
         }
         return "redirect: /admin/accounts/list?success";
     }
@@ -362,11 +327,6 @@ public class AdminController {
         model.addAttribute("roles", AccountEnum.Role.values());
         model.addAttribute("roleSearch", roleSearch);
         return "admin/system_log/admin_user_logs";
-    }
-
-    @GetMapping("/course_log/tracking")
-    public String courseLogManage() {
-        return "admin/system_log/admin_course_logs";
     }
 
 //    @GetMapping("/feedbacks/list/{pageIndex}")
@@ -425,7 +385,7 @@ public class AdminController {
         }
         try {
             TrainingType trainingType1 = new TrainingType(trainingType);
-            TrainingType save = trainingTypeService.save(trainingType1);
+            trainingTypeService.save(trainingType1);
             redirectAttributes.addFlashAttribute("success", "Training Type added successfully.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error occurred while adding Training Type.");
@@ -523,11 +483,6 @@ public class AdminController {
         return "redirect:/admin/feedbacks/list";
     }
 
-    @GetMapping("/document_log/tracking")
-    public String documentLogManage() {
-        return "admin/system_log/admin_document_logs";
-    }
-
     /*
         Login as
      */
@@ -541,8 +496,6 @@ public class AdminController {
     public String loginAs(@PathVariable String email) {
         //Log out
         SecurityContextHolder.getContext().setAuthentication(null);
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        Account account = accountService.findByEmail(email);
         Authentication authenticationRequest =
                 UsernamePasswordAuthenticationToken.unauthenticated(email, VERIFICATION_CODE);
         Authentication authentication = this.authenticationManager.authenticate(authenticationRequest);

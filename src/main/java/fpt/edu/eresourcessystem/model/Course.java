@@ -70,7 +70,7 @@ public class Course {
     private String lastModifiedDate;
 
     // Constructor DTO
-    public Course(CourseDto courseDTO, CourseEnum.Status status) {
+    public Course(CourseDto courseDTO, CourseEnum.@NotNull Status status) {
         this.id = courseDTO.getId();
         this.librarian = courseDTO.getLibrarian();
         this.lecturer = courseDTO.getLecturer();
@@ -97,10 +97,7 @@ public class Course {
 
         Course course = (Course) o;
 
-        if (lecturer != null ? !lecturer.getId().equals(course.lecturer.getId()) : course.lecturer != null)
-            return false;
-
-        return true;
+        return lecturer != null ? lecturer.getId().equals(course.lecturer.getId()) : course.lecturer == null;
     }
 
     @Override

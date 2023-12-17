@@ -112,7 +112,7 @@ public class Document {
     public int getRate() {
         int sum = 0;
         for (Rate rate : this.rates) {
-            sum = +rate.getRate();
+            sum += rate.getRate();
         }
         return sum / this.rates.size();
     }

@@ -42,7 +42,7 @@
                                 <!-- Input  -->
                                 <div class="header__search-input-wrap">
                                     <input type="text" class="header__search-input"
-                                           placeholder="Enter course ..."
+                                           placeholder="Enter course name or course code..."
                                            name="search"
                                            th:id="search-text" th:value="${search}">
                                     <!-- Header-search-history -->
@@ -85,6 +85,9 @@
 
 
                         <div class="stu__courses-list-view">
+                            <div th:unless="${param.search}" class="d-flex justify-content-center">
+                                <img src="/images/student/search_course.png" style="width: 60%; margin-right: 10%">
+                            </div>
                             <div th:if="${param.search} AND ${courses == null} OR ${totalPages == 0}">
                                 <p class="number-count count-courses"> Result: 0 course.</p>
                             </div>

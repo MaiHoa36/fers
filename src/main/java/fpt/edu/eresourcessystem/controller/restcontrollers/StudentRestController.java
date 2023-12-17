@@ -49,10 +49,9 @@ public class StudentRestController {
     private final TopicService topicService;
     private final SimpMessagingTemplate messagingTemplate;
     private final StorageService storageService;
-    private final LecturerService lecturerService;
 
     private void addUserLog(String url) {
-        UserLog userLog = new UserLog(new UserLogDto(url, getLoggedInStudent().getAccount().getEmail(), AccountEnum.Role.STUDENT));
+        UserLog userLog = new UserLog(new UserLogDto(url, getLoggedInStudentMail(), AccountEnum.Role.STUDENT));
         userLogService.addUserLog(userLog);
     }
 
@@ -63,13 +62,12 @@ public class StudentRestController {
     }
 
     public String getLoggedInStudentMail() {
-        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        return loggedInEmail;
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     @PostMapping("/documents/{documentId}/save_document")
     @Transactional
-    public ResponseEntity saveDocument(@PathVariable String documentId) {
+    public ResponseEntity<?> saveDocument(@PathVariable String documentId) {
         // get account authorized
         Student student = getLoggedInStudent();
         if (null != documentService.findById(documentId)) {
@@ -77,18 +75,18 @@ public class StudentRestController {
             if (result) {
                 // add log
                 addUserLog("/api/student/documents/" + documentId + "/save_document");
-                return new ResponseEntity(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/documents/{documentId}/unsaved_document")
     @Transactional
-    public ResponseEntity unsavedDoc(@PathVariable String documentId) {
+    public ResponseEntity<HttpStatus> unsavedDoc(@PathVariable String documentId) {
         // get account authorized
         Student student = getLoggedInStudent();
         if (null != documentService.findById(documentId)) {
@@ -96,12 +94,12 @@ public class StudentRestController {
             if (result) {
                 // add log
                 addUserLog("/api/student/documents/" + documentId + "/unsaved_document");
-                return new ResponseEntity(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "/question/add", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
@@ -110,7 +108,7 @@ public class StudentRestController {
         Student student = getLoggedInStudent();
         Document document = documentService.findById(docId);
         if (null == student || null == questionDTO || null == document) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         questionDTO.setStudent(student);
         questionDTO.setLecturer(document.getCreatedBy());
@@ -162,7 +160,7 @@ public class StudentRestController {
     public ResponseEntity<List<AnswerResponseDto>> getAnswerOfQuestion(@PathVariable String questionId) {
         Question question = questionService.findById(questionId);
         if (null == question) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         List<Answer> answers = answerService.findByQuestion(question);
         if (null != answers) {
@@ -183,7 +181,7 @@ public class StudentRestController {
 
     @PostMapping("/courses/{courseId}/save_course")
     @Transactional
-    public ResponseEntity saveCourse(@PathVariable String courseId) {
+    public ResponseEntity<HttpStatus> saveCourse(@PathVariable String courseId) {
         // get account authorized
         Student student = getLoggedInStudent();
         if (null != courseService.findByCourseId(courseId)) {
@@ -193,18 +191,18 @@ public class StudentRestController {
                 // add log
                 addUserLog("/student/course/" + courseId + "/save_course");
 //                return "saved";
-                return new ResponseEntity(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/courses/{courseId}/unsaved_course")
     @Transactional
-    public ResponseEntity unsavedCourse(@PathVariable String courseId) {
+    public ResponseEntity<HttpStatus> unsavedCourse(@PathVariable String courseId) {
         // get account authorized
         Student student = getLoggedInStudent();
         if (null != courseService.findByCourseId(courseId)) {
@@ -213,12 +211,12 @@ public class StudentRestController {
             if (result) {
                 // add log
                 addUserLog("/api/student/course/" + courseId + "/unsaved_course");
-                return new ResponseEntity(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "/document_note/add/{documentId}", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
@@ -228,7 +226,7 @@ public class StudentRestController {
         Student student = getLoggedInStudent();
         Document document = documentService.findById(documentId);
         if (null == student || null == noteContent || "".equals(noteContent.trim()) || null == document) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         DocumentNote documentNote = new DocumentNote();
         documentNote.setStudentId(student.getId());
@@ -252,7 +250,7 @@ public class StudentRestController {
         Student student = getLoggedInStudent();
         Document document = documentService.findById(documentId);
         if (null == student || null == noteContent || "".equals(noteContent.trim()) || null == document) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         DocumentNote documentNote = documentNoteService.findByDocIdAndStudentId(documentId, student.getId());
         documentNote.setNoteContent(noteContent);
@@ -260,20 +258,19 @@ public class StudentRestController {
         if (null != result) {
             // add log
             addUserLog("/api/student/document_note" + documentId + "/update");
-            ResponseEntity<DocumentNote> responseEntity = new ResponseEntity<>(result, HttpStatus.OK);
-            return responseEntity;
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping(value = "/document_note/{documentId}/delete")
     @Transactional
-    public ResponseEntity deleteNoteDocument(@PathVariable String documentId) {
+    public ResponseEntity<?> deleteNoteDocument(@PathVariable String documentId) {
         Student student = getLoggedInStudent();
         Document document = documentService.findById(documentId);
         if (null == student || null == document) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         DocumentNote documentNote = documentNoteService.findByDocIdAndStudentId(documentId, student.getId());
         if (null != documentNote) {
@@ -281,28 +278,25 @@ public class StudentRestController {
             if (check) {
                 // add log
                 addUserLog("/api/student/document_note" + documentId + "/delete");
-                return new ResponseEntity(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        } else {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/documents/get_by_topic/{topicId}", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<DocumentResponseDto>> getDocumentOfTopic(@PathVariable String topicId) {
         Topic topic = topicService.findById(topicId);
         if (null == topic) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         List<DocumentResponseDto> documents = topicService.findByTopic(topicId);
         if (null != documents) {
             // add log
             addUserLog("/api/student/documents/get_by_topic/" + topicId);
-            ResponseEntity<List<DocumentResponseDto>> responseEntity = new ResponseEntity<>(documents, HttpStatus.OK);
-            return responseEntity;
+            return new ResponseEntity<>(documents, HttpStatus.OK);
         } else {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -310,13 +304,12 @@ public class StudentRestController {
     public ResponseEntity<List<QuestionResponseDto>> getWaitQuestion() {
         Student student = getLoggedInStudent();
         if (null == student) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             // add log
             addUserLog("/api/student/my_question/new_question/");
             List<QuestionResponseDto> questionResponseDtos = questionService.findWaitReplyQuestionForStudent(student.getId());
-            ResponseEntity<List<QuestionResponseDto>> responseEntity = new ResponseEntity<>(questionResponseDtos, HttpStatus.OK);
-            return responseEntity;
+            return new ResponseEntity<>(questionResponseDtos, HttpStatus.OK);
         }
 
     }
@@ -327,17 +320,16 @@ public class StudentRestController {
                                                               @RequestParam String questionContent) {
         Question question = questionService.findById(questionId);
         if (null == question) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
-            if (null != questionContent && "" != questionContent.trim()) {
+            if (null != questionContent && !"".equals(questionContent.trim())) {
                 question.setContent(questionContent);
                 question = questionService.updateQuestion(question);
                 // add log
                 addUserLog("/api/student/my_question/" + questionId + "/update");
-                ResponseEntity<QuestionResponseDto> responseEntity = new ResponseEntity<>(new QuestionResponseDto(question), HttpStatus.OK);
-                return responseEntity;
+                return new ResponseEntity<>(new QuestionResponseDto(question), HttpStatus.OK);
             } else {
-                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
 
@@ -345,18 +337,18 @@ public class StudentRestController {
 
     @PostMapping(value = "/my_question/{questionId}/delete")
     @Transactional
-    public ResponseEntity deleteQuestion(@PathVariable String questionId) {
+    public ResponseEntity<HttpStatus> deleteQuestion(@PathVariable String questionId) {
         Question question = questionService.findById(questionId);
         if (null == question) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             boolean check = questionService.deleteQuestion(question);
             if (check) {
                 // add log
                 addUserLog("/api/student/my_question/" + questionId + "/delete");
-                return new ResponseEntity(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
         }
@@ -368,13 +360,12 @@ public class StudentRestController {
     public ResponseEntity<List<QuestionResponseDto>> getNewReplyQuestion() {
         Student student = getLoggedInStudent();
         if (null == student) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             // add log
             addUserLog("/api/student/my_question/new_replies");
             List<QuestionResponseDto> questionResponseDtos = questionService.findNewReplyQuestionStudent(student.getId());
-            ResponseEntity<List<QuestionResponseDto>> responseEntity = new ResponseEntity<>(questionResponseDtos, HttpStatus.OK);
-            return responseEntity;
+            return new ResponseEntity<>(questionResponseDtos, HttpStatus.OK);
         }
 
     }
@@ -384,18 +375,17 @@ public class StudentRestController {
     public ResponseEntity<AnswerResponseDto> updateReply(@PathVariable String answerId, @RequestParam String answerContent) {
         Answer answer = answerService.findById(answerId);
         if (null == answer) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
-            if (null != answerContent && "" != answerContent.trim()) {
+            if (null != answerContent && !"".equals(answerContent.trim())) {
                 answer.setAnswer(answerContent);
                 answer.setStatus(QuestionAnswerEnum.Status.READ);
                 answer = answerService.updateAnswer(answer);
                 // add log
                 addUserLog("/api/student/my_question/replies/" + answerId + "/update");
-                ResponseEntity<AnswerResponseDto> responseEntity = new ResponseEntity<>(new AnswerResponseDto(answer), HttpStatus.OK);
-                return responseEntity;
+                return new ResponseEntity<>(new AnswerResponseDto(answer), HttpStatus.OK);
             } else {
-                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
     }
@@ -405,7 +395,7 @@ public class StudentRestController {
     public ResponseEntity<AnswerResponseDto> deleteReply(@PathVariable String answerId) {
         Answer answer = answerService.findById(answerId);
         if (null == answer) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             boolean check = answerService.deleteAnswer(answer);
             if (check) {
@@ -415,9 +405,9 @@ public class StudentRestController {
                 Question question = questionService.findById(answer.getQuestion().getId());
                 question.getAnswers().remove(answer);
                 questionService.updateQuestion(question);
-                return new ResponseEntity(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
     }
@@ -426,15 +416,14 @@ public class StudentRestController {
     public ResponseEntity<HashMap<String, List<DocumentResponseDto>>> findCourseDocumentByResource(@PathVariable String resourceId,
                                                                                                    @PathVariable String courseId) {
         HashMap<String, List<DocumentResponseDto>> documents = documentService.findAllDocumentsByCourseAndResourceType(courseId, resourceId);
-        ResponseEntity<HashMap<String, List<DocumentResponseDto>>> responseEntity = new ResponseEntity<>(documents, HttpStatus.OK);
-//        for (TopicResponseDto key : documents.keySet()) {
+        //        for (TopicResponseDto key : documents.keySet()) {
 //            System.out.println("Key: " + key.getId() + "-" + key.getTopicTitle() + ", Value: " );
 //            for (DocumentResponseDto d:
 //                 documents.get(key)) {
 //                System.out.print(d.getTitle()+"\t");
 //            }
 //        }
-        return responseEntity;
+        return new ResponseEntity<>(documents, HttpStatus.OK);
     }
 
     @GetMapping(value = "/load_more_my_question", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})

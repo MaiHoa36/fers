@@ -24,8 +24,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public List<Feedback> findAll() {
-        List<Feedback> feedbacks = feedbackRepository.findAll();
-        return feedbacks;
+        return feedbackRepository.findAll();
     }
 
     public Feedback saveFeedback(Feedback feedback) {
@@ -92,10 +91,9 @@ public class FeedbackServiceImpl implements FeedbackService {
             Feedback feedback = feedbackOpt.get();
             feedback.setStatus(status);
             feedbackRepository.save(feedback);
-        } else {
-            // Handle the case where feedback is not found
-//            throw new EntityNotFoundException("Feedback not found with ID: " + feedbackId);
-        }
+        }  // Handle the case where feedback is not found
+        //            throw new EntityNotFoundException("Feedback not found with ID: " + feedbackId);
+
     }
 
 }

@@ -23,8 +23,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<Student> findAll() {
-        List<Student> students = studentRepository.findAll();
-        return students;
+        return studentRepository.findAll();
     }
 
     @Override
@@ -72,7 +71,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public boolean saveACourse(String studentId, String courseId) {
         Optional<Student> student = studentRepository.findById(studentId);
-        if (!student.isPresent()) {
+        if (student.isEmpty()) {
             return false;
         }
         List<String> savedCourses = student.get().getSavedCourses();
@@ -95,7 +94,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public boolean unsavedACourse(String studentId, String courseId) {
         Optional<Student> student = studentRepository.findById(studentId);
-        if (!student.isPresent()) {
+        if (student.isEmpty()) {
             return false;
         }
         List<String> savedCourses = student.get().getSavedCourses();
@@ -118,7 +117,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public boolean saveADoc(String studentId, String docId) {
         Optional<Student> student = studentRepository.findById(studentId);
-        if (!student.isPresent()) {
+        if (student.isEmpty()) {
             return false;
         }
         List<String> savedDocuments = student.get().getSavedDocuments();
@@ -141,7 +140,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public boolean unsavedADoc(String studentId, String documentId) {
         Optional<Student> student = studentRepository.findById(studentId);
-        if (!student.isPresent()) {
+        if (student.isEmpty()) {
             return false;
         }
         List<String> savedDocuments = student.get().getSavedDocuments();

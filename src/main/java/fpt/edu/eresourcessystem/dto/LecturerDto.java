@@ -25,10 +25,8 @@ public class LecturerDto {
 
     public LecturerDto(Lecturer lecturer) {
         this.id = lecturer.getId();
-        if (lecturer.getAccount() != null) {
-            this.accountName = lecturer.getAccount().getName();
-            this.accountEmail = lecturer.getAccount().getEmail();
-        }
+        this.accountName = lecturer.getAccount().getName();
+        this.accountEmail = lecturer.getAccount().getEmail();
         this.courses = lecturer.getCourses() != null
                 ? lecturer.getCourses().stream().map(Course::getCourseCode).collect(Collectors.toList())
                 : Collections.emptyList();

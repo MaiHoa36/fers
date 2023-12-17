@@ -32,15 +32,13 @@ public class CourseLogServiceImpl implements CourseLogService {
         if (null == courseLog.getCreatedDate()) {
             courseLog.setCreatedBy(LocalDateTime.now().toString());
         }
-        CourseLog result = courseLogRepository.save(courseLog);
-        return result;
+        return courseLogRepository.save(courseLog);
     }
 
     @Override
     public List<CourseLogResponseDto> findAllSortedByCreatedDate() {
         Sort sortByCreatedDate = Sort.by(Sort.Direction.DESC, "createdDate");
-        List<CourseLogResponseDto> courseLogResponseDtos = courseLogRepository.findAll(sortByCreatedDate).stream().map(o -> new CourseLogResponseDto(o)).toList();
-        return courseLogResponseDtos;
+        return courseLogRepository.findAll(sortByCreatedDate).stream().map(CourseLogResponseDto::new).toList();
     }
 
     @Override
@@ -120,8 +118,7 @@ public class CourseLogServiceImpl implements CourseLogService {
                 Criteria.where("objectName").regex(Pattern.quote(search), "i")
         );
         Query query = new Query(criteria);
-        List<CourseLog> result = mongoTemplate.find(query, CourseLog.class, "course_log");
-        return result;
+        return mongoTemplate.find(query, CourseLog.class, "course_log");
     }
 
 }

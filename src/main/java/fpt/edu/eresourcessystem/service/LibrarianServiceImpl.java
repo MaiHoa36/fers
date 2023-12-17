@@ -27,8 +27,7 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Override
     public Librarian updateLibrarian(Librarian librarian) {
-        Librarian result = librarianRepository.save(librarian);
-        return result;
+        return librarianRepository.save(librarian);
     }
 
     @Override
@@ -42,8 +41,7 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Override
     public Librarian findByAccountId(String accountId) {
-        Librarian librarian = librarianRepository.findByAccountId(accountId);
-        return librarian;
+        return librarianRepository.findByAccountId(accountId);
     }
 
 

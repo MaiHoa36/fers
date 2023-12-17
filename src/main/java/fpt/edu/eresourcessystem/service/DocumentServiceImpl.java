@@ -16,7 +16,6 @@ import fpt.edu.eresourcessystem.repository.DocumentRepository;
 import fpt.edu.eresourcessystem.repository.ResourceTypeRepository;
 import fpt.edu.eresourcessystem.repository.elasticsearch.EsDocumentRepository;
 import org.apache.commons.io.IOUtils;
-import org.apache.tika.exception.TikaException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -29,7 +28,6 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,13 +69,10 @@ public class DocumentServiceImpl implements DocumentService {
                 .limit(9)
                 .with(Sort.by(Sort.Order.desc("createdDate")));
         List<Document> documents = mongoTemplate.find(query, Document.class);
-        if (null != documents) {
-            List<DocumentResponseDto> responseList = documents.stream()
-                    .filter(entity -> CommonEnum.DeleteFlg.PRESERVED.equals(entity.getDeleteFlg()))
-                    .map(entity -> new DocumentResponseDto(entity))
-                    .collect(Collectors.toList());
-            return responseList;
-        } else return null;
+        return documents.stream()
+                .filter(entity -> CommonEnum.DeleteFlg.PRESERVED.equals(entity.getDeleteFlg()))
+                .map(DocumentResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -89,28 +84,24 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public List<Document> findByListId(List<String> documentIds) {
         Query query = new Query(Criteria.where("id").in(documentIds));
-        List<Document> documents = mongoTemplate.find(query, Document.class);
-        return documents;
+        return mongoTemplate.find(query, Document.class);
     }
 
     @Override
     public List<Document> findAll() {
-        List<Document> documents = documentRepository.findAll();
-        return documents;
+        return documentRepository.findAll();
     }
 
     @Override
     public List<Document> findByLecturer(Lecturer lecturer) {
-        List<Document> documents = documentRepository.findByCreatedBy(lecturer.getAccount().getEmail());
-        return documents;
+        return documentRepository.findByCreatedBy(lecturer.getAccount().getEmail());
     }
 
     @Override
     public Page<Document> filterAndSearchDocument(String course, String topic, String title, String description, int pageIndex, int pageSize) {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
-        Page<Document> page = documentRepository.filterAndSearchDocument(course, topic, title, description,
+        return documentRepository.filterAndSearchDocument(course, topic, title, description,
                 pageable);
-        return page;
     }
 
     public String addFile(MultipartFile upload) throws IOException {
@@ -138,12 +129,15 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public byte[] getGridFSFileContent(ObjectId id) throws IOException {
         GridFSFile file = template.findOne(new Query(Criteria.where("_id").is(id)));
-        return IOUtils.toByteArray(operations.getResource(file).getInputStream());
+        if (file != null) {
+            return IOUtils.toByteArray(operations.getResource(file).getInputStream());
+        }
+        return null;
     }
 
 
     @Override
-    public Document addDocument(DocumentDto documentDTO, String id) throws IOException, TikaException, SAXException {
+    public Document addDocument(DocumentDto documentDTO, String id) {
         //search file
         if (null == documentDTO.getId()) {
             if (id.equalsIgnoreCase("fileNotFound")) {
@@ -168,7 +162,7 @@ public class DocumentServiceImpl implements DocumentService {
             }
         } else {
             Optional<Document> checkExist = documentRepository.findById(documentDTO.getId());
-            if (!checkExist.isPresent()) {
+            if (checkExist.isEmpty()) {
                 Document result = documentRepository.save(new Document(documentDTO));
                 esDocumentRepository.save(new EsDocument(result));
                 return result;
@@ -178,7 +172,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Document updateDocument(Document document, String currentFileId, String id) throws IOException {
+    public Document updateDocument(Document document, String currentFileId, String id) {
         //search file
         if (null != currentFileId) {
             template.delete(new Query(Criteria.where("_id").is(currentFileId)));
@@ -200,26 +194,23 @@ public class DocumentServiceImpl implements DocumentService {
                 String fileExtension = StringUtils.getFilenameExtension(filename);
                 document.setFileName(filename);
                 document.setSuffix(fileExtension);
-                document.setDocType(DocumentEnum.DocumentFormat.getDocType(fileExtension));
+                if (fileExtension != null) {
+                    document.setDocType(DocumentEnum.DocumentFormat.getDocType(fileExtension));
+                }
                 Document result = documentRepository.save(document);
                 esDocumentRepository.save(new EsDocument(result));
                 return result;
             }
         } else {
-            Optional<Document> checkExist = documentRepository.findById(document.getId());
-            if (!checkExist.isPresent()) {
-                Document result = documentRepository.save(document);
-                esDocumentRepository.save(new EsDocument(result));
-                return result;
-            }
-            return null;
+            Document result = documentRepository.save(document);
+            esDocumentRepository.save(new EsDocument(result));
+            return result;
         }
     }
 
     @Override
     public Document updateDoc(Document document) {
-        Document updateDoc = documentRepository.save(document);
-        return updateDoc;
+        return documentRepository.save(document);
     }
 
     @Override

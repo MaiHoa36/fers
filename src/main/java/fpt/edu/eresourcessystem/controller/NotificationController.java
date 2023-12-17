@@ -49,10 +49,9 @@ public class NotificationController {
             notificationDto.setLink("/lecturer/documents/" + question.getDocumentId().getId() + "#" + question.getId());
         }
         Notification notification = notificationService.addNotification(notificationDto);
-        NotificationResponseDto notificationResponseDto = new NotificationResponseDto(
+        return new NotificationResponseDto(
                 notification
         );
-        return notificationResponseDto;
     }
 
     @MessageMapping("/studentReply")
@@ -67,10 +66,9 @@ public class NotificationController {
             notificationDto.setLink("/lecturer/documents/" + answer.getDocumentId().getId() + "#" + answer.getQuestion().getId());
         }
         Notification notification = notificationService.addNotification(notificationDto);
-        NotificationResponseDto notificationResponseDto = new NotificationResponseDto(
+        return new NotificationResponseDto(
                 notification
         );
-        return notificationResponseDto;
     }
 
     @MessageMapping("/reply")
@@ -86,10 +84,9 @@ public class NotificationController {
             notificationDto.setLink("/student/documents/" + answer.getDocumentId().getId() + "#" + answer.getQuestion().getId());
         }
         Notification notification = notificationService.addNotification(notificationDto);
-        NotificationResponseDto notificationResponseDto = new NotificationResponseDto(
+        return new NotificationResponseDto(
                 notification
         );
-        return notificationResponseDto;
     }
 
     @MessageMapping("/question")
@@ -108,13 +105,14 @@ public class NotificationController {
             Feedback feedback = feedbackService.getFeedbackById(notificationDto.getFeedbackId()).orElse(null);
             notificationDto.setFeedback(feedback);
             notificationDto.setTo("admin");
-            notificationDto.setLink("/admin/feedbacks/" + feedback.getId());
+            if (feedback != null) {
+                notificationDto.setLink("/admin/feedbacks/" + feedback.getId());
+            }
         }
         Notification notification = notificationService.addNotification(notificationDto);
-        NotificationResponseDto notificationResponseDto = new NotificationResponseDto(
+        return new NotificationResponseDto(
                 notification
         );
-        return notificationResponseDto;
     }
 
     @GetMapping("/notifications/{nId}")

@@ -21,15 +21,13 @@ public class DocumentNoteServiceImpl implements DocumentNoteService {
 
     @Override
     public DocumentNote findById(String studentNoteId) {
-        DocumentNote studentNote = documentNoteRepository.findByIdAndDeleteFlg(studentNoteId, CommonEnum.DeleteFlg.PRESERVED);
-        return studentNote;
+        return documentNoteRepository.findByIdAndDeleteFlg(studentNoteId, CommonEnum.DeleteFlg.PRESERVED);
     }
 
     @Override
     public DocumentNote findByDocIdAndStudentId(String docId, String studentId) {
-        DocumentNote documentNote = documentNoteRepository
+        return documentNoteRepository
                 .findByDocIdAndStudentIdAndDeleteFlg(docId, studentId, CommonEnum.DeleteFlg.PRESERVED);
-        return documentNote;
     }
 
     @Override
@@ -41,8 +39,7 @@ public class DocumentNoteServiceImpl implements DocumentNoteService {
                 return null;
             } else {
                 documentNote.setDeleteFlg(CommonEnum.DeleteFlg.PRESERVED);
-                DocumentNote result = documentNoteRepository.save(documentNote);
-                return result;
+                return documentNoteRepository.save(documentNote);
             }
         }
         return null;
@@ -55,8 +52,7 @@ public class DocumentNoteServiceImpl implements DocumentNoteService {
         }
         Optional<DocumentNote> savedStudentNote = documentNoteRepository.findById(documentNote.getId());
         if (savedStudentNote.isPresent()) {
-            DocumentNote result = documentNoteRepository.save(documentNote);
-            return result;
+            return documentNoteRepository.save(documentNote);
         }
         return null;
     }

@@ -75,6 +75,15 @@ public class Account {
         this.accountType = AccountEnum.AccountType.SYSTEM_ACC;
 
     }
+    public Account(String email, String name, AccountEnum.Role role){
+        this.email = email;
+        this.name = name;
+        this.username = getEmailUsername(email);
+        this.role = role;
+        this.status = AccountEnum.Status.ACTIVE;
+        this.deleteFlg = CommonEnum.DeleteFlg.PRESERVED;
+        this.accountType = AccountEnum.AccountType.FPT_MAIL_ACC;
+    }
 
     public static String getEmailUsername(String email) {
         int atIndex = email.indexOf("@");

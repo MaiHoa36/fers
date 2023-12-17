@@ -19,23 +19,21 @@ public class MultiFileServiceImpl implements MultiFileService {
     @Override
     public MultiFile findById(String multiFileId) {
         Optional<MultiFile> multiFile = multiFileRepository.findByIdAndDeleteFlg(multiFileId, CommonEnum.DeleteFlg.PRESERVED);
-        return multiFile.isPresent() ? multiFile.get() : null;
+        return multiFile.orElse(null);
     }
 
     @Override
     public MultiFile findByCloudFileName(String cloudFileName) {
         Optional<MultiFile> multiFile = multiFileRepository.findByCloudFileNameAndDeleteFlg(cloudFileName);
-        return multiFile.isPresent() ? multiFile.get() : null;
+        return multiFile.orElse(null);
     }
 
     @Override
     public MultiFile addMultiFile(MultiFile multiFile) {
         if (null == multiFile.getId()) {
-            MultiFile result = multiFileRepository.save(multiFile);
-            return result;
-        } else if (!multiFileRepository.findById(multiFile.getId().trim()).isPresent()) {
-            MultiFile result = multiFileRepository.save(multiFile);
-            return result;
+            return multiFileRepository.save(multiFile);
+        } else if (multiFileRepository.findById(multiFile.getId().trim()).isEmpty()) {
+            return multiFileRepository.save(multiFile);
         }
         return null;
     }
@@ -45,8 +43,7 @@ public class MultiFileServiceImpl implements MultiFileService {
         MultiFile savedMultiFile = multiFileRepository
                 .findByIdAndDeleteFlg(multiFile.getId(), CommonEnum.DeleteFlg.PRESERVED).orElse(null);
         if (null != savedMultiFile) {
-            MultiFile result = multiFileRepository.save(multiFile);
-            return result;
+            return multiFileRepository.save(multiFile);
         }
         return null;
     }

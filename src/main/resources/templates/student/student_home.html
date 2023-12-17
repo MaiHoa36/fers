@@ -38,8 +38,8 @@
                             <!-- Input  -->
                             <div class="header__search-input-wrap">
                                 <input type="text" class="header__search-input"
-                                       placeholder="Enter here ..."
-                                       name="search"
+                                       placeholder="Enter keywords ..."
+                                       name="search" required
                                        th:id="search-text">
                                 <!-- Header-search-history -->
                                 <div class="header__search-history">
@@ -91,7 +91,10 @@
                                 <div class="stu__view-recent-courses">
                                     <div class="stu__view-list-course-content">
                                         <div class="view-inline-list">
-                                            <ul class="home__course-list  d-flex">
+                                            <ul class="d-flex justify-content-center" th:if="${recentCourses.size() == 0}">
+                                                <img src="/images/student/no-recent-course.png" style="width: 60%; margin-right: 10%">
+                                            </ul>
+                                            <ul class="home__course-list d-flex" th:if="${recentCourses.size() > 0}">
                                                 <li class="home__course-item grid__column-2"
                                                     th:each="course : ${recentCourses}">
                                                     <div class="home__course-wrapper-inline">

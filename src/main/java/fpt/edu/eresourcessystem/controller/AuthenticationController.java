@@ -5,7 +5,6 @@ import fpt.edu.eresourcessystem.enums.AccountEnum;
 import fpt.edu.eresourcessystem.model.Account;
 import fpt.edu.eresourcessystem.model.UserLog;
 import fpt.edu.eresourcessystem.service.AccountService;
-import fpt.edu.eresourcessystem.service.NotificationService;
 import fpt.edu.eresourcessystem.service.UserLogService;
 import fpt.edu.eresourcessystem.utils.RedirectUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,16 +20,6 @@ import static fpt.edu.eresourcessystem.constants.UrlConstants.ACCESS_DENIED;
 public class AuthenticationController {
     private final AccountService accountService;
     private final UserLogService userLogService;
-    private final NotificationService notificationService;
-
-    private UserLog addUserLog(String url) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        Account loggedInUser = accountService.findByEmail(currentPrincipalName);
-        UserLog userLog = new UserLog(new UserLogDto(url, authentication.getName(), loggedInUser.getRole()));
-        userLog = userLogService.addUserLog(userLog);
-        return userLog;
-    }
 
     @GetMapping({"/", "/home"})
     public String goHomePage() {
@@ -67,7 +56,7 @@ public class AuthenticationController {
             String currentPrincipalName = authentication.getName();
             Account loggedInUser = accountService.findByEmail(currentPrincipalName);
             UserLogDto userLogDto = new UserLogDto("/login", authentication.getName(), loggedInUser.getRole());
-            UserLog userLog = userLogService.addUserLog(new UserLog(userLogDto));
+            userLogService.addUserLog(new UserLog(userLogDto));
             return redirect;
         }
         return "guest/guest_login";
@@ -81,7 +70,7 @@ public class AuthenticationController {
 
         // log user action
         UserLogDto userLogDto = new UserLogDto("/logout", authentication.getName(), loggedInUser.getRole());
-        UserLog userLog = userLogService.addUserLog(new UserLog(userLogDto));
+        userLogService.addUserLog(new UserLog(userLogDto));
         return "redirect:/login";
     }
 

@@ -23,32 +23,28 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public Answer findById(String answerId) {
         Optional<Answer> answer = answerRepository.findById(answerId);
-        return answer.isPresent() ? answer.get() : null;
+        return answer.orElse(null);
     }
 
     @Override
     public List<Answer> findByDocId(Document document) {
-        List<Answer> answers = answerRepository
+        return answerRepository
                 .findByDocumentIdAndDeleteFlg(document, CommonEnum.DeleteFlg.PRESERVED);
-        return answers;
     }
 
     @Override
     public List<Answer> findByDocIdAndQuestionId(Document document, Question question) {
-        List<Answer> answers = answerRepository
+        return answerRepository
                 .findByDocumentIdAndQuestionIdAndDeleteFlg(document,
                         question, CommonEnum.DeleteFlg.PRESERVED);
-        return answers;
     }
 
     @Override
     public Answer addAnswer(Answer answer) {
         if (null == answer.getId()) {
-            Answer result = answerRepository.save(answer);
-            return result;
-        } else if (!answerRepository.findById(answer.getId().trim()).isPresent()) {
-            Answer result = answerRepository.save(answer);
-            return result;
+            return answerRepository.save(answer);
+        } else if (answerRepository.findById(answer.getId().trim()).isEmpty()) {
+            return answerRepository.save(answer);
         }
         return null;
     }
@@ -58,8 +54,7 @@ public class AnswerServiceImpl implements AnswerService {
         Answer savedAnswer = answerRepository
                 .findByIdAndDeleteFlg(answer.getId(), CommonEnum.DeleteFlg.PRESERVED);
         if (null != savedAnswer) {
-            Answer result = answerRepository.save(answer);
-            return result;
+            return answerRepository.save(answer);
         }
         return null;
     }
@@ -78,15 +73,13 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public List<Answer> findByQuestion(Question question) {
-        List<Answer> answers = answerRepository
+        return answerRepository
                 .findByQuestionAndDeleteFlg(question, CommonEnum.DeleteFlg.PRESERVED);
-        return answers;
     }
 
     @Override
     public List<Answer> findByStudentAnsQuestion(Student student, Question question) {
-        List<Answer> answers = answerRepository
+        return answerRepository
                 .findByStudentAndQuestionAndDeleteFlg(student, question, CommonEnum.DeleteFlg.PRESERVED);
-        return answers;
     }
 }

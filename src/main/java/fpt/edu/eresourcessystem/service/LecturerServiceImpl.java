@@ -50,8 +50,7 @@ public class LecturerServiceImpl implements LecturerService {
     public Lecturer updateLecturer(Lecturer lecturer) {
         Optional<Lecturer> foundLecturer = lecturerRepository.findById(lecturer.getId());
         if (foundLecturer.isPresent()) {
-            Lecturer result = lecturerRepository.save(lecturer);
-            return result;
+            return lecturerRepository.save(lecturer);
         }
         return null;
     }
@@ -81,19 +80,16 @@ public class LecturerServiceImpl implements LecturerService {
 
     @Override
     public List<Lecturer> findByListLecturerIds(List<String> ids) {
-        List<Lecturer> lecturers = lecturerRepository.findByIds(ids);
-        return lecturers;
+        return lecturerRepository.findByIds(ids);
     }
 
     @Override
     public Lecturer findCurrentCourseLecturer(String courseId) {
         LecturerCourse lecturerCourse = lecturerCourseRepository.findCurrentCourseLecturer(courseId);
         if (null != lecturerCourse) {
-            if (null != lecturerCourse.getId().getLecturerId()) {
-                Optional<Lecturer> lecturer = lecturerRepository.findById(
-                        lecturerCourse.getId().getLecturerId());
-                return lecturer.orElse(null);
-            }
+            Optional<Lecturer> lecturer = lecturerRepository.findById(
+                    lecturerCourse.getId().getLecturerId());
+            return lecturer.orElse(null);
         }
         return null;
     }
@@ -106,8 +102,7 @@ public class LecturerServiceImpl implements LecturerService {
     @Override
     public Page<Lecturer> findLecturerByLecturerIdLike(String lectureId, int pageIndex, int pageSize) {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
-        Page<Lecturer> page = lecturerRepository.findLecturerByIdLike(lectureId, pageable);
-        return page;
+        return lecturerRepository.findLecturerByIdLike(lectureId, pageable);
     }
 
 
@@ -175,8 +170,7 @@ public class LecturerServiceImpl implements LecturerService {
 
     @Override
     public Lecturer findLecturerById(String lectureId) {
-        Lecturer lecturer = lecturerRepository.findLecturerById(lectureId);
-        return lecturer;
+        return lecturerRepository.findLecturerById(lectureId);
     }
 
     @Override

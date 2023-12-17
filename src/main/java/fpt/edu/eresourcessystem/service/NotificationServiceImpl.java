@@ -28,14 +28,12 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public Notification findById(String noId) {
-        Notification notification = notificationRepository.findByIdAndDeleteFlg(noId, CommonEnum.DeleteFlg.PRESERVED);
-        return notification;
+        return notificationRepository.findByIdAndDeleteFlg(noId, CommonEnum.DeleteFlg.PRESERVED);
     }
 
     @Override
     public Notification updateNotification(Notification notification) {
-        Notification result = notificationRepository.save(notification);
-        return result;
+        return notificationRepository.save(notification);
     }
 
     @Override
@@ -47,12 +45,9 @@ public class NotificationServiceImpl implements NotificationService {
                 .limit(5)
                 .with(Sort.by(Sort.Order.desc("lastModifiedDate")));
         List<Notification> notifications = mongoTemplate.find(query, Notification.class);
-        if (null != notifications) {
-            List<NotificationResponseDto> responseList = notifications.stream()
-                    .map(entity -> new NotificationResponseDto(entity))
-                    .collect(Collectors.toList());
-            return responseList;
-        } else return null;
+        return notifications.stream()
+                .map(NotificationResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -61,12 +56,9 @@ public class NotificationServiceImpl implements NotificationService {
                 .and("toAccount").is(email))
                 .with(Sort.by(Sort.Order.desc("createdDate")));
         List<Notification> notifications = mongoTemplate.find(query, Notification.class);
-        if (null != notifications) {
-            List<NotificationResponseDto> responseList = notifications.stream()
-                    .map(entity -> new NotificationResponseDto(entity))
-                    .collect(Collectors.toList());
-            return responseList;
-        } else return null;
+        return notifications.stream()
+                .map(NotificationResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -76,12 +68,9 @@ public class NotificationServiceImpl implements NotificationService {
                 .and("notificationStatus").is(NotificationEnum.NotificationStatus.UNREAD))
                 .with(Sort.by(Sort.Order.desc("createdDate")));
         List<Notification> notifications = mongoTemplate.find(query, Notification.class);
-        if (null != notifications) {
-            List<NotificationResponseDto> responseList = notifications.stream()
-                    .map(entity -> new NotificationResponseDto(entity))
-                    .collect(Collectors.toList());
-            return responseList;
-        } else return null;
+        return notifications.stream()
+                .map(NotificationResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     @Override

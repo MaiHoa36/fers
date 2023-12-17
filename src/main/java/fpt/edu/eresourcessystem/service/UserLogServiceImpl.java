@@ -27,8 +27,7 @@ public class UserLogServiceImpl implements UserLogService {
 
     @Override
     public List<UserLog> findAll() {
-        List<UserLog> userLogs = userLogRepository.findAll();
-        return userLogs;
+        return userLogRepository.findAll();
     }
 
     @Override
@@ -36,8 +35,7 @@ public class UserLogServiceImpl implements UserLogService {
         if (email == null) {
             throw new IllegalArgumentException("Email cannot be null");
         }
-        List<UserLog> userLogs = userLogRepository.findByEmail(email);
-        return userLogs;
+        return userLogRepository.findByEmail(email);
     }
 
     @Override
@@ -52,15 +50,13 @@ public class UserLogServiceImpl implements UserLogService {
 
     @Override
     public List<UserLog> findByUrl(String url) {
-        List<UserLog> userLogs = userLogRepository.findByUrl(url);
-        return userLogs;
+        return userLogRepository.findByUrl(url);
     }
 
     @Override
     public UserLog addUserLog(UserLog userLog) {
         if (null != userLog) {
-            UserLog result = userLogRepository.save(userLog);
-            return result;
+            return userLogRepository.save(userLog);
         }
         return null;
     }
@@ -81,12 +77,11 @@ public class UserLogServiceImpl implements UserLogService {
         List<String> listCourseIds = mongoTemplate.findDistinct(query, "url", UserLog.class, String.class)
                 .stream().map(o -> o.substring(o.indexOf(urlPrefix) + urlPrefix.length()))
                 .toList();
-        List<Course> result = mongoTemplate.find(
+
+        return mongoTemplate.find(
                 Query.query(Criteria.where("id").in(listCourseIds)),
                 Course.class
         );
-
-        return result;
 
     }
 }
