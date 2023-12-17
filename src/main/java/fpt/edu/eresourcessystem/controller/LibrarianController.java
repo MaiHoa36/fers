@@ -467,18 +467,6 @@ public class LibrarianController {
         return "librarian/lecture/librarian_lectures";
     }
 
-    @GetMapping({"/lectures/list"})
-    public String showLecture() {
-//        List<Lecturer> lecturers = lecturerService.findAll();
-//        List<LecturerDto> lecturerDtos = lecturers.stream()
-//                .map(LecturerDto::new)
-//                .collect(Collectors.toList());
-//
-//        model.addAttribute("lecturers", lecturerDtos);
-        //    return "redirect:/api/librarian/lectures/list?start=0&length=2&draw=1";
-        return "librarian/lecture/librarian_lectures";
-    }
-
     @GetMapping("/lectures/list")
     String showLectureByPage() {
         return "librarian/lecture/librarian_lectures";
