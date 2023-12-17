@@ -65,7 +65,7 @@ public class UserLogServiceImpl implements UserLogService {
     public List<Course> findStudentRecentView(String email) {
         String urlPrefix = "/student/courses/";
         Criteria criteria = Criteria.where("email").is(email)
-                .and("url").regex(Pattern.quote("^" + urlPrefix))
+                .and("url").regex("^" + urlPrefix)
                 .and("createdDate").exists(true);
 
         // Sort by the "time" in descending order to get the most recent documents

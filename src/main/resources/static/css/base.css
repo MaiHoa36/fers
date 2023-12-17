@@ -719,7 +719,11 @@ textarea.form-control {
 .document-details-head {
     padding-left: 1rem;
 }
-
+.doc-head-link{
+    padding-left: 0;
+    margin-bottom: 2rem;
+    font-size: var(--font-medium);
+}
 .display-content-wrapper {
     padding: 0 1rem 0 1rem;
     width: 100%;

@@ -94,7 +94,8 @@
                                 </div>
                                 <div class="stu__view-list-note-content"
                                      th:if="${studentNotes ne null} AND ${studentNotes.size()} > 0">
-                                    <p class="number-count count-questions">Total: <span th:text="${totalItems}"></span> note(s).</p>
+                                    <p class="number-count count-questions">Total: <span th:text="${totalItems}"></span>
+                                        note(s).</p>
                                     <div class="view-note-list">
                                         <ul class="home__note-list">
                                             <li class="home__note-item">
@@ -119,14 +120,15 @@
                         </div>
                         <!--End My note section-->
                         <!-- Document Note section-->
-                        <div id="documentNote" class="stu__courses-list-view"  th:if="${noteType} == 'document' ">
+                        <div id="documentNote" class="stu__courses-list-view" th:if="${noteType} == 'document' ">
                             <div class="stu__view-my-notes">
                                 <div th:if="${studentDocumentNotes == null } OR ${studentDocumentNotes.size()} == 0 ">
                                     <p class="number-count count-questions">No document note found.</p>
                                 </div>
                                 <div class="stu__view-list-question-content"
                                      th:if="${studentDocumentNotes ne null} AND ${studentDocumentNotes.size()} > 0">
-                                    <p class="number-count count-questions">Total: <span th:text="${totalItems}"></span> note(s) in document(s).</p>
+                                    <p class="number-count count-questions">Total: <span th:text="${totalItems}"></span>
+                                        note(s) in document(s).</p>
                                     <div class="view-question-list">
                                         <div class="stu__question-content-wrapper"
                                              th:each="documentNote : ${studentDocumentNotes}">
@@ -134,7 +136,7 @@
                                                   th:text="${documentNote.lastModifiedDate}"></span>
                                             <br>
                                             <span>You noted on </span> <a class="stu__question-title"
-                                               th:text="${documentNote.documentTitle}"></a>
+                                                                          th:text="${documentNote.documentTitle}"></a>
 
                                             <p class="student-content-view-brief"><a class="link-view-detailed"
                                                                                      th:href="@{'/student/documents/' + ${documentNote.docId} + '#note'}"><i
@@ -201,5 +203,15 @@
         crossorigin="anonymous"></script>
 <!--Custom script-->
 <script th:src="@{/js/student/student.js}"></script>
+<script th:inline="javascript">
+    var successParam = [[${param.success}]];
+    if (successParam) {
+        Swal.fire(
+            'Success!',
+            'Delete note successful!',
+            'success'
+        );
+    }
+</script>
 </body>
 </html>

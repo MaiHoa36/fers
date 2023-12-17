@@ -165,7 +165,7 @@ public class StudentController {
 
         // Need to optimize
         Account account = accountService.findByEmail(document.getCreatedBy());
-
+        Course course = document.getTopic().getCourse();
         DocumentNote documentNote = documentNoteService.findByDocIdAndStudentId(docId, student.getId());
         model.addAttribute("documentNote", Objects.requireNonNullElseGet(documentNote, DocumentNote::new));
 
@@ -190,6 +190,7 @@ public class StudentController {
 //                model.addAttribute("relevantDocuments", relevantDocuments);
 //            }
 //        }
+        model.addAttribute("course", course);
         model.addAttribute("questions", questionResponseDtos);
         model.addAttribute("myQuestions", myQuestionResponseDtos);
         model.addAttribute("document", document);
@@ -409,7 +410,7 @@ public class StudentController {
         if (checkDeleted) {
             // add log
             addUserLog("/student/my_note/student_notes/delete/" + studentNoteId + SUCCESS_PARAM);
-            return "redirect:/student/my_note/student_notes/add" + SUCCESS_PARAM;
+            return "redirect:/student/my_library/my_notes" + SUCCESS_PARAM;
         } else {
             return "redirect:/student/my_note/student_notes/" + studentNoteId + ERROR_PARAM;
         }
