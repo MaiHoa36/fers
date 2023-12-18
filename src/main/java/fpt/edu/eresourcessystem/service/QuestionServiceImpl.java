@@ -192,6 +192,7 @@ public class QuestionServiceImpl implements QuestionService {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
         Criteria criteria = new Criteria();
         criteria.and("student").is(student);
+        criteria.and("deleteFlg").is(PRESERVED);
         if (search != null && !search.isEmpty()) {
             Criteria regexCriteria = Criteria.where("content").regex(Pattern.quote(search), "i");
             criteria.andOperator(regexCriteria);

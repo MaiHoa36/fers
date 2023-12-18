@@ -102,8 +102,7 @@
                         <!--                        </div>-->
                         <div th:id="stu__view-question-history" class="stu__questions-list-view">
                             <div class="stu__question-content">
-                                <div th:if="${param.search} AND ${studentQuestions == null} OR ${studentQuestions.size()} == 0"
-                                     class="list-content-not-found">
+                                <div th:if="${param.search} AND ${studentQuestions == null} OR ${studentQuestions.size()} == 0">
                                     <p class="number-count count-questions">Result: 0 question</p>
                                 </div>
                                 <div class="stu__view-list-question-content"
