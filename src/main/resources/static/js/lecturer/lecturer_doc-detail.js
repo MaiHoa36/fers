@@ -194,35 +194,42 @@ function existFormEditReply(param) {
 }
 
 function deleteReply(param, param2) {
-    console.log(param)
-    var result = window.confirm("Do you want to delete your reply?");
-    if (result) {
-        $.ajax({
-            type: 'POST',
-            url: '/api/lecturer/my_question/replies/' + param + '/delete',
-            success: function (data) {
-                console.log('success-delete-reply' + param);
-                $("#" + param).html("");
-                $("#" + param).css("display", "none");
-                // change total of answer
-                var totalReply = $('#number-reply-' + param2).text();
-                var intValue = parseInt(totalReply);
+    Swal.fire({
+        title: 'Do you want to delete your answer?',
+        showCancelButton: true,
+        showDenyButton: true,
+        confirmButtonText: 'Delete',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/lecturer/my_question/replies/' + param + '/delete',
+                success: function (data) {
+                    console.log('success-delete-reply' + param);
+                    $("#" + param).html("");
+                    $("#" + param).css("display", "none");
+                    // change total of answer
+                    var totalReply = $('#number-reply-' + param2).text();
+                    var intValue = parseInt(totalReply);
 
-                if (!isNaN(intValue)) {
-                    // Increment the integer by 1
-                    var newValue = intValue - 1;
+                    if (!isNaN(intValue)) {
+                        // Increment the integer by 1
+                        var newValue = intValue - 1;
 
-                    // Set the new value as the text of the span
-                    $('#number-reply-' + param2).text(newValue);
-                } else {
-                    $('#number-reply-' + param2).text("");
+                        // Set the new value as the text of the span
+                        $('#number-reply-' + param2).text(newValue);
+                    } else {
+                        $('#number-reply-' + param2).text("");
+                    }
+                },
+                error: function (xhr) {
+                    console.log('error-delete-reply')
                 }
-            },
-            error: function (xhr) {
-                console.log('error-delete-reply')
-            }
-        });
-    }
+            });
+        } else if (result.isDenied) {
+            Swal.fire('Cancelled', 'Deletion was canceled.', 'info');
+        }
+    });
 }
 
 function seeLessReply(param) {
