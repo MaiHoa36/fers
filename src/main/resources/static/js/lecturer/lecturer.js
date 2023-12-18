@@ -16,14 +16,8 @@ function getPublishCourse() {
     $("#form-get-manage-course").submit();
 }
 
-function getDraftCourse() {
-    $("#setStatus").val("draft");
-    $("#pageIndex").val("1");
-    $("#form-get-manage-course").submit();
-}
-
-function getHideCourse() {
-    $("#setStatus").val("hide");
+function getPrivateCourse() {
+    $("#setStatus").val("private");
     $("#pageIndex").val("1");
     $("#form-get-manage-course").submit();
 }

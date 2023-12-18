@@ -100,7 +100,7 @@ public class LibrarianController {
     @PostMapping("/courses/add")
     public String addCourseProcess(@ModelAttribute CourseDto courseDTO,
                                    @RequestParam(value = "lecturer") String lecturer) throws MessagingException {
-        Course course = new Course(courseDTO, CourseEnum.Status.HIDE);
+        Course course = new Course(courseDTO, CourseEnum.Status.NEW);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             return "exception/404";
@@ -377,9 +377,8 @@ public class LibrarianController {
 
     /**
      * @param courseId course id
-     * @return
+     * @return after added redirect url
      */
-
     @PostMapping({"/courses/{courseId}/add-lecture"})
     @Transactional
     public String addLecturer(@PathVariable String courseId,

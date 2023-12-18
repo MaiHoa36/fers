@@ -87,8 +87,8 @@ public class Course {
         return new Course(courseDTO, CourseEnum.Status.PUBLISH);
     }
 
-    public Course draftCourse(CourseDto courseDTO) {
-        return new Course(courseDTO, CourseEnum.Status.DRAFT);
+    public Course privateCourse(CourseDto courseDTO) {
+        return new Course(courseDTO, CourseEnum.Status.PRIVATE);
     }
 
     @Override

@@ -135,8 +135,7 @@ public class LecturerController {
         String oldContent = course.getStatus().toString();
         switch (status.toUpperCase()) {
             case "PUBLISH" -> course.setStatus(CourseEnum.Status.PUBLISH);
-            case "DRAFT" -> course.setStatus(CourseEnum.Status.DRAFT);
-            case "HIDE" -> course.setStatus(CourseEnum.Status.HIDE);
+            case "PRIVATE" -> course.setStatus(CourseEnum.Status.PRIVATE);
         }
         courseService.updateCourse(course);
         //add course log
@@ -197,7 +196,7 @@ public class LecturerController {
         courseService.addTopic(topic);
         Course course = courseService.findByCourseId(topic.getCourse().getId());
         if (course.getStatus() == CourseEnum.Status.NEW) {
-            course.setStatus(CourseEnum.Status.DRAFT);
+            course.setStatus(CourseEnum.Status.PRIVATE);
             courseService.updateCourse(course);
         }
         List<Topic> topics = course.getTopics();
@@ -302,9 +301,17 @@ public class LecturerController {
         return "lecturer/resource_type/lecturer_add-resource-type-to-course";
     }
 
-    @PostMapping({"resource_types/add_resource_type"})
+    @PostMapping({"/courses/{courseId}/add_resource_type"})
     @Transactional
-    public String addResourceType(ResourceType resourceType, final Model model) {
+    public String addResourceType(ResourceType resourceType, final Model model, @PathVariable String courseId) {
+        List<ResourceType> existedResourceTypes = courseService.findByCourseId(courseId).getResourceTypes();
+
+        for(ResourceType existedResourceType : existedResourceTypes){
+            if(existedResourceType.getResourceTypeName().equals(resourceType.getResourceTypeName())){
+                model.addAttribute("resourceTypeName", resourceType.getResourceTypeName());
+                return "redirect:/lecturer/courses/" + courseId + "/add_resource_type?error";
+            }
+        }
         ResourceType resourcetype = resourceTypeService.addResourceType(resourceType);
         courseService.addResourceType(resourcetype);
         Course course = courseService.findByCourseId(resourcetype.getCourse().getId());

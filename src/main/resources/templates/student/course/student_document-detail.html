@@ -63,13 +63,14 @@
                     <div class="stu_course-content border-start main" id="main">
 
                         <div class="display-content-wrapper">
+                            <div class="doc-head-link">
+                                <a th:href="@{/student}">Home</a>
+                                <span> &gt; <a th:href="@{'/student/courses_saved/'+ ${course.id}}" th:text="${course.courseCode} +' - '+${course.courseName}"></a></span>
+                                <span> &gt; <a href="" th:text="${document.title}"></a></span>
+                            </div>
                             <div class="document-details-info border-bottom">
                                 <div style="flex: 3">
-                                    <div class="doc-head-link">
-                                        <a th:href="@{/student}">Home</a>
-                                        <span> &gt; <a th:href="@{'/student/courses_saved/'+ ${course.id}}" th:text="${course.courseName} +' - '+${course.courseName}"></a></span>
-                                        <span> &gt; <a href="" th:text="${document.title}"></a></span>
-                                    </div>
+
                                     <div class="doc-info-name h2" style="margin-bottom: 4px">
                                         <p class="doc-info-name" th:text="${document.getTitle()}"></p></div>
                                     <div style="display: flex; width: 100%">
