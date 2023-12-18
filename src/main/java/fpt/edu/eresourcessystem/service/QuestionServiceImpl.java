@@ -45,6 +45,21 @@ public class QuestionServiceImpl implements QuestionService {
         return mongoTemplate.find(query, Question.class).stream().map(
                 o -> new QuestionResponseDto(o)).toList();
     }
+    @Override
+    public boolean hasMoreItemsAfterSkipAndLimitByStudent(Student student, Document document, int limit, int skip) {
+        Query query = new Query(Criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
+                .and("student").is(student)
+                .and("documentId").is(document))
+                .skip(skip)
+                .limit(limit+1)
+                .with(Sort.by(Sort.Order.desc("createdDate")));
+        return hasMoreItemsAfterSkipAndLimit(query, limit);
+    }
+
+    public boolean hasMoreItemsAfterSkipAndLimit(Query query, int limit) {
+        long count = mongoTemplate.count(query, Question.class);
+        return count > limit;
+    }
 
     @Override
     public List<QuestionResponseDto> findByDocumentLimitAndSkip(Document document, int limit, int skip) {
