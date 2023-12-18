@@ -88,7 +88,7 @@
                                 </li>
                                 <li class="lec__navbar-item"
                                     th:classappend="${status == 'draft' ? 'lec__navbar-active' : ''}"
-                                    onclick="getDraftCourse(this)">
+                                    onclick="getPrivateCourse(this)">
                                     <a>
                                         Editing courses
                                     </a>
@@ -145,12 +145,8 @@
                                                                     <span class="text-success fw-bold">Publish</span>
                                                                 </th:block>
                                                                 <th:block
-                                                                        th:if="${course.status.toString().equals('DRAFT')}">
-                                                                    <span class="text-warning fw-bold">Draft</span>
-                                                                </th:block>
-                                                                <th:block
-                                                                        th:if="${course.status.toString().equals('HIDE')}">
-                                                                    <span class="text-secondary fw-bold">Hidden</span>
+                                                                        th:if="${course.status.toString().equals('PRIVATE')}">
+                                                                    <span class="text-warning fw-bold">Private</span>
                                                                 </th:block>
                                                             </th:block>
                                                         </li>

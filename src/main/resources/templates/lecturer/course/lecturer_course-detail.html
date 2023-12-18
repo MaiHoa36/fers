@@ -54,12 +54,8 @@
                                         <span class="text-success fw-bold"
                                               th:text="${course.status.getDisplayValue()}"></span>
                             </th:block>
-                            <th:block th:if="${course.status.toString().equals('DRAFT')}">
+                            <th:block th:if="${course.status.toString().equals('PRIVATE')}">
                                         <span class="text-warning fw-bold"
-                                              th:text="${course.status.getDisplayValue()}"></span>
-                            </th:block>
-                            <th:block th:if="${course.status.toString().equals('HIDE')}">
-                                        <span class="text-secondary fw-bold"
                                               th:text="${course.status.getDisplayValue()}"></span>
                             </th:block>
 

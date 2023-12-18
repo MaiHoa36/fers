@@ -261,16 +261,16 @@ public class CourseServiceImpl implements CourseService {
                 resourceTypes = new ArrayList<>();
             }
 
-            // check topic existed in course
-            boolean checkTopicExist = false;
+            // check resource existed in course
+            boolean checkResourceTypeExist = false;
             for (ResourceType type : resourceTypes) {
-                if (type.getId().equals(resourceType.getId())) {
-                    checkTopicExist = true;
+                if (type.getResourceTypeName().equals(resourceType.getResourceTypeName())) {
+                    checkResourceTypeExist = true;
                     break;
                 }
             }
             // check topic not existed in course
-            if (!checkTopicExist) {
+            if (!checkResourceTypeExist) {
                 // add topic to course
                 resourceTypes.add(resourceType);
                 courseExisted.setResourceTypes(resourceTypes);
