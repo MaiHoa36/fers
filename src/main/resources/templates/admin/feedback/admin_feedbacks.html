@@ -101,11 +101,12 @@
                                 <tr>
                                     <td th:text="${iterStart.index +1}"></td>
                                     <td th:text="${feedback.getAccount().getEmail()}"></td>
-                                    <td th:text="${feedback.getFeedbackEmotion()}"></td>
-                                    <td><a class="a-link code-archive-except"
-                                           th:href="@{'/admin/feedbacks/' + ${feedback.getId}}"
+                                    <td> <a class="a-link code-archive-except"
+                                            th:href="@{'/admin/feedbacks/' + ${feedback.getId}}"
+                                            th:text="${feedback.getFeedbackEmotion()}"> </a></td>
+                                    <td><a class="a-link code-archive-except" th:href="@{'/admin/feedbacks/' + ${feedback.getId}}"
                                            th:text="${feedback.getFeedbackContent()}"> </a></td>
-                                    <td th:text="${#temporals.format(feedback.createdDate, 'dd-MM-yyyy HH:mm:ss')}"></td>
+                                    <td th:text="${feedback.getCreatedDate()}"></td>
                                     <td th:text="${feedback.getStatus()}"></td>
                                 </tr>
                             </th:block>
@@ -142,7 +143,7 @@
             ordering: false,
             responsive: true,
             pagingType: "simple_numbers",
-            pageLength: 3,
+            pageLength: 5,
             language: {
                 paginate: {
                     first: "<<",
