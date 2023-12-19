@@ -231,6 +231,10 @@ li {
     background-color: var(--second-back-ground);
 }
 
+.btn--hover:hover {
+    color: var(--link-color);
+}
+
 .btn.btn--hover:hover {
     background-color: rgba(0 ,0 ,0 , 0.1);
 }

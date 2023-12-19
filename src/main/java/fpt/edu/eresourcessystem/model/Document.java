@@ -44,7 +44,6 @@ public class Document {
 
     private String editorContent;
 
-    private DocumentEnum.DocumentFormat docType;
     private String suffix;
     private ObjectId contentId;
     private String cloudFileLink;
@@ -60,8 +59,10 @@ public class Document {
     private List<String> notes;
     private List<String> questions;
 
-    private DocumentEnum.DocumentStatusEnum status;
+    private DocumentEnum.DocumentFormat docType;
     private CourseEnum.Status courseStatus;
+
+    private List<String> students;
 
     @DocumentReference(lazy = true)
     private List<Rate> rates;

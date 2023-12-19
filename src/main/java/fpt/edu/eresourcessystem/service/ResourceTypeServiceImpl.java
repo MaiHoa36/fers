@@ -89,7 +89,7 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
     public void removeDocumentFromResourceType(String id, ObjectId objectId) {
         Query query = new Query(Criteria.where("id").is(id));
         Update update = new Update().pull("documents", objectId);
-        mongoTemplate.updateFirst(query, update, Topic.class);
+        mongoTemplate.updateFirst(query, update, ResourceType.class);
     }
 
     @Override

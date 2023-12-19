@@ -123,16 +123,20 @@ public class StudentController {
     @GetMapping({"/courses_saved/{courseId}"})
     public String viewCourseSavedDetail(@PathVariable(required = false) String courseId, final Model model) {
         // auth
-        Student student = getLoggedInStudent();
         Course course = courseService.findByCourseIdSaved(courseId);
-       if (null == course) {
+        if (null == course) {
             return "exception/404";
         }
-        model.addAttribute("course", course);
-        model.addAttribute("saved", true);
-        // add log
-        addUserLog("/student/courses/" + courseId);
-        return "student/course/student_course-detail";
+        if (course.getStudents().contains(getLoggedInStudentMail())){
+            model.addAttribute("course", course);
+            model.addAttribute("saved", true);
+            // add log
+            addUserLog("/student/courses/" + courseId);
+            return "student/course/student_course-detail";
+        } else {
+            return "exception/404";
+        }
+
     }
 
     /*
@@ -229,6 +233,7 @@ public class StudentController {
         return "student/library/student_saved_courses";
     }
 
+
     @GetMapping({"/my_library/saved_documents"})
     public String viewDocumentSaved(@RequestParam(required = false, defaultValue = "1") int pageIndex,
                                     @RequestParam(required = false, defaultValue = "") String search,
@@ -248,6 +253,25 @@ public class StudentController {
         model.addAttribute("search", search);
         model.addAttribute("currentPage", pageIndex);
         return "student/library/student_saved_documents";
+    }
+
+    @GetMapping({"/documents_saved/{documentId}"})
+    public String viewSavedDocumentDetail(@PathVariable(required = false) String documentId, final Model model) {
+        // auth
+        Document document = documentService.findById(documentId);
+        if (null == document) {
+            return "exception/404";
+        }
+        if (document.getStudents().contains(getLoggedInStudentMail())){
+            model.addAttribute("document", document);
+            model.addAttribute("saved", true);
+            // add log
+            addUserLog("/student/documents_saved/" + documentId);
+            return "student/course/student_course-detail";
+        } else {
+            return "exception/404";
+        }
+
     }
 
     @GetMapping({"/topics/{topicId}"})

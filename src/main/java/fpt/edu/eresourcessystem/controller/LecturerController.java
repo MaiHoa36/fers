@@ -212,11 +212,7 @@ public class LecturerController {
                 topic.getTopicTitle(),
                 getLoggedInLecturerMail(),
                 null, null);
-        model.addAttribute("course", course);
-        model.addAttribute("topics", topics);
-        model.addAttribute("topic", modelTopic);
-        model.addAttribute("success", "success");
-        return "lecturer/topic/lecturer_add-topic-to-course";
+        return "redirect:lecturer/courses/" + course.getId() + "/add_topic?success";
     }
 
     @GetMapping({"/topics/{topicId}/update"})
@@ -328,12 +324,7 @@ public class LecturerController {
                 resourceType.getResourceTypeName(),
                 getLoggedInLecturerMail(),
                 null, null);
-
-        model.addAttribute("course", course);
-        model.addAttribute("resourceTypes", resourceTypes);
-        model.addAttribute("resourceType", modelResourceType);
-        model.addAttribute("success", "success");
-        return "lecturer/resource_type/lecturer_add-resource-type-to-course";
+        return "redirect:/lecturer/courses/" + courseId + "/add_resource_type?success";
     }
 
     @GetMapping({"/resource_types/{resourceTypeId}/update"})
@@ -378,6 +369,9 @@ public class LecturerController {
     public String deleteResourceType(@PathVariable String resourceTypeId) {
         ResourceType resourcetype = resourceTypeService.findById(resourceTypeId);
         if (null != resourcetype) {
+            if(resourcetype.getResourceTypeName().equals("Common material")){
+                return "redirect:/courses/" + resourcetype.getCourse() + "/resource_types?cannotDelete";
+            }
             courseService.removeResourceType(resourcetype.getCourse().getId(), new ObjectId(resourceTypeId));
             resourceTypeService.softDelete(resourcetype);
             //add course log
@@ -777,7 +771,7 @@ public class LecturerController {
         Document document = documentService.findById(documentId);
         if (null != document) {
             topicService.removeDocumentFromTopic(document.getTopic().getId(), new ObjectId(documentId));
-            resourceTypeService.removeDocumentFromResourceType(document.getTopic().getId(), new ObjectId(documentId));
+            resourceTypeService.removeDocumentFromResourceType(document.getResourceType().getId(), new ObjectId(documentId));
             documentService.softDelete(document);
 
             // Add course log

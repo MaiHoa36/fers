@@ -92,7 +92,7 @@ public class CourseServiceImpl implements CourseService {
     }
     @Override
     public Course findByCourseIdSaved(String courseId) {
-        return courseRepository.findById(courseId).orElse(null);
+        return courseRepository.findByIdWithoutDeleteFlg(courseId).orElse(null);
     }
     @Override
     public List<Course> findAll() {
@@ -413,6 +413,7 @@ public class CourseServiceImpl implements CourseService {
     public long countTotalCourses() {
         return courseRepository.count();
     }
+
 
     @Override
     public Page<Course> findByListCourseIdAndSearch(String search, List<String> courseIds, int pageIndex, int pageSize) {

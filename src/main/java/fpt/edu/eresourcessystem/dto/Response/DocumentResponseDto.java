@@ -31,7 +31,7 @@ public class DocumentResponseDto {
             topicTitle = document.getTopic().getTopicTitle();
         }
         this.description = document.getDescription();
-        this.lastModifiedDate = document.getLastModifiedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));;
+        this.lastModifiedDate = document.getLastModifiedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         this.lastModifiedBy = document.getLastModifiedBy();
     }
 }

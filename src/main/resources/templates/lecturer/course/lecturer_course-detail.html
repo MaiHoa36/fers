@@ -15,6 +15,11 @@
     <link rel="stylesheet" th:href="@{/css/fragment.css}"/>
     <link rel="stylesheet" th:href="@{/css/styles/lecturer.css}"/>
 
+    <!-- SweetAlert từ CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+
 </head>
 
 <body class="app_container">
@@ -123,8 +128,8 @@
                                                                th:href="@{'/lecturer/topics/' + ${topic.id} +'/update'}">
                                                                 <i class="fa-solid fa-edit"></i>
                                                             </a>
-                                                            <a class="lec__edit-topic-icon"
-                                                               th:href="@{'/lecturer/topics/' + ${topic.id} +'/delete_topic'}">
+                                                            <a class="lec__edit-topic-icon delete-topic" href="#"
+                                                               th:id="${topic.id}">
                                                                 <i class="fa-solid fa-trash"></i>
                                                             </a>
                                                         </div>
@@ -171,14 +176,18 @@
                                                                th:href="@{'/lecturer/resource_types/' + ${rtype.id} +'/documents/add'}">
                                                                 + <span>Add
                                                                 document </span></a>
-                                                            <a class="lec__edit-topic-icon"
-                                                               th:href="@{'/lecturer/resource_types/' + ${rtype.id} +'/update'}">
-                                                                <i class="fa-solid fa-edit"></i>
-                                                            </a>
-                                                            <a class="lec__edit-topic-icon"
-                                                               th:href="@{'/lecturer/resource_types/' + ${rtype.id} +'/delete'}">
-                                                                <i class="fa-solid fa-trash"></i>
-                                                            </a>
+                                                            <th:block
+                                                                    th:unless="${rtype.resourceTypeName eq 'Common material'}">
+                                                                <a class="lec__edit-topic-icon"
+                                                                   th:href="@{'/lecturer/resource_types/' + ${rtype.id} +'/update'}">
+                                                                    <i class="fa-solid fa-edit"></i>
+                                                                </a>
+                                                                <a class="lec__edit-topic-icon delete-resource-type" href="#"
+                                                                   th:id="${rtype.id}">
+                                                                    <i class="fa-solid fa-trash"></i>
+                                                                </a>
+                                                            </th:block>
+
                                                         </div>
                                                     </div>
                                                 </h3>
@@ -264,11 +273,43 @@
         select.style.display = select.style.display === 'none' ? 'flex' : 'none';
     });
 
-    // $('#topicSelection').addEventListener('click', function () {
-    //         $('#topics').show();
-    //         $('#resourceTypes').hide();
-    //     }
-    // )
+    function handleDeletion(url, successMessage) {
+        Swal.fire({
+            title: 'Do you want to delete this item?',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            icon: 'warning',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "GET", // or "DELETE"
+                    url: url,
+                    // include CSRF token if necessary
+                    success: function () {
+                        Swal.fire('Deleted!', successMessage, 'success').then(() => {
+                            window.location.reload();
+                        });
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Failed to delete the item.', 'error');
+                    }
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire('Cancelled', 'Deletion was canceled.', 'info');
+            }
+        });
+    }
+
+    // Usage example
+    $(document).on("click", ".delete-topic", function () {
+        console.log(123)
+        var topicId = $(this).attr("id");
+        handleDeletion("/lecturer/topics/" + topicId + "/delete_topic", 'Topic is deleted');
+    });
+    $(document).on("click", ".delete-resource-type", function () {
+        var resourceTypeId = $(this).attr("id");
+        handleDeletion("/lecturer/resource_types/" + resourceTypeId + "/delete", 'Resource type is deleted');
+    });
 
 </script>
 </body>

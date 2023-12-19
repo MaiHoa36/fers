@@ -31,12 +31,11 @@ public class DocumentEnum {
     }
 
     public enum DefaultTopicResourceTypes {
+        COMMON_MATERIAL("Common material"), // default, auto save in Materials
         LECTURE_NOTE("Lecture note"),
         READING("Reading"),
         ASSIGNMENT("Assignment"),
-        EXERCISE("Exercise"),
-        COMMON_MATERIAL("Common material"); // default, auto save in Materials
-
+        EXERCISE("Exercise");
         private final String displayValue;
 
         DefaultTopicResourceTypes(String displayValue) {

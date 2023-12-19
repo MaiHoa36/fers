@@ -204,28 +204,28 @@
                                     class="header__navbar-user-role">(Lecturer)</span>
                             </th:block>
                         </div>
-                        <div class="header__navbar-user-option-list header__bridge">
-                            <div class="header__navbar-user-profile">
-                                <div class="header__navbar-user-profile-img-wrapper">
-                                    <img th:src="@{/images/role_avatar/lecturer_female.jpg}" alt=""
-                                         class="header__navbar-user-profile-img">
-                                </div>
-                                <div style="min-width: max-content">
-                                    <p th:text="${loggedInUser.name}"></p>
-                                    <p th:text="${loggedInUser.dateOfBirth}"></p>
-                                </div>
-                            </div>
-                            <div class="student__log-out" th:unless="${loggedInUser.role.toString() eq 'LECTURER'}">
-                                <a th:href="@{/}">
-                                    Back to dashboard
-                                </a>
-                            </div>
-                            <div class="student__log-out">
-                                <a th:href="@{/logout}">
-                                    Log out
-                                </a>
-                            </div>
-                        </div>
+<!--                        <div class="header__navbar-user-option-list header__bridge">-->
+<!--                            <div class="header__navbar-user-profile">-->
+<!--                                <div class="header__navbar-user-profile-img-wrapper">-->
+<!--                                    <img th:src="@{/images/role_avatar/lecturer_female.jpg}" alt=""-->
+<!--                                         class="header__navbar-user-profile-img">-->
+<!--                                </div>-->
+<!--                                <div style="min-width: max-content">-->
+<!--                                    <p th:text="${loggedInUser.name}"></p>-->
+<!--                                    <p th:text="${loggedInUser.dateOfBirth}"></p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="student__log-out" th:unless="${loggedInUser.role.toString() eq 'LECTURER'}">-->
+<!--                                <a th:href="@{/}">-->
+<!--                                    Back to dashboard-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="student__log-out">-->
+<!--                                <a th:href="@{/logout}">-->
+<!--                                    Log out-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </li>
                     <li class="header__navbar-item">
                         <a th:href="@{/logout}" onclick="" class="header__navbar-item-link" style="font-weight: bold">
