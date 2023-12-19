@@ -45,7 +45,7 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
         if (null == resourceType.getId()) {
             return resourceTypeRepository.insert(resourceType);
         } else {
-            Optional<ResourceType> checkExist = resourceTypeRepository.findById(resourceType.getId());
+            Optional<ResourceType> checkExist = resourceTypeRepository.findByIdAndDeleteFlg(resourceType.getId());
             if (checkExist.isEmpty()) {
                 return resourceTypeRepository.save(resourceType);
             }
@@ -55,13 +55,13 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
 
     @Override
     public ResourceType findById(String ResourceTypeId) {
-        Optional<ResourceType> ResourceType = resourceTypeRepository.findById(ResourceTypeId);
+        Optional<ResourceType> ResourceType = resourceTypeRepository.findByIdAndDeleteFlg(ResourceTypeId);
         return ResourceType.orElse(null);
     }
 
     @Override
     public ResourceType updateResourceType(ResourceType ResourceType) {
-        Optional<ResourceType> checkExist = resourceTypeRepository.findById(ResourceType.getId());
+        Optional<ResourceType> checkExist = resourceTypeRepository.findByIdAndDeleteFlg(ResourceType.getId());
         if (checkExist.isPresent()) {
             return resourceTypeRepository.save(ResourceType);
         }
@@ -70,7 +70,7 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
 
     @Override
     public boolean delete(String ResourceTypeId) {
-        Optional<ResourceType> check = resourceTypeRepository.findById(ResourceTypeId);
+        Optional<ResourceType> check = resourceTypeRepository.findByIdAndDeleteFlg(ResourceTypeId);
         if (check.isPresent()) {
             resourceTypeRepository.deleteById(ResourceTypeId);
             return true;

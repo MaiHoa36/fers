@@ -1,6 +1,7 @@
 package fpt.edu.eresourcessystem.service;
 
 import fpt.edu.eresourcessystem.dto.Response.DocumentResponseDto;
+import fpt.edu.eresourcessystem.dto.TopicDto;
 import fpt.edu.eresourcessystem.model.Document;
 import fpt.edu.eresourcessystem.model.Topic;
 import org.bson.types.ObjectId;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface TopicService {
     List<Topic> findAll();
 
-    Topic addTopic(Topic topic);
+    Topic addTopic(TopicDto topic);
 
     Topic findById(String topicId);
 

@@ -136,7 +136,6 @@
 
     // Usage example
     $(document).on("click", ".delete-doc", function () {
-        console.log(123)
         var documentId = $(this).attr("id");
         handleDeletion("/lecturer/documents/" + documentId + "/delete", 'Document is deleted');
     });

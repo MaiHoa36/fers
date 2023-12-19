@@ -5,6 +5,7 @@ import fpt.edu.eresourcessystem.dto.DocumentDto;
 import fpt.edu.eresourcessystem.dto.FeedbackDto;
 import fpt.edu.eresourcessystem.dto.Response.NotificationResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.QuestionResponseDto;
+import fpt.edu.eresourcessystem.dto.TopicDto;
 import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
 import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
@@ -191,8 +192,8 @@ public class LecturerController {
 
     @PostMapping({"topics/add_topic"})
     @Transactional
-    public String addTopic(@ModelAttribute Topic topic, final Model model) {
-        topic = topicService.addTopic(topic);
+    public String addTopic(@ModelAttribute TopicDto topicDto, final Model model) {
+        Topic topic = topicService.addTopic(topicDto);
         courseService.addTopic(topic);
         Course course = courseService.findByCourseId(topic.getCourse().getId());
         if (course.getStatus() == CourseEnum.Status.NEW) {
@@ -212,7 +213,7 @@ public class LecturerController {
                 topic.getTopicTitle(),
                 getLoggedInLecturerMail(),
                 null, null);
-        return "redirect:lecturer/courses/" + course.getId() + "/add_topic?success";
+        return "redirect:/lecturer/courses/" + course.getId() + "/add_topic?success";
     }
 
     @GetMapping({"/topics/{topicId}/update"})
@@ -646,11 +647,17 @@ public class LecturerController {
                                         @RequestParam(value = "file", required = false) MultipartFile file)
             throws Exception {
         Document checkExist = documentService.findById(document.getId());
+        if(checkExist.getResourceType() != document.getResourceType()){
+            // chuyển resource type
+            resourceTypeService.removeDocumentFromResourceType(checkExist.getResourceType().getId(), new ObjectId(checkExist.getId()));
+            checkExist.setResourceType(document.getResourceType());
+        }
         if (null == checkExist) {
             return "redirect:/lecturer/documents/" + document.getId() + "/update?error";
         } else {
             checkExist.setTitle(document.getTitle());
             checkExist.setDescription(document.getDescription());
+
             String id = "fileNotFound";
             if (!checkExist.isDisplayWithFile()) {
                 checkExist.setEditorContent(document.getEditorContent());
@@ -693,6 +700,7 @@ public class LecturerController {
                     documentService.updateDocument(checkExist, String.valueOf(checkExist.getContentId()), id);
                 }
             }
+            resourceTypeService.addDocumentToResourceType(document.getResourceType().getId(), new ObjectId(checkExist.getId()));
             //add course log
             Course course = checkExist.getTopic().getCourse();
             addCourseLog(course.getId(),
