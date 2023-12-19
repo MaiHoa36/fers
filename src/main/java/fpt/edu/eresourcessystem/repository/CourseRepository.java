@@ -18,6 +18,9 @@ public interface CourseRepository extends
     @Query("{ '_id' : ?0, 'deleteFlg' : 'PRESERVED' }")
     Optional<Course> findById(String id);
 
+    @Query("{ '_id' : ?0}")
+    Optional<Course> findByIdWithoutDeleteFlg(String id);
+
     @Query("{ 'courseCode' : ?0, 'deleteFlg' : 'PRESERVED' }")
     Course findByCourseCode(String courseCode);
 

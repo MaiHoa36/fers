@@ -82,6 +82,25 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    public Document findByIdStudentSavedCourse(String mail, String documentId) {
+        Optional<Document> check = documentRepository.findByIdWithoutDeleteFlg(documentId);
+        Document document = null;
+        if(check.isPresent()){
+            Course course = check.get().getTopic().getCourse();
+            if(course != null){
+                if(course.getStudents() != null) {
+                    if(course.getStudents().contains(mail)){
+                        document = check.orElse(null);
+                    }
+                }
+            } else {
+                document = documentRepository.findById(documentId).orElse(null);
+            }
+        }
+        return document;
+    }
+
+    @Override
     public List<Document> findByListId(List<String> documentIds) {
         Query query = new Query(Criteria.where("id").in(documentIds));
         return mongoTemplate.find(query, Document.class);
@@ -219,6 +238,7 @@ public class DocumentServiceImpl implements DocumentService {
         if (check.isPresent()) {
             // Here: Soft delete note, question & answer
 
+
             // Soft delete
             document.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
             documentRepository.save(document);
@@ -259,6 +279,46 @@ public class DocumentServiceImpl implements DocumentService {
         Criteria criteria = Criteria.where("topic.id").in(topics)
                 .and("resourceType.id").is(new ObjectId(resourceTypeId))
                 .and("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED.toString());
+        Query query = new Query(criteria);
+        query.fields().include("id")
+                .include("title")
+                .include("topic")
+                .include("description")
+                .include("createdBy")
+                .include("createdDate")
+                .include("lastModifiedBy")
+                .include("lastModifiedDate");
+        HashMap<String, List<DocumentResponseDto>> topicResponseDtos = new HashMap<>();
+        mongoTemplate.find(query, Document.class, "documents").stream().forEach(o -> {
+            String topicKey = o.getTopic().getId();
+            if (topicResponseDtos.containsKey(topicKey)) {
+                if (topicResponseDtos.get(topicKey) != null) {
+                    topicResponseDtos.get(topicKey).add(new DocumentResponseDto(o));
+                }
+            } else {
+                topicResponseDtos.put(topicKey, new ArrayList<>());
+                topicResponseDtos.get(topicKey).add(new DocumentResponseDto(o));
+            }
+        });
+
+        return topicResponseDtos;
+    }
+
+    @Override
+    public HashMap<String, List<DocumentResponseDto>> findAllDocumentsByCourseAndResourceType(String mail, String courseId, String resourceTypeId) {
+        Course check = courseRepository.findByIdWithoutDeleteFlg(courseId).orElse(null);
+        Criteria criteria;
+        if(!check.getStudents().contains(mail)) {
+            Course course = courseRepository.findByIdAndDeleteFlg(courseId, CommonEnum.DeleteFlg.PRESERVED);
+            List<ObjectId> topics = course.getTopics().stream().map(o -> new ObjectId(o.getId())).toList();
+            criteria = Criteria.where("topic.id").in(topics)
+                    .and("resourceType.id").is(new ObjectId(resourceTypeId))
+                    .and("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED.toString());
+        } else {
+            List<ObjectId> topics = check.getTopics().stream().map(o -> new ObjectId(o.getId())).toList();
+            criteria = Criteria.where("topic.id").in(topics)
+                    .and("resourceType.id").is(new ObjectId(resourceTypeId));
+        }
         Query query = new Query(criteria);
         query.fields().include("id")
                 .include("title")

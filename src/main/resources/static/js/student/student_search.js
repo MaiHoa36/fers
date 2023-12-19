@@ -45,7 +45,7 @@ function search(event) {
                 results.empty();
                 if (data.length == 0) {
                     let li = $('<li style="margin: 2rem 2rem">');
-                    let img = $('<img src="/images/no-result.png" style="width: 100%">').attr('alt', 'No result');
+                    let img = $('<img src="/images/no-result.png" style="width: 70%">').attr('alt', 'No result');
                     li.append(img);
                     results.append(li);
                 } else {
@@ -109,7 +109,7 @@ function search(event) {
                 results.empty();
                 if (data.length == 0) {
                     let li = $('<li style="margin: 2rem 2rem">');
-                    let img = $('<img src="/images/no-result.png" style="width: 100%">').attr('alt', 'No result');
+                    let img = $('<img src="/images/no-result.png" style="width: 70%">').attr('alt', 'No result');
                     li.append(img);
                     results.append(li);
                 } else {
@@ -177,15 +177,16 @@ function loadCourses() {
         success: function (data) {
             overlay.style.display = 'none';
             let results = $('#results ul');
-            results.empty();
+
             if (data.length == 0) {
+                results.empty();
                 let li = $('<li style="margin: 2rem 2rem">');
-                let img = $('<img src="/images/no-result.png" style="width: 100%">').attr('alt', 'No result');
+                let img = $('<img src="/images/no-result.png" style="width: 70%">').attr('alt', 'No result');
                 li.append(img);
                 results.append(li);
             } else {
+                results.empty();
                 $.each(data, function (index, item) {
-                    console.log(item)
                     let li = $('<li class="border-bottom" style="margin: 2rem 2rem">');
 
                     let div1 = $('<div>').addClass('d-flex document-view-info');
@@ -245,16 +246,15 @@ function loadDocuments() {
             search: searchKeyword
         },
         success: function (data) {
+            let results = $('#results ul');
             overlay.style.display = 'none';
             if (data.length == 0) {
-                let results = $('#results ul');
                 results.empty();
                 let li = $('<li style="margin: 2rem 2rem">');
-                let img = $('<img src="/images/no-result.png" style="width: 100%">').attr('alt', 'No result');
+                let img = $('<img src="/images/no-result.png" style="width: 70%">').attr('alt', 'No result');
                 li.append(img);
                 results.append(li);
             } else {
-                let results = $('#results ul');
                 results.empty();
                 $.each(data, function (index, item) {
                     console.log(item)

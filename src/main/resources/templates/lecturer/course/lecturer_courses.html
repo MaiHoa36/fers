@@ -87,17 +87,10 @@
                                     </a>
                                 </li>
                                 <li class="lec__navbar-item"
-                                    th:classappend="${status == 'draft' ? 'lec__navbar-active' : ''}"
+                                    th:classappend="${status == 'private' ? 'lec__navbar-active' : ''}"
                                     onclick="getPrivateCourse(this)">
                                     <a>
-                                        Editing courses
-                                    </a>
-                                </li>
-                                <li class="lec__navbar-item"
-                                    th:classappend="${status == 'hide' ? 'lec__navbar-active' : ''}"
-                                    onclick="getHideCourse(this)">
-                                    <a>
-                                        Hidden courses
+                                        Private courses
                                     </a>
                                 </li>
                             </ul>

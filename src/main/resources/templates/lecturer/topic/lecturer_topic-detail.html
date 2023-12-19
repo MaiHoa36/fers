@@ -16,6 +16,10 @@
     <link rel="stylesheet" th:href="@{/css/styles/lecturer.css}"/>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <!-- SweetAlert từ CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
 </head>
 
 <body class="app_container">
@@ -76,8 +80,8 @@
                                        class="lec__edit-topic-icon">
                                         <i class="fa-regular fa-edit"></i>
                                     </a>
-                                    <a th:href="@{'/lecturer/documents/' + ${document.getId()} + '/delete'}"
-                                       class="lec__edit-topic-icon">
+                                    <a href="#" th:id="${document.id}"
+                                       class="lec__edit-topic-icon delete-doc">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 </div>
@@ -106,6 +110,42 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 <script src="/js/lecturer/lecturer.js"></script>
+<script>
+
+    function handleDeletion(url, successMessage) {
+        Swal.fire({
+            title: 'Do you want to delete this item?',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            icon: 'warning',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "GET", // or "DELETE"
+                    url: url,
+                    // include CSRF token if necessary
+                    success: function () {
+                        Swal.fire('Deleted!', successMessage, 'success').then(() => {
+                            window.location.reload();
+                        });
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Failed to delete the item.', 'error');
+                    }
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire('Cancelled', 'Deletion was canceled.', 'info');
+            }
+        });
+    }
+
+    // Usage example
+    $(document).on("click", ".delete-doc", function () {
+        console.log(123)
+        var documentId = $(this).attr("id");
+        handleDeletion("/lecturer/documents/" + documentId + "/delete", 'Document is deleted');
+    });
+</script>
 </body>
 
 </html>

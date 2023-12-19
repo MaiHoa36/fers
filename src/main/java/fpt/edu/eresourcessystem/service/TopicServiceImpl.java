@@ -1,6 +1,7 @@
 package fpt.edu.eresourcessystem.service;
 
 import fpt.edu.eresourcessystem.dto.Response.DocumentResponseDto;
+import fpt.edu.eresourcessystem.dto.TopicDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.model.Document;
 import fpt.edu.eresourcessystem.model.Topic;
@@ -36,7 +37,8 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public Topic addTopic(Topic topic) {
+    public Topic addTopic(TopicDto topicDto) {
+        Topic topic = new Topic(topicDto);
         if (null == topic.getId()) {
             return topicRepository.save(topic);
         } else {
