@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -45,7 +46,7 @@ public class FeedbackServiceTest {
     void setUp()  {
         sampleFeedback = new Feedback();
         sampleFeedback.setId("1");
-        sampleFeedback.setCreatedDate("10/12/2023");
+        sampleFeedback.setCreatedDate(LocalDateTime.parse("10/12/2023"));
         sampleFeedback.setStatus("Pending");
 
     }

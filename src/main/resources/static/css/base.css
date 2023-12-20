@@ -231,6 +231,10 @@ li {
     background-color: var(--second-back-ground);
 }
 
+.btn--hover:hover {
+    color: var(--link-color);
+}
+
 .btn.btn--hover:hover {
     background-color: rgba(0 ,0 ,0 , 0.1);
 }
@@ -719,7 +723,11 @@ textarea.form-control {
 .document-details-head {
     padding-left: 1rem;
 }
-
+.doc-head-link{
+    padding-left: 0;
+    margin-bottom: 2rem;
+    font-size: var(--font-medium);
+}
 .display-content-wrapper {
     padding: 0 1rem 0 1rem;
     width: 100%;

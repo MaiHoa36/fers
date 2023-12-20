@@ -5,6 +5,7 @@ import fpt.edu.eresourcessystem.dto.DocumentDto;
 import fpt.edu.eresourcessystem.dto.FeedbackDto;
 import fpt.edu.eresourcessystem.dto.Response.NotificationResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.QuestionResponseDto;
+import fpt.edu.eresourcessystem.dto.TopicDto;
 import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
 import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
@@ -135,8 +136,7 @@ public class LecturerController {
         String oldContent = course.getStatus().toString();
         switch (status.toUpperCase()) {
             case "PUBLISH" -> course.setStatus(CourseEnum.Status.PUBLISH);
-            case "DRAFT" -> course.setStatus(CourseEnum.Status.DRAFT);
-            case "HIDE" -> course.setStatus(CourseEnum.Status.HIDE);
+            case "PRIVATE" -> course.setStatus(CourseEnum.Status.PRIVATE);
         }
         courseService.updateCourse(course);
         //add course log
@@ -192,12 +192,12 @@ public class LecturerController {
 
     @PostMapping({"topics/add_topic"})
     @Transactional
-    public String addTopic(@ModelAttribute Topic topic, final Model model) {
-        topic = topicService.addTopic(topic);
+    public String addTopic(@ModelAttribute TopicDto topicDto, final Model model) {
+        Topic topic = topicService.addTopic(topicDto);
         courseService.addTopic(topic);
         Course course = courseService.findByCourseId(topic.getCourse().getId());
         if (course.getStatus() == CourseEnum.Status.NEW) {
-            course.setStatus(CourseEnum.Status.DRAFT);
+            course.setStatus(CourseEnum.Status.PRIVATE);
             courseService.updateCourse(course);
         }
         List<Topic> topics = course.getTopics();
@@ -213,11 +213,7 @@ public class LecturerController {
                 topic.getTopicTitle(),
                 getLoggedInLecturerMail(),
                 null, null);
-        model.addAttribute("course", course);
-        model.addAttribute("topics", topics);
-        model.addAttribute("topic", modelTopic);
-        model.addAttribute("success", "success");
-        return "lecturer/topic/lecturer_add-topic-to-course";
+        return "redirect:/lecturer/courses/" + course.getId() + "/add_topic?success";
     }
 
     @GetMapping({"/topics/{topicId}/update"})
@@ -302,9 +298,17 @@ public class LecturerController {
         return "lecturer/resource_type/lecturer_add-resource-type-to-course";
     }
 
-    @PostMapping({"resource_types/add_resource_type"})
+    @PostMapping({"/courses/{courseId}/add_resource_type"})
     @Transactional
-    public String addResourceType(ResourceType resourceType, final Model model) {
+    public String addResourceType(ResourceType resourceType, final Model model, @PathVariable String courseId) {
+        List<ResourceType> existedResourceTypes = courseService.findByCourseId(courseId).getResourceTypes();
+
+        for(ResourceType existedResourceType : existedResourceTypes){
+            if(existedResourceType.getResourceTypeName().equals(resourceType.getResourceTypeName())){
+                model.addAttribute("resourceTypeName", resourceType.getResourceTypeName());
+                return "redirect:/lecturer/courses/" + courseId + "/add_resource_type?error";
+            }
+        }
         ResourceType resourcetype = resourceTypeService.addResourceType(resourceType);
         courseService.addResourceType(resourcetype);
         Course course = courseService.findByCourseId(resourcetype.getCourse().getId());
@@ -321,12 +325,7 @@ public class LecturerController {
                 resourceType.getResourceTypeName(),
                 getLoggedInLecturerMail(),
                 null, null);
-
-        model.addAttribute("course", course);
-        model.addAttribute("resourceTypes", resourceTypes);
-        model.addAttribute("resourceType", modelResourceType);
-        model.addAttribute("success", "success");
-        return "lecturer/resource_type/lecturer_add-resource-type-to-course";
+        return "redirect:/lecturer/courses/" + courseId + "/add_resource_type?success";
     }
 
     @GetMapping({"/resource_types/{resourceTypeId}/update"})
@@ -371,6 +370,9 @@ public class LecturerController {
     public String deleteResourceType(@PathVariable String resourceTypeId) {
         ResourceType resourcetype = resourceTypeService.findById(resourceTypeId);
         if (null != resourcetype) {
+            if(resourcetype.getResourceTypeName().equals("Common material")){
+                return "redirect:/courses/" + resourcetype.getCourse() + "/resource_types?cannotDelete";
+            }
             courseService.removeResourceType(resourcetype.getCourse().getId(), new ObjectId(resourceTypeId));
             resourceTypeService.softDelete(resourcetype);
             //add course log
@@ -645,11 +647,17 @@ public class LecturerController {
                                         @RequestParam(value = "file", required = false) MultipartFile file)
             throws Exception {
         Document checkExist = documentService.findById(document.getId());
+        if(checkExist.getResourceType() != document.getResourceType()){
+            // chuyển resource type
+            resourceTypeService.removeDocumentFromResourceType(checkExist.getResourceType().getId(), new ObjectId(checkExist.getId()));
+            checkExist.setResourceType(document.getResourceType());
+        }
         if (null == checkExist) {
             return "redirect:/lecturer/documents/" + document.getId() + "/update?error";
         } else {
             checkExist.setTitle(document.getTitle());
             checkExist.setDescription(document.getDescription());
+
             String id = "fileNotFound";
             if (!checkExist.isDisplayWithFile()) {
                 checkExist.setEditorContent(document.getEditorContent());
@@ -692,6 +700,7 @@ public class LecturerController {
                     documentService.updateDocument(checkExist, String.valueOf(checkExist.getContentId()), id);
                 }
             }
+            resourceTypeService.addDocumentToResourceType(document.getResourceType().getId(), new ObjectId(checkExist.getId()));
             //add course log
             Course course = checkExist.getTopic().getCourse();
             addCourseLog(course.getId(),
@@ -770,7 +779,7 @@ public class LecturerController {
         Document document = documentService.findById(documentId);
         if (null != document) {
             topicService.removeDocumentFromTopic(document.getTopic().getId(), new ObjectId(documentId));
-            resourceTypeService.removeDocumentFromResourceType(document.getTopic().getId(), new ObjectId(documentId));
+            resourceTypeService.removeDocumentFromResourceType(document.getResourceType().getId(), new ObjectId(documentId));
             documentService.softDelete(document);
 
             // Add course log

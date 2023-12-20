@@ -2,16 +2,23 @@ package fpt.edu.eresourcessystem.service;
 
 import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.model.DocumentNote;
+import fpt.edu.eresourcessystem.model.StudentNote;
 import fpt.edu.eresourcessystem.repository.DocumentNoteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service("documentNoteService")
 @RequiredArgsConstructor
@@ -70,9 +77,23 @@ public class DocumentNoteServiceImpl implements DocumentNoteService {
     }
 
     @Override
-    public List<DocumentNote> findByStudent(String studentId) {
-        Criteria criteria = Criteria.where("studentId").is(studentId).and("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED);
-        Query query = new Query(criteria).with(Sort.by(Sort.Direction.DESC, "lastModifiedDate"));
-        return mongoTemplate.find(query, DocumentNote.class);
+    public Page<DocumentNote> findByStudent(String search, String studentId, int pageIndex, int pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+        Criteria criteria = new Criteria();
+        criteria.and("createdDate").exists(true);
+//        criteria.and("createdBy").is(studentId);
+        criteria.and("studentId").is(studentId);
+        criteria.and("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED);
+        // Add a condition to search in title, description, or editorContent
+        Criteria textSearchCriteria = new Criteria().orOperator(
+                Criteria.where("documentTitle").regex(Pattern.quote(search), "i"),  // "i" for case-insensitive
+                Criteria.where("noteContent").regex(Pattern.quote(search), "i")
+        );
+        criteria.andOperator(textSearchCriteria);
+        Query query = new Query(criteria).with(Sort.by(Sort.Order.desc("createdDate"))).with(pageable);
+        List<DocumentNote> results = mongoTemplate.find(query, DocumentNote.class);
+        return PageableExecutionUtils.getPage(results, pageable,
+                () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), DocumentNote.class));
+
     }
 }

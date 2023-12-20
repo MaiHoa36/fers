@@ -120,6 +120,25 @@ public class StudentController {
         return "student/course/student_course-detail";
     }
 
+    @GetMapping({"/courses_saved/{courseId}"})
+    public String viewCourseSavedDetail(@PathVariable(required = false) String courseId, final Model model) {
+        // auth
+        Course course = courseService.findByCourseIdSaved(courseId);
+        if (null == course) {
+            return "exception/404";
+        }
+        if (course.getStudents().contains(getLoggedInStudentMail())){
+            model.addAttribute("course", course);
+            model.addAttribute("saved", true);
+            // add log
+            addUserLog("/student/courses/" + courseId);
+            return "student/course/student_course-detail";
+        } else {
+            return "exception/404";
+        }
+
+    }
+
     /*
         DOCUMENT
     */
@@ -150,7 +169,7 @@ public class StudentController {
 
         // Need to optimize
         Account account = accountService.findByEmail(document.getCreatedBy());
-
+        Course course = document.getTopic().getCourse();
         DocumentNote documentNote = documentNoteService.findByDocIdAndStudentId(docId, student.getId());
         model.addAttribute("documentNote", Objects.requireNonNullElseGet(documentNote, DocumentNote::new));
 
@@ -175,6 +194,7 @@ public class StudentController {
 //                model.addAttribute("relevantDocuments", relevantDocuments);
 //            }
 //        }
+        model.addAttribute("course", course);
         model.addAttribute("questions", questionResponseDtos);
         model.addAttribute("myQuestions", myQuestionResponseDtos);
         model.addAttribute("document", document);
@@ -200,7 +220,7 @@ public class StudentController {
         // get account authorized
         Student student = getLoggedInStudent();
         List<String> savedCourses = student != null ? student.getSavedCourses() : null;
-        if (null != savedCourses) {
+        if (null != savedCourses && student.getSavedCourses() != null) {
 //            List<Course> courses = courseService.findByListId(savedCourses);
             Page<Course> courses = courseService.findByListCourseIdAndSearch(search, savedCourses, pageIndex, PAGE_SIZE);
             model.addAttribute("coursesSaved", courses.getContent());
@@ -212,6 +232,7 @@ public class StudentController {
         model.addAttribute("currentPage", pageIndex);
         return "student/library/student_saved_courses";
     }
+
 
     @GetMapping({"/my_library/saved_documents"})
     public String viewDocumentSaved(@RequestParam(required = false, defaultValue = "1") int pageIndex,
@@ -227,11 +248,29 @@ public class StudentController {
             System.out.println(documents.getContent().size());
             model.addAttribute("documentsSaved", documents.getContent());
             model.addAttribute("totalItems", documents.getTotalElements());
-
         }
         model.addAttribute("search", search);
         model.addAttribute("currentPage", pageIndex);
         return "student/library/student_saved_documents";
+    }
+
+    @GetMapping({"/documents_saved/{documentId}"})
+    public String viewSavedDocumentDetail(@PathVariable(required = false) String documentId, final Model model) {
+        // auth
+        Document document = documentService.findById(documentId);
+        if (null == document) {
+            return "exception/404";
+        }
+        if (document.getStudents().contains(getLoggedInStudentMail())){
+            model.addAttribute("document", document);
+            model.addAttribute("saved", true);
+            // add log
+            addUserLog("/student/documents_saved/" + documentId);
+            return "student/course/student_course-detail";
+        } else {
+            return "exception/404";
+        }
+
     }
 
     @GetMapping({"/topics/{topicId}"})
@@ -280,31 +319,35 @@ public class StudentController {
      * STUDENT - MY NOTES
      */
 
-    @GetMapping({"/my_library/my_notes/{pageIndex}"})
+    @GetMapping({"/my_library/my_notes"})
     public String viewMyNote(@RequestParam(required = false, defaultValue = "") String search,
-                             @PathVariable Integer pageIndex, final Model model) {
+                             @RequestParam(required = false, defaultValue = "my") String noteType,
+                             @RequestParam(required = false, defaultValue = "1") Integer pageIndex, final Model model) {
         // get account authorized
         Student student = getLoggedInStudent();
-        Page<StudentNote> page = null;
-        if (student != null) {
-            page = studentNoteService.getNoteByStudent(student.getId(), pageIndex, PAGE_SIZE);
+        Page<StudentNote> myNotes = null;
+        Page<DocumentNote> myDocumentNotes = null;
+        if (student != null && "document".equals(noteType)) {
+            myDocumentNotes = documentNoteService.findByStudent(search, student.getId(), pageIndex, 1);
+            model.addAttribute("studentDocumentNotes", myDocumentNotes.getContent());
+        } else if (student != null) {
+            myNotes = studentNoteService.getNoteByStudent(search, student.getId(), pageIndex, 1);
+            model.addAttribute("studentNotes", myNotes.getContent());
+
+        } else {
+            return "exception/404";
         }
-        List<DocumentNote> studentDocumentNotes = null;
-        if (student != null) {
-            studentDocumentNotes = documentNoteService.findByStudent(student.getId());
+        if (null != myNotes) {
+            model.addAttribute("totalPages", myNotes.getTotalPages());
+            model.addAttribute("totalItems", myNotes.getTotalElements());
+        } else {
+            model.addAttribute("totalPages", myDocumentNotes.getTotalPages());
+            model.addAttribute("totalItems", myDocumentNotes.getTotalElements());
         }
-        if (null != page) {
-            List<Integer> pages = CommonUtils.pagingFormat(page.getTotalPages(), pageIndex);
-            model.addAttribute("pages", pages);
-            model.addAttribute("totalPage", page.getTotalPages());
-            model.addAttribute("studentNotes", page.getContent());
-            model.addAttribute("search", search);
-            model.addAttribute("roles", AccountEnum.Role.values());
-            model.addAttribute("currentPage", pageIndex);
-            model.addAttribute("search", search);
-            // document notes model
-            model.addAttribute("studentDocumentNotes", studentDocumentNotes);
-        }
+        model.addAttribute("currentPage", pageIndex);
+        model.addAttribute("search", search);
+        model.addAttribute("noteType", noteType);
+
         return "student/library/student_my-notes";
     }
 
@@ -390,7 +433,7 @@ public class StudentController {
         if (checkDeleted) {
             // add log
             addUserLog("/student/my_note/student_notes/delete/" + studentNoteId + SUCCESS_PARAM);
-            return "redirect:/student/my_note/student_notes/add" + SUCCESS_PARAM;
+            return "redirect:/student/my_library/my_notes" + SUCCESS_PARAM;
         } else {
             return "redirect:/student/my_note/student_notes/" + studentNoteId + ERROR_PARAM;
         }

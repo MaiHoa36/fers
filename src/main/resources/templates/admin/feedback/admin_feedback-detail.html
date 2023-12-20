@@ -90,7 +90,7 @@
                             <label th:for="createdDate">Created date:</label>
                         </td>
                         <td type="text" class="lib_input form-control"
-                            th:text="${feedback.createdDate}">
+                            th:text="${#temporals.format(feedback.createdDate, 'dd-MM-yyyy HH:mm:ss')}">
                         </td>
                     </tr>
                     <tr class="lib_input-wrapper">

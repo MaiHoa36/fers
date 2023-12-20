@@ -1,6 +1,7 @@
 package fpt.edu.eresourcessystem.service;
 
 import fpt.edu.eresourcessystem.model.DocumentNote;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -15,5 +16,5 @@ public interface DocumentNoteService {
 
     boolean deleteDocumentNote(DocumentNote documentNote);
 
-    List<DocumentNote> findByStudent(String studentId);
+    Page<DocumentNote> findByStudent(String search, String studentId, int pageIndex, int pageSize);
 }

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.format.DateTimeFormatter;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,6 +26,6 @@ public class NotificationResponseDto {
         this.status = notification.getNotificationStatus().toString();
         this.notificationContent = notification.getNotificationContent();
         this.link = notification.getLinkToView();
-        this.lastModifiedDate = notification.getCreatedDate();
+        this.lastModifiedDate = notification.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));;
     }
 }

@@ -6,6 +6,7 @@ import fpt.edu.eresourcessystem.model.Document;
 import fpt.edu.eresourcessystem.model.Question;
 import fpt.edu.eresourcessystem.model.Student;
 import org.springframework.data.domain.Page;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ public interface QuestionService {
     List<Question> findByDocId(Document document);
 
     List<QuestionResponseDto> findByStudentLimitAndSkip(Student student, Document document, int limit, int skip);
+    boolean hasMoreItemsAfterSkipAndLimitByStudent(Student student, Document document, int limit, int skip);
 
     List<QuestionResponseDto> findByDocumentLimitAndSkip(Document document, int limit, int skip);
 

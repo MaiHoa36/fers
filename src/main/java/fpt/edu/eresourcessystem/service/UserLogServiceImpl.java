@@ -1,5 +1,7 @@
 package fpt.edu.eresourcessystem.service;
 
+import fpt.edu.eresourcessystem.enums.CommonEnum;
+import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.model.Course;
 import fpt.edu.eresourcessystem.model.UserLog;
 import fpt.edu.eresourcessystem.repository.UserLogRepository;
@@ -65,7 +67,7 @@ public class UserLogServiceImpl implements UserLogService {
     public List<Course> findStudentRecentView(String email) {
         String urlPrefix = "/student/courses/";
         Criteria criteria = Criteria.where("email").is(email)
-                .and("url").regex(Pattern.quote("^" + urlPrefix))
+                .and("url").regex("^" + urlPrefix)
                 .and("createdDate").exists(true);
 
         // Sort by the "time" in descending order to get the most recent documents
@@ -79,7 +81,9 @@ public class UserLogServiceImpl implements UserLogService {
                 .toList();
 
         return mongoTemplate.find(
-                Query.query(Criteria.where("id").in(listCourseIds)),
+                Query.query(Criteria.where("id").in(listCourseIds)
+                        .and("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
+                        .and("status").is(CourseEnum.Status.PUBLISH)),
                 Course.class
         );
 

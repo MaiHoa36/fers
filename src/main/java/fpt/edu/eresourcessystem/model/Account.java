@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Document("accounts")
 @Getter
@@ -52,11 +53,11 @@ public class Account {
     @CreatedBy
     private String createdBy;
     @CreatedDate
-    private String createdDate;
+    private LocalDateTime createdDate;
     @LastModifiedBy
     private String lastModifiedBy;
     @LastModifiedDate
-    private String lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     // Constructor DTO
     public Account(AccountDto accountDTO) {

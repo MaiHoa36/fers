@@ -11,6 +11,8 @@ import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,11 +32,11 @@ public class Admin {
     @CreatedBy
     private String createdBy;
     @CreatedDate
-    private String createdDate;
+    private LocalDateTime createdDate;
     @LastModifiedBy
     private String lastModifiedBy;
     @LastModifiedDate
-    private String lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     // Constructor
     public Admin(@NotNull Account account) {

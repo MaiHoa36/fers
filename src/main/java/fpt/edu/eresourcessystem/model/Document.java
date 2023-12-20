@@ -15,6 +15,7 @@ import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,7 +44,6 @@ public class Document {
 
     private String editorContent;
 
-    private DocumentEnum.DocumentFormat docType;
     private String suffix;
     private ObjectId contentId;
     private String cloudFileLink;
@@ -59,8 +59,10 @@ public class Document {
     private List<String> notes;
     private List<String> questions;
 
-    private DocumentEnum.DocumentStatusEnum status;
+    private DocumentEnum.DocumentFormat docType;
     private CourseEnum.Status courseStatus;
+
+    private List<String> students;
 
     @DocumentReference(lazy = true)
     private List<Rate> rates;
@@ -74,11 +76,11 @@ public class Document {
     @CreatedBy
     private String createdBy;
     @CreatedDate
-    private String createdDate;
+    private LocalDateTime createdDate;
     @LastModifiedBy
     private String lastModifiedBy;
     @LastModifiedDate
-    private String lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     public Document(DocumentDto documentDTO) {
         this.id = documentDTO.getId();

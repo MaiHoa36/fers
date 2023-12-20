@@ -31,14 +31,10 @@ public class ImageService {
 
     public String uploadImage(MultipartFile file) throws IOException {
         File fileObj = convertMultiPartFileToFile(file);
-        String fileName = file.getOriginalFilename();
-        String ext = null;
-        if (fileName != null) {
-            ext = fileName.substring(fileName.indexOf("."));
-        }
-        String uuidFileName = "ckeditor_image_" + UUID.randomUUID() + ext;
-        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, uuidFileName, fileObj);
+        String fileName = "CK_editor_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileName, fileObj);
         s3Client.putObject(putObjectRequest);
+        fileObj.delete();
         return s3Client.getUrl(bucketName, fileName).toString();
     }
 

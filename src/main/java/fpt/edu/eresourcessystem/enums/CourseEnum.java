@@ -5,8 +5,7 @@ public class CourseEnum {
 
         NEW("New"),
         PUBLISH("Publish"),
-        DRAFT("Draft"),
-        HIDE("Hide");
+        PRIVATE("Private");
         private final String displayValue;
 
         Status(String displayValue) {
@@ -20,8 +19,7 @@ public class CourseEnum {
 
     public enum ChangeableStatus {
         PUBLISH("Publish"),
-        DRAFT("Draft"),
-        HIDE("Hide");
+        PRIVATE("Private");
         private final String displayValue;
 
         ChangeableStatus(String displayValue) {

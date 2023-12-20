@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -21,7 +22,7 @@ public class TrainingTypeDto {
     // Only use when response, no need in requests
     private List<Course> courses;
     private String createdBy;
-    private String createdDate;
+    private LocalDateTime createdDate;
     private String lastModifiedBy;
-    private String lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 }

@@ -18,6 +18,9 @@ public interface DocumentRepository extends
     @Query("{ 'id' : ?0, 'deleteFlg' : 'PRESERVED' }")
     Optional<Document> findById(String id);
 
+    @Query("{ 'id' : ?0 }")
+    Optional<Document> findByIdWithoutDeleteFlg(String id);
+
     @Query("{ 'createdBy' : ?0, 'deleteFlg' : 'PRESERVED' }")
     List<Document> findByCreatedBy(String createdBy);
 

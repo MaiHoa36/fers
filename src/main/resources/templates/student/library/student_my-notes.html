@@ -34,53 +34,32 @@
                     </div>
 
                     <div class="stu_courses-content main" id="main">
-                        <div class="header__search">
-                            <!--Label-->
-                            <div class="search-label">
-                                <label th:for="search">Search course</label>
-                            </div>
-                            <!-- Input  -->
-                            <div class="header__search-input-wrap">
-                                <input type="text" class="header__search-input"
-                                       placeholder="Enter course ..."
-                                       name="search"
-                                       th:id="search-text" th:value="${search}">
-                                <!-- Header-search-history -->
-                                <div class="header__search-history">
-                                    <h3 class="header__search-history-heading">
-                                        Search history
-                                    </h3>
-                                    <ul class="header__search-history-list">
-
-                                        <li class="header__search-history-item">
-                                            <a href="">Software</a>
-                                        </li>
-                                    </ul>
+                        <form th:action="@{/student/my_library/my_notes}" th:method="GET" id="search-student-note">
+                            <div class="header__search">
+                                <!--Label-->
+                                <div class="search-label">
+                                    <label th:for="search">Search notes</label>
                                 </div>
+                                <!-- Input  -->
+                                <div class="header__search-input-wrap">
+                                    <input type="text" name="noteType" th:value="${noteType}" id="note-type" hidden>
+                                    <input type="text" name="pageIndex" th:value="${currentPage}" id="pageIndex" hidden>
+                                    <input type="text" class="header__search-input"
+                                           placeholder="Enter note title, content..."
+                                           name="search"
+                                           th:id="search-text" th:value="${search}">
+                                </div>
+                                <!-- Select-find-scope -->
+                                <button class="header__search-btn" type="button" onclick="submitFormSearchNote()">
+                                    <i class="header__search-btn-icon fas fa-search"></i>
+                                </button>
                             </div>
-                            <!-- Select-find-scope -->
-                            <div class="header__search-select">
-                                <span class="header__search-select-label">All results</span>
-                                <i class="header__search-select-icon fas fa-angle-down"></i>
-                                <ul class="header__search-option">
-                                    <li class="header__search-option-item header__search-option-item--active">
-                                        <span class="">By Name</span>
-                                        <i class="fas fa-check"></i>
-                                    </li>
-                                    <li class="header__search-option-item">
-                                        <span class="">By Code</span>
-                                        <i class="fas fa-check"></i>
-                                    </li>
-                                </ul>
-                            </div>
-                            <button class="header__search-btn">
-                                <i class="header__search-btn-icon fas fa-search"></i>
-                            </button>
-                        </div>
+                        </form>
                         <!-- Nav Section-->
                         <div class="stu__navbar-favourite">
                             <ul class="stu__navbar-favourite-list border-bottom">
-                                <li class="stu__navbar-favourite-item stu__navbar-active note-view-link"
+                                <li class="stu__navbar-favourite-item"
+                                    th:classappend="${noteType} == 'my' ? 'stu__navbar-active' : ''"
                                     onclick="viewMyNote()">
                                     <a>
                                         My Notes
@@ -91,7 +70,9 @@
                                 <!--                    My documents-->
                                 <!--                  </a>-->
                                 <!--                </li>-->
-                                <li class="stu__navbar-favourite-item  note-view-link" onclick="viewDocumentNote()">
+                                <li class="stu__navbar-favourite-item"
+                                    th:classappend="${noteType} == 'document' ? 'stu__navbar-active' : ''"
+                                    onclick="viewDocumentNote()">
                                     <a>
                                         Document Notes
                                     </a>
@@ -100,11 +81,11 @@
                         </div>
                         <!--End  Nav Section-->
                         <!--My note section-->
-                        <div id="myNote" class="stu__courses-list-view">
+                        <div id="myNote" class="stu__courses-list-view" th:if="${noteType} == 'my' ">
                             <div class="stu__view-my-notes">
                                 <div th:if="${param.search} AND ${studentNotes == null} OR ${studentNotes.size()} == 0"
                                      class="list-content-not-found">
-                                    <p>No note found.</p>
+                                    <p class="number-count count-questions">No note found.</p>
                                 </div>
                                 <div class="stu__add-note">
                                     <a class="btn btn-save" th:href="@{/student/my_note/student_notes/add}">
@@ -113,6 +94,8 @@
                                 </div>
                                 <div class="stu__view-list-note-content"
                                      th:if="${studentNotes ne null} AND ${studentNotes.size()} > 0">
+                                    <p class="number-count count-questions">Total: <span th:text="${totalItems}"></span>
+                                        note(s).</p>
                                     <div class="view-note-list">
                                         <ul class="home__note-list">
                                             <li class="home__note-item">
@@ -124,66 +107,36 @@
                                                     <p class="home__note-description"
                                                        th:text="${studentNote.description}"></p>
                                                     <p class="home__note-date">
-                                                        Created: <span th:text="${studentNote.createdDate}"></span>
+                                                        Created: <span th:text="${#temporals.format(studentNote.createdDate, 'dd-MM-yyyy HH:mm:ss')}"></span>
                                                         Last Modified: <span
-                                                            th:text="${studentNote.lastModifiedDate}"></span>
+                                                            th:text="${#temporals.format(studentNote.lastModifiedDate, 'dd-MM-yyyy HH:mm:ss')}"></span>
                                                     </p>
                                                 </div>
                                             </li>
                                         </ul>
                                     </div>
-                                    <nav th:if="${totalPage ne null} AND ${totalPage} >1"
-                                         aria-label="Page navigation example">
-                                        <ul class="pagination home-courses__pagination-distance">
-                                            <li class="pagination-item"
-                                                th:classappend=" ${currentPage == 1} ? 'disabled' : ''">
-                                                <a class="pagination-item__link previous-page-stu-note-number"
-                                                   style="cursor: pointer">
-                                                    <i class="pagination-item__icon fas fa-angle-left"></i>
-                                                </a>
-                                            </li>
-
-                                            <li th:each="pageIndex: ${pages}" class="pagination-item"
-                                                th:classappend=" (${currentPage == pageIndex}) ? 'pagination-item--active' : '' ">
-                                                <th:block th:if="${pageIndex == -1}">
-                                                    <span class="pagination-item__link">...</span>
-                                                </th:block>
-                                                <th:block th:if="${pageIndex != -1}">
-                                                    <a th:text="${pageIndex}" th:value="${pageIndex}"
-                                                       class="pagination-item__link page-stu-note-number"
-                                                       style="cursor: pointer"></a>
-                                                </th:block>
-                                            </li>
-                                            <li class="pagination-item"
-                                                th:classappend="${currentPage == totalPage} ? 'disabled' : ''">
-                                                <a class="pagination-item__link next-page-stu-note-number"
-                                                   style="cursor: pointer">
-                                                    <i class="pagination-item__icon fas fa-angle-right"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
                                 </div>
                             </div>
                         </div>
                         <!--End My note section-->
                         <!-- Document Note section-->
-                        <div id="documentNote" class="stu__courses-list-view display-none">
+                        <div id="documentNote" class="stu__courses-list-view" th:if="${noteType} == 'document' ">
                             <div class="stu__view-my-notes">
-                                <div th:if="${studentDocumentNotes == null } OR ${studentDocumentNotes.size()} == 0 "
-                                     class="list-content-not-found">
-                                    <p>No document note found.</p>
+                                <div th:if="${studentDocumentNotes == null } OR ${studentDocumentNotes.size()} == 0 ">
+                                    <p class="number-count count-questions">No document note found.</p>
                                 </div>
                                 <div class="stu__view-list-question-content"
                                      th:if="${studentDocumentNotes ne null} AND ${studentDocumentNotes.size()} > 0">
+                                    <p class="number-count count-questions">Total: <span th:text="${totalItems}"></span>
+                                        note(s) in document(s).</p>
                                     <div class="view-question-list">
                                         <div class="stu__question-content-wrapper"
                                              th:each="documentNote : ${studentDocumentNotes}">
                                             <span class="stu__question-content stu__question-date"
-                                                  th:text="${documentNote.lastModifiedDate}"></span>
+                                                  th:text="${#temporals.format(documentNote.lastModifiedDate, 'dd-MM-yyyy HH:mm:ss')}"></span>
                                             <br>
-                                            <a class="stu__question-title"
-                                               th:text="'You noted on '+${documentNote.documentTitle}"></a>
+                                            <span>You noted on </span> <a class="stu__question-title"
+                                                                          th:text="${documentNote.documentTitle}"></a>
 
                                             <p class="student-content-view-brief"><a class="link-view-detailed"
                                                                                      th:href="@{'/student/documents/' + ${documentNote.docId} + '#note'}"><i
@@ -194,6 +147,42 @@
                             </div>
                             <!-- End Document Note section-->
                         </div>
+                        <nav th:if="${totalPages ne null} AND ${totalPages} >1"
+                             aria-label="Page navigation example">
+                            <ul class="pagination home-courses__pagination-distance">
+                                <li class="pagination-item"
+                                    th:classappend=" ${currentPage == 1} ? 'disabled' : ''">
+                                    <a th:page="${currentPage}-1" onclick="pagingInMyNote(this)"
+                                       class="pagination-item__link" style="cursor: pointer">
+                                        <i class="pagination-item__icon fas fa-angle-left"></i>
+                                    </a>
+                                </li>
+
+                                <li th:each="pageIndex: ${#numbers.sequence(1, totalPages)}"
+                                    class="pagination-item"
+                                    th:classappend=" (${currentPage == pageIndex}) ? 'pagination-item--active' : '' ">
+                                    <th:block th:if="${currentPage - pageIndex == 3 }">
+                                        <span class="pagination-item__link">...</span>
+                                    </th:block>
+                                    <th:block
+                                            th:if="${currentPage - pageIndex <= 2} AND ${currentPage - pageIndex >= -2}">
+                                        <a th:page="${pageIndex}" onclick="pagingInMyNote(this)"
+                                           th:text="${pageIndex}" th:value="${pageIndex}"
+                                           class="pagination-item__link" style="cursor: pointer"></a>
+                                    </th:block>
+                                    <th:block th:if="${pageIndex - currentPage == 3 }">
+                                        <span class="pagination-item__link">...</span>
+                                    </th:block>
+                                </li>
+                                <li class="pagination-item"
+                                    th:classappend="${currentPage == totalPages} ? 'disabled' : ''">
+                                    <a th:page="${currentPage}+1" onclick="pagingInMyNote(this)"
+                                       class="pagination-item__link" style="cursor: pointer">
+                                        <i class="pagination-item__icon fas fa-angle-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -214,5 +203,15 @@
         crossorigin="anonymous"></script>
 <!--Custom script-->
 <script th:src="@{/js/student/student.js}"></script>
+<script th:inline="javascript">
+    var successParam = [[${param.success}]];
+    if (successParam) {
+        Swal.fire(
+            'Success!',
+            'Delete note successful!',
+            'success'
+        );
+    }
+</script>
 </body>
 </html>

@@ -23,7 +23,7 @@ public interface AccountRepository extends
     @Query("{$and: [{'deleteFlg' : 'PRESERVED'}, {'username': ?0}]}")
     Account findByUsername(String username);
 
-    @Query("{$and: [{'deleteFlg' : 'PRESERVED'}, {'status' : 'ACTIVE'}, {'email': ?0}]}")
+    @Query("{$and: [{'deleteFlg': 'PRESERVED'}, {'status': 'ACTIVE'}, {'email': {$regex: ?0, $options: 'i'}}]}")
     Optional<Account> findByEmail(String email);
 
     @Query("{$and: [{'deleteFlg' : 'PRESERVED'}, {'_id': ?0}]}")

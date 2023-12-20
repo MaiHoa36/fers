@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -36,7 +37,7 @@ public class AccountDto {
     // Only use when response, no need in requests
     private AccountEnum.Status status;
     private String createdBy;
-    private String createdDate;
+    private LocalDateTime createdDate;
     private String lastModifiedBy;
-    private String lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 }

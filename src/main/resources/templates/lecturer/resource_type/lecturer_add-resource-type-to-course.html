@@ -53,7 +53,7 @@
                                 <div class="add-form">
                                     <div class="add-form-content">
                                         <form method="post" role="form"
-                                              th:action="@{/lecturer/resource_types/add_resource_type}"
+                                              th:action="@{'/lecturer/courses/' + ${course.getId} + '/add_resource_type'}"
                                               th:object="${resourceType}" th:id="add-resource-type">
                                             <table class="table-form add-table" style="width: 60%">
                                                 <tr class="d-none">
@@ -69,6 +69,7 @@
                                                         type name:</label></td>
                                                     <td><input type="text"
                                                                class="lecturer_input form-control"
+                                                               th:value="${resourceTypeName}"
                                                                th:field="*{resourceTypeName}"
                                                                placeholder="Enter resource type name" required>
                                                         <p class="text-danger" th:errors="*{resourceTypeName}"
@@ -79,14 +80,7 @@
                                                     <td></td>
                                                     <td>
                                                         <button type="submit" class="btn btn-save">Save</button>
-                                                        <th:block th:if="${param.success}">
-                                                            <a class="btn btn--back" href="javascript:void(0);"
-                                                               onclick="history.go(-2);">Back</a>
-                                                        </th:block>
-                                                        <th:block th:unless="${param.success}">
-                                                            <a class="btn btn--back" href="javascript:void(0);"
-                                                               onclick="history.go(-1);">Back</a>
-                                                        </th:block>
+                                                            <a class="btn btn--back" th:href="'/lecturer/courses/' + ${course.id}">Back</a>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -97,7 +91,7 @@
                             <div class="topic-item">
                                 <div class="topic-title">
                                     <h3 class="topic-info-title d-flex justify-content-between">
-                                        Added resource types
+                                        Added resource types:
                                     </h3>
                                 </div>
                                 <!--Document view list-->
@@ -106,7 +100,7 @@
                                     <div class="doc-info-head" style="max-width: 75%">
                                         <p class="doc-info-title"><a
                                                 th:href="@{'/lecturer/resource_types/' + ${resourceType.id}}">
-                                            <span th:text="${resourceType.resourceTypeName}"></span></a>
+                                            <span class="existedResourceTypes" th:text="${resourceType.resourceTypeName}"></span></a>
                                         </p>
                                     </div>
                                     <div style="margin-left: 5%">
@@ -160,8 +154,8 @@
     var errorParam = [[${param.error}]];
     if (errorParam) {
         Swal.fire(
-            'Error!',
-            'Please check again!',
+            'This resource type is defined!',
+            'Please type another type of resource!',
             'error'
         );
     }

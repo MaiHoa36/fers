@@ -14,18 +14,20 @@ function viewQuestionWaiting() {
     $("#getMyQuestion").submit();
 }
 
-function viewNewReplyQuestion(){
+function viewNewReplyQuestion() {
     $("#setStatus").val("new-reply");
     $("#pageIndex").val("1");
     $("#getMyQuestion").submit();
 }
-function pagingInMyQuestion(clickedElement){
+
+function pagingInMyQuestion(clickedElement) {
     var page = $(clickedElement).attr('page');
     $("#pageIndex").val(page);
     $("#getMyQuestion").submit();
 
 }
-function submitFormGetQuestion(){
+
+function submitFormGetQuestion() {
     $("#pageIndex").val("1");
     $("#getMyQuestion").submit();
 }
@@ -158,11 +160,19 @@ function viewTopicDocument(param) {
 
 $(document).ready(function () {
 
-    $("#getMyQuestion :input").keypress(function(event) {
+    $("#getMyQuestion :input").keypress(function (event) {
         // Kiểm tra xem phím được ấn có phải là Enter không (mã ASCII 13)
         if (event.which === 13) {
             $("#pageIndex").val("1");
             $("#getMyQuestion").submit();
+        }
+    });
+
+    $("#search-student-note :input").keypress(function (event) {
+        // Kiểm tra xem phím được ấn có phải là Enter không (mã ASCII 13)
+        if (event.which === 13) {
+            $("#pageIndex").val("1");
+            $("#search-student-note").submit();
         }
     });
 
@@ -274,14 +284,14 @@ $(document).ready(function () {
 
 
     // add click on <li> also -> click on <a>
-    $('.stu__navbar-favourite-item').on('click', function() {
+    $('.stu__navbar-favourite-item').on('click', function () {
         var link = $(this).find('a');
         if (link.length > 0) {
             link[0].click();
         }
     });
 
-    $('.home__course-wrapper-inline').on('click', function() {
+    $('.home__course-wrapper-inline').on('click', function () {
         var link = $(this).find('a');
         if (link.length > 0) {
             link[0].click();
@@ -414,23 +424,49 @@ function viewDocumentNote() {
     console.log("view my note")
     $("#documentNote").removeClass('display-none');
     $("#myNote").addClass('display-none');
+    $("#note-type").val("document");
+    $("#pageIndex").val("1");
+    $("#search-student-note").submit();
 }
 
 function viewMyNote() {
     console.log("view document note")
     $("#documentNote").addClass('display-none');
     $("#myNote").removeClass('display-none');
+    $("#note-type").val("my");
+    $("#pageIndex").val("1");
+    $("#search-student-note").submit();
+}
+
+function pagingInMyNote(clickedElement) {
+    var page = $(clickedElement).attr('page');
+    $("#pageIndex").val(page);
+    $("#search-student-note").submit();
+}
+
+function submitFormSearchNote() {
+    $("#pageIndex").val("1");
+    $("#search-student-note").submit();
 }
 
 function submitDeleteMyNote() {
-    var result = window.confirm("Do you want to delete your note?");
-    if (result) {
-        $("#send-edit-note-button").addClass("disabled");
-        $("#send-delete-note-button").addClass("display-none");
-        $("#sending-delete").css("display", "inline");
-        $("#deleteStudentNote").submit();
-        console.log("submited.")
-    }
+    // var result = window.confirm("Do you want to delete your note?");
+    Swal.fire({
+        title: 'Do you want to delete your note?',
+        showCancelButton: true,
+        showDenyButton: true,
+        confirmButtonText: 'Delete',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $("#send-edit-note-button").addClass("disabled");
+            $("#send-delete-note-button").addClass("display-none");
+            $("#sending-delete").css("display", "inline");
+            $("#deleteStudentNote").submit();
+            console.log("submited.")
+        } else if (result.isDenied) {
+            Swal.fire('Cancelled', 'Deletion was canceled.', 'info');
+        }
+    });
 }
 
 function choseResourceType(label) {

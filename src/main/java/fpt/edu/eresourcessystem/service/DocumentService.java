@@ -31,6 +31,8 @@ public interface DocumentService {
 
     Document findById(String documentId);
 
+    Document findByIdStudentSavedCourse(String mail, String documentId);
+
     List<Document> findByListId(List<String> documentIds);
 
     Document updateDocument(Document document, String currentFileId, String id) throws IOException;
@@ -48,6 +50,8 @@ public interface DocumentService {
     List<DocumentResponseDto> findRelevantDocument(String topicId, String docId);
 
     HashMap<String, List<DocumentResponseDto>> findAllDocumentsByCourseAndResourceType(String courseId, String resourceTypeId);
+
+    HashMap<String, List<DocumentResponseDto>> findAllDocumentsByCourseAndResourceType(String mail, String courseId, String resourceTypeId);
 
 
     void removeMultiFile(String docId, ObjectId multiFileId);

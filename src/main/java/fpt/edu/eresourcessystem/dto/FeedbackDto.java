@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +23,7 @@ public class FeedbackDto {
     private String status;
 
     private String createdBy;
-    private String createdDate;
+    private LocalDateTime createdDate;
     private String lastModifiedBy;
-    private String lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 }

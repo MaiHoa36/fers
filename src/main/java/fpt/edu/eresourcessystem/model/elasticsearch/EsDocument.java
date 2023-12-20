@@ -6,6 +6,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 
 import java.io.Serializable;
+import java.time.format.DateTimeFormatter;
 
 @Document(indexName = "documents")
 @AllArgsConstructor
@@ -35,7 +36,7 @@ public class EsDocument implements Serializable {
         this.description = document.getDescription();
         this.content = document.getContent();
         this.docType = document.getSuffix().toUpperCase();
-        this.lastModifiedDate = document.getLastModifiedDate();
+        this.lastModifiedDate = document.getLastModifiedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));;
         this.createdBy = document.getCreatedBy();
     }
 }

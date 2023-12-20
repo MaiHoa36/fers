@@ -100,6 +100,7 @@
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
     checkAllCheckbox.addEventListener('change', function () {
+        console.log("ok")
         checkboxes.forEach(function (checkbox) {
             checkbox.checked = checkAllCheckbox.checked;
         });
@@ -110,8 +111,6 @@
 
 
     deleteButton.addEventListener('click', function () {
-
-        loadingAnimation.style.display = 'block';
         const selectedNotifications = Array.from(checkboxes)
             .filter(function (checkbox) {
                 return checkbox.checked;
@@ -121,6 +120,7 @@
             });
 
         if (selectedNotifications.length > 0) {
+            loadingAnimation.style.display = 'block';
             $.ajax({
                 url: '/notifications/delete',
                 method: 'POST',
@@ -133,6 +133,12 @@
                     console.error('Error:', error);
                 }
             });
+        } else {
+            Swal.fire(
+                'No selected item!',
+                'Select notifications that you want to delete!',
+                'error'
+            );
         }
     });
 </script>

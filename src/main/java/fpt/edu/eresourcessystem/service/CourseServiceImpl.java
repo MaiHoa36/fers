@@ -90,7 +90,10 @@ public class CourseServiceImpl implements CourseService {
     public Course findByCourseId(String courseId) {
         return courseRepository.findByIdAndDeleteFlg(courseId, CommonEnum.DeleteFlg.PRESERVED);
     }
-
+    @Override
+    public Course findByCourseIdSaved(String courseId) {
+        return courseRepository.findByIdWithoutDeleteFlg(courseId).orElse(null);
+    }
     @Override
     public List<Course> findAll() {
         return courseRepository.findAll();
@@ -258,16 +261,16 @@ public class CourseServiceImpl implements CourseService {
                 resourceTypes = new ArrayList<>();
             }
 
-            // check topic existed in course
-            boolean checkTopicExist = false;
+            // check resource existed in course
+            boolean checkResourceTypeExist = false;
             for (ResourceType type : resourceTypes) {
-                if (type.getId().equals(resourceType.getId())) {
-                    checkTopicExist = true;
+                if (type.getResourceTypeName().equals(resourceType.getResourceTypeName())) {
+                    checkResourceTypeExist = true;
                     break;
                 }
             }
             // check topic not existed in course
-            if (!checkTopicExist) {
+            if (!checkResourceTypeExist) {
                 // add topic to course
                 resourceTypes.add(resourceType);
                 courseExisted.setResourceTypes(resourceTypes);
@@ -410,6 +413,7 @@ public class CourseServiceImpl implements CourseService {
     public long countTotalCourses() {
         return courseRepository.count();
     }
+
 
     @Override
     public Page<Course> findByListCourseIdAndSearch(String search, List<String> courseIds, int pageIndex, int pageSize) {

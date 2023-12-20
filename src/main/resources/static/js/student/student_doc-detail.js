@@ -244,24 +244,33 @@ function submitDeleteDocumentNote(param) {
     $('#send-delete-note-button').addClass('display-none');
     $('#send-edit-note-button').addClass('display-none');
     $('#sending-delete').css("display", "block");
-    var result = window.confirm("Do you want to delete your note?");
-    if (result) {
-        $.ajax({
-            type: 'POST',
-            url: '/api/student/document_note/' + param + '/delete',
-            success: function (data) {
-                console.log('success-delete-question' + param);
-                $('#send-new-note-button').css("display", "inline");
-                $('#sending-delete').css("display", "none");
-                $('#error-input-new-note').css("display", "none");
-                newEditor.setData('');
-                $('#send-new-note-button').addClass('disabled');
-            },
-            error: function (xhr) {
-                console.log('error-delete-question')
-            }
-        });
-    }
+    // var result = window.confirm("Do you want to delete your note?");
+    Swal.fire({
+        title: 'Do you want to delete your note?',
+        showCancelButton: true,
+        showDenyButton: true,
+        confirmButtonText: 'Delete',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/student/document_note/' + param + '/delete',
+                success: function (data) {
+                    console.log('success-delete-question' + param);
+                    $('#send-new-note-button').css("display", "inline");
+                    $('#sending-delete').css("display", "none");
+                    $('#error-input-new-note').css("display", "none");
+                    newEditor.setData('');
+                    $('#send-new-note-button').addClass('disabled');
+                },
+                error: function (xhr) {
+                    console.log('error-delete-question')
+                }
+            });
+        } else if (result.isDenied) {
+            Swal.fire('Cancelled', 'Deletion was canceled.', 'info');
+        }
+    });
 }
 
 function existFormAddQuestion() {
@@ -294,7 +303,7 @@ function submitFormReplyQuestion(param) {
                 $('#exist-reply-form-button-' + param).css("display", "inline");
                 $('#sending-reply-' + param).css("display", "none");
                 $('#reply-form' + param).css("display", "none");
-                sendReply(data.answerId, "3" , data.answerContent);
+                sendReply(data.answerId, "3", data.answerContent);
                 var html = "";
                 if (data.studentName == null) {
                     html = "<div class=\"reply-content border-bottom\">\n" +
@@ -568,7 +577,6 @@ function deleteQuestion(param) {
 }
 
 
-
 function submitFormEditReply(param) {
     console.log(param)
     var content = $('#update-reply-content-' + param).val();
@@ -611,34 +619,43 @@ function existFormEditReply(param) {
 }
 
 function deleteReply(param, param2) {
-    var result = window.confirm("Do you want to delete your reply?");
-    if (result) {
-        $.ajax({
-            type: 'POST',
-            url: '/api/student/my_question/replies/' + param + '/delete',
-            success: function (data) {
-                console.log('success-delete-reply' + param);
-                $("#" + param).html("");
-                $("#" + param).css("display", "none");
-                // change total of answer
-                var totalReply = $('#number-reply-' + param2).text();
-                var intValue = parseInt(totalReply);
+    // var result = window.confirm("Do you want to delete your reply?");
+    Swal.fire({
+        title: 'Do you want to delete your answer?',
+        showCancelButton: true,
+        showDenyButton: true,
+        confirmButtonText: 'Delete',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/student/my_question/replies/' + param + '/delete',
+                success: function (data) {
+                    console.log('success-delete-reply' + param);
+                    $("#" + param).html("");
+                    $("#" + param).css("display", "none");
+                    // change total of answer
+                    var totalReply = $('#number-reply-' + param2).text();
+                    var intValue = parseInt(totalReply);
 
-                if (!isNaN(intValue)) {
-                    // Increment the integer by 1
-                    var newValue = intValue - 1;
+                    if (!isNaN(intValue)) {
+                        // Increment the integer by 1
+                        var newValue = intValue - 1;
 
-                    // Set the new value as the text of the span
-                    $('#number-reply-' + param2).text(newValue);
-                } else {
-                    $('#number-reply-' + param2).text("");
+                        // Set the new value as the text of the span
+                        $('#number-reply-' + param2).text(newValue);
+                    } else {
+                        $('#number-reply-' + param2).text("");
+                    }
+                },
+                error: function (xhr) {
+                    console.log('error-delete-reply')
                 }
-            },
-            error: function (xhr) {
-                console.log('error-delete-reply')
-            }
-        });
-    }
+            });
+        } else if (result.isDenied) {
+            Swal.fire('Cancelled', 'Deletion was canceled.', 'info');
+        }
+    });
 }
 
 
@@ -723,7 +740,7 @@ function loadMoreMyQuestion(skip, docId) {
                             "                                                <div class=\"edit-question-div\" id=\"update-question" + question.questionId + "\" style=\"display: none\">\n" +
                             "                                                    <label id=\"update-question-error" + question.questionId + "\"\n" +
                             "                                                           class=\"display-none\">Please enter something to update.</label>\n" +
-                            "                                                    <textarea class=\"update-question\" id=\"update-question-content-" + question.questionId + "\">"+ question.questionContent +"</textarea>\n" +
+                            "                                                    <textarea class=\"update-question\" id=\"update-question-content-" + question.questionId + "\">" + question.questionContent + "</textarea>\n" +
                             "                                                    <button id=\"close-update-question-" + question.questionId + "\"\n" +
                             "                                                            type=\"button\" title=\"exist\"\n" +
                             "                                                            question-id=\"" + question.questionId + "\" onclick=existFormEditQuestion(\"" + question.questionId + "\") class=\"exist-form-edit-question btn-danger\"><i\n" +

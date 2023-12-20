@@ -11,6 +11,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -31,5 +33,5 @@ public class DocumentLog {
     @CreatedBy
     private String account;
     @CreatedDate
-    private String date;
+    private LocalDateTime date;
 }

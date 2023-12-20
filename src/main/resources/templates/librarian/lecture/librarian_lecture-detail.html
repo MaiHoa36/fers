@@ -117,7 +117,7 @@
                                 <tr class="lib_input-wrapper">
                                     <td class="lib_input-label"><label for="email">Email:</label></td>
                                     <td>
-                                        <input type="text" id="email" name="lastModifiedDate"
+                                        <input type="text" id="email" name="email"
                                                class="lib_input form-control" th:value="${lecturer.account.email}"
                                                placeholder="Enter email" readonly>
                                     </td>
@@ -148,7 +148,7 @@
                             <tr th:each="course : ${lecturer.courses}">
                                 <td th:text="${course.getCourseName()}"></td>
                                 <td th:text="${course.getCourseCode()}"></td>
-                                <td th:text="${#dates.format(course.getLastModifiedDate(), 'dd/MM/yyyy HH:mm')}"></td>
+                                <td th:text="${#temporals.format(course.getLastModifiedDate(), 'dd/MM/yyyy HH:mm')}"></td>
                             </tr>
 
                             <tr th:if="${#lists.isEmpty(lecturer.courses)}">

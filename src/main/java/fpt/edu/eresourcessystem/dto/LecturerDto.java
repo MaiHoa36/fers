@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +35,6 @@ public class LecturerDto {
         if (lecturer.getCourses() != null) {
             this.totalCourses = lecturer.getCourses().size();
         }
-        this.lastModifiedDate = lecturer.getLastModifiedDate();
+        this.lastModifiedDate = lecturer.getLastModifiedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));;
     }
 }

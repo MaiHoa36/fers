@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +23,7 @@ public class StudentNoteDto {
 
     // Only use when response, no need in requests
     private String createdBy;
-    private String createdDate;
+    private LocalDateTime createdDate;
     private String lastModifiedBy;
-    private String lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 }

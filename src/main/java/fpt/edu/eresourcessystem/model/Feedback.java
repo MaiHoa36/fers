@@ -12,6 +12,8 @@ import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,7 +38,7 @@ public class Feedback {
     @CreatedBy
     private String createdBy;
     @CreatedDate
-    private String createdDate;
+    private LocalDateTime createdDate;
     @LastModifiedBy
     private String lastModifiedBy;
 
@@ -51,7 +53,7 @@ public class Feedback {
     }
 
     @LastModifiedDate
-    private String lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     // Constructor DTO
 //    public Feedback(FeedbackDTO feedbackDTO) {

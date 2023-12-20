@@ -482,3 +482,7 @@ label.error {
     margin-top: 1.5rem;
     padding: 1.8rem 2.3rem;
 }
+
+#changeCourseStatus:hover {
+    color: var(--link-color);
+}

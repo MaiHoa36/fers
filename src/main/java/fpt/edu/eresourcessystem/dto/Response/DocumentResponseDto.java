@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.format.DateTimeFormatter;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,7 +31,7 @@ public class DocumentResponseDto {
             topicTitle = document.getTopic().getTopicTitle();
         }
         this.description = document.getDescription();
-        this.lastModifiedDate = document.getLastModifiedDate();
+        this.lastModifiedDate = document.getLastModifiedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         this.lastModifiedBy = document.getLastModifiedBy();
     }
 }
