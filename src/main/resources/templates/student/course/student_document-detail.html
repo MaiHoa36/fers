@@ -173,7 +173,7 @@
                                         </th:block>
                                         <th:block th:if="${document.cloudFileLink ne null}">
                                             <th:block
-                                                    th:unless="${document.docType.toString() eq 'VIDEO' or document.docType.toString() eq 'AUDIO'}">
+                                                    th:unless="${document.docType.toString() eq 'VIDEO' or document.docType.toString() eq 'AUDIO' or document.docType.toString() eq 'IMAGE'}">
                                                 <th:block th:unless="${document.docType.toString() eq 'OTHER'}">
                                                     <embed class="doc-content-view"
                                                            th:attr="src='https://docs.google.com/gview?url=' + ${data} + '&embedded=true'"
@@ -191,6 +191,10 @@
                                                     th:if="${document.docType.toString() eq 'VIDEO' or document.docType.toString() eq 'AUDIO'}">
                                                 <embed class="doc-content-view"
                                                        th:attr="src=${data}" width="100%" height="600px">
+                                            </th:block>
+                                            <th:block th:if="${document.docType.toString() eq 'IMAGE'}">
+                                                <img th:src="${data}" style="width: 100%"
+                                                     alt="Image"/>
                                             </th:block>
                                         </th:block>
                                     </th:block>

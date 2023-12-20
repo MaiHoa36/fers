@@ -220,7 +220,7 @@ public class StudentController {
         // get account authorized
         Student student = getLoggedInStudent();
         List<String> savedCourses = student != null ? student.getSavedCourses() : null;
-        if (null != savedCourses) {
+        if (null != savedCourses && student.getSavedCourses() != null) {
 //            List<Course> courses = courseService.findByListId(savedCourses);
             Page<Course> courses = courseService.findByListCourseIdAndSearch(search, savedCourses, pageIndex, PAGE_SIZE);
             model.addAttribute("coursesSaved", courses.getContent());
@@ -248,7 +248,6 @@ public class StudentController {
             System.out.println(documents.getContent().size());
             model.addAttribute("documentsSaved", documents.getContent());
             model.addAttribute("totalItems", documents.getTotalElements());
-
         }
         model.addAttribute("search", search);
         model.addAttribute("currentPage", pageIndex);
