@@ -24,10 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static fpt.edu.eresourcessystem.constants.Constants.PAGE_SIZE;
 import static fpt.edu.eresourcessystem.constants.Constants.VERIFICATION_CODE;
@@ -269,7 +266,6 @@ public class AdminController {
      * @return list of accounts after delete
      */
     @GetMapping("/accounts/{accountId}/delete")
-    @Transactional
     public String deleteAccount(@PathVariable String accountId) {
         Account foundAccount = accountService.findById(accountId);
         AccountEnum.Role role = foundAccount.getRole();
@@ -289,23 +285,29 @@ public class AdminController {
             case LECTURER -> {
                 Lecturer lecturer = lecturerService.findByAccountId(accountId);
                 lecturer.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
+                if (lecturer.getCourses() != null) {
+                    for (Course course : lecturer.getCourses()) {
+                        courseService.removeLecture(course.getId());
+                    }
+                }
+                lecturer.setCourses(new ArrayList<>());
                 lecturerService.updateLecturer(lecturer);
             }
-            // Xóa quyền quản lý môn học + ghi log
-            // Xóa mềm topic đã tạo
-            // Xóa mềm resource type đã tạo
-            // Xóa mềm tài liệu đã đăng
+            // xóa cứng các môn học đang quản lý
+            // Xóa quyền quản lý môn học + ghi log // k xóa
+            // Xóa mềm topic đã tạo    // k xóa
+            // Xóa mềm resource type đã tạo // k xóa
+            // Xóa mềm tài liệu đã đăng    // k xóa
 
             case STUDENT -> {
                 Student student = studentService.findByAccountId(accountId);
                 student.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
                 studentService.updateStudent(student);
             }
-            // Xóa mềm note on document
-            // Xóa mềm question của student
-            // Xóa mềm saved course
-            // Xóa mềm saved document
-            // Xóa mềm student self note
+            // Xóa mềm note on document        // có xóa
+            // Xóa mềm question của student    // k xóa
+            // Xóa mềm saved course            // có xóa
+            // Xóa mềm saved document          // có xóa
 
         }
         foundAccount.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);

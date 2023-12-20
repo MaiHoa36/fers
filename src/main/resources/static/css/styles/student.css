@@ -621,3 +621,11 @@ stu__navbar-view-doc-item:hover a{
 .home__note-wrapper:hover .home__note-title{
     color: var(--link-color);
 }
+
+label.error {
+    margin-top: 5px;
+    margin-left: 5px;
+    display: block;
+    color: red;
+    /*font-size: smaller;*/
+}

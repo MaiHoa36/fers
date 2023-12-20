@@ -87,6 +87,19 @@
             <scope>test</scope>
         </dependency>
 
+<!--        &lt;!&ndash; Google Cloud Speech-to-Text &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.google.cloud</groupId>-->
+<!--            <artifactId>google-cloud-speech</artifactId>-->
+<!--            <version>1.28.0</version>-->
+<!--        </dependency>-->
+
+        <!-- Thư viện cho việc xử lý âm thanh -->
+        <dependency>
+            <groupId>com.googlecode.soundlibs</groupId>
+            <artifactId>mp3spi</artifactId>
+            <version>1.9.5.4</version>
+        </dependency>
 
 
         <!-- Thymeleaf-->
