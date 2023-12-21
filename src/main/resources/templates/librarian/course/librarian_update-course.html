@@ -79,6 +79,12 @@
                                                placeholder="Enter course name" required>
                                     </td>
                                 </tr>
+                                <tr class="d-none">
+                                    <td><input type="text" th:id="status"
+                                               class="lib_input form-control" th:field="*{status}"
+                                               placeholder="Enter course name" hidden>
+                                    </td>
+                                </tr>
 
                                 <tr>
                                     <td class="lib_input-label"><label th:for="description">Description:</label></td>

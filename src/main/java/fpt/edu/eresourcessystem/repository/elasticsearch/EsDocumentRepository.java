@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface EsDocumentRepository extends ElasticsearchRepository<EsDocument, String> {
 
     @Query("{\"bool\": " +
-            "{\"must\": [{\"term\": {\"status\": \"SHOW\"}}]," +
+            "{\"must\": [{\"match\": {\"status\": \"SHOW\"}}]," +
             "\"should\": " +
             "[{\"match_phrase\": {\"title\": \"*?0*\"}}," +
             "{\"match_phrase\": {\"description\": \"*?0*\"}}," +

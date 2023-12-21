@@ -32,7 +32,6 @@ public class DocumentDto {
     private String title;
     private String description;
 
-
     private String editorContent;
 
     private String suffix;
@@ -46,12 +45,10 @@ public class DocumentDto {
 
     // Only use when response, no need in requests
     private DocumentEnum.DocumentStatusEnum docStatus;
-    private CourseEnum.Status courseStatus;
     private List<Student> students;
 
     private String createdBy;
     private LocalDateTime createdDate;
     private String lastModifiedBy;
     private LocalDateTime lastModifiedDate;
-
 }

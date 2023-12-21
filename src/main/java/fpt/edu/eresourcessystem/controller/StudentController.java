@@ -69,6 +69,11 @@ public class StudentController {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    private Account getLoggedInAccount() {
+        return accountService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+
     /*
         HOME
      */
@@ -127,16 +132,16 @@ public class StudentController {
         if (null == course) {
             return "exception/404";
         }
-        if (course.getStudents().contains(getLoggedInStudentMail())){
-            model.addAttribute("course", course);
-            model.addAttribute("saved", true);
-            // add log
-            addUserLog("/student/courses/" + courseId);
-            return "student/course/student_course-detail";
-        } else {
-            return "exception/404";
+        if (course.getStudents() != null) {
+            if (course.getStudents().contains(getLoggedInStudentMail())) {
+                model.addAttribute("course", course);
+                model.addAttribute("saved", true);
+                // add log
+                addUserLog("/student/courses/" + courseId);
+                return "student/course/student_course-detail";
+            }
         }
-
+        return "exception/404";
     }
 
     /*
@@ -255,21 +260,59 @@ public class StudentController {
     }
 
     @GetMapping({"/documents_saved/{documentId}"})
-    public String viewSavedDocumentDetail(@PathVariable(required = false) String documentId, final Model model) {
+    public String viewSavedDocumentDetail(@PathVariable(required = false) String documentId, final Model model) throws IOException {
         // auth
+        Student student = getLoggedInStudent();
         Document document = documentService.findById(documentId);
         if (null == document) {
             return "exception/404";
         }
-        if (document.getStudents().contains(getLoggedInStudentMail())){
-            model.addAttribute("document", document);
-            model.addAttribute("saved", true);
-            // add log
-            addUserLog("/student/documents_saved/" + documentId);
-            return "student/course/student_course-detail";
-        } else {
-            return "exception/404";
+        if (document.getStudents() != null) {
+            if (document.getStudents().contains(getLoggedInStudentMail())) {
+                if (null == student) {
+                    return LOGIN_REQUIRED;
+                } else if (null == document) {
+                    return "exception/404";
+                } else if (DocumentEnum.DocumentStatusEnum.HIDE == document.getDocStatus()) {
+                    return "exception/404";
+                }
+                if (document.isDisplayWithFile()) {
+                    String data;
+                    if (document.getCloudFileLink() != null) {
+                        data = document.getCloudFileLink();
+                    } else {
+                        byte[] file = documentService.getGridFSFileContent(document.getContentId());
+                        data = Base64.getEncoder().encodeToString(file);
+                    }
+                    model.addAttribute("data", data);
+                }
+
+                // Need to optimize
+                Account account = accountService.findByEmail(document.getCreatedBy());
+                Course course = document.getTopic().getCourse();
+                DocumentNote documentNote = documentNoteService.findByDocIdAndStudentId(documentId, student.getId());
+                model.addAttribute("documentNote", Objects.requireNonNullElseGet(documentNote, DocumentNote::new));
+
+                List<QuestionResponseDto> myQuestionResponseDtos  = questionService.findByStudentLimitAndSkip(student, document, 3, 0);
+
+
+                List<QuestionResponseDto> questionResponseDtos = questionService.findByOtherStudentLimitAndSkip(student, document, 3, 0);
+                System.out.println(questionResponseDtos.size());
+//        }
+                model.addAttribute("course", course);
+                model.addAttribute("questions", questionResponseDtos);
+                model.addAttribute("myQuestions", myQuestionResponseDtos);
+                model.addAttribute("document", document);
+                model.addAttribute("account", account);
+                model.addAttribute("newQuestion", new Question());
+                model.addAttribute("newAnswer", new Answer());
+                model.addAttribute("saved", true);
+                // add log
+                addUserLog("/student/documents_saved/" + documentId);
+                return "student/library/student_saved-document-detail";
+            }
         }
+        return "exception/404";
 
     }
 
@@ -382,8 +425,6 @@ public class StudentController {
     @GetMapping({"/my_note/student_notes/{studentNoteId}", "/my_note/student_notes/{studentNoteId}/updateProcess"})
     public String viewMyNoteProcess(@PathVariable String studentNoteId, final Model model) {
         StudentNote studentNote = studentNoteService.findById(studentNoteId);
-        System.out.println(studentNoteId);
-        System.out.println(studentNote);
         if (null == studentNoteId) {
             return "exception/404";
 

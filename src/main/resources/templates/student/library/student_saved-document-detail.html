@@ -88,12 +88,12 @@
                                 <div th:if="${loggedInUser.role.toString().equals('STUDENT')}"
                                      class="stu_save-course-link stu_save-doc-link">
                                     <p th:if="${saved ne null} AND ${saved} == true"><a class="unsaved-doc"
-                                          th:attr="docId=${document.getId}">
+                                                                                        th:attr="docId=${document.getId}">
                                         <i class="fa-solid fa-bookmark"></i>
                                         Unbookmark</a>
                                     </p>
                                     <p th:if="${saved ne null} AND ${saved} == false"><a class="save-doc"
-                                          th:attr="docId=${document.getId}">
+                                                                                         th:attr="docId=${document.getId}">
                                         <i class="fa-regular fa-bookmark"></i>
                                         Bookmark</a></p>
                                 </div>

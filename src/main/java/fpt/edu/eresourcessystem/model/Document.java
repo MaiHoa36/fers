@@ -32,6 +32,9 @@ public class Document {
     @DocumentReference(lazy = true)
     private Topic topic;
 
+    @DocumentReference(lazy = true)
+    private Course course;
+
     private String courseId;
 
     @DocumentReference(lazy = true)
@@ -40,7 +43,6 @@ public class Document {
     @NotEmpty(message = "course.validation.title.required")
     private String title;
     private String description;
-    private DocumentEnum.DocumentStatusEnum docStatus;
 
     private String editorContent;
 
@@ -61,6 +63,7 @@ public class Document {
 
     private DocumentEnum.DocumentFormat docType;
     private CourseEnum.Status courseStatus;
+    private DocumentEnum.DocumentStatusEnum docStatus;
 
     private List<String> students;
 
@@ -85,6 +88,7 @@ public class Document {
     public Document(DocumentDto documentDTO) {
         this.id = documentDTO.getId();
         this.topic = documentDTO.getTopic();
+        this.course = documentDTO.getTopic().getCourse();
         this.resourceType = documentDTO.getResourceType();
         this.title = documentDTO.getTitle();
         this.description = documentDTO.getDescription();

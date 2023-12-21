@@ -7,6 +7,8 @@ import fpt.edu.eresourcessystem.model.*;
 import fpt.edu.eresourcessystem.model.elasticsearch.EsCourse;
 import fpt.edu.eresourcessystem.repository.CourseRepository;
 import fpt.edu.eresourcessystem.repository.elasticsearch.EsCourseRepository;
+import fpt.edu.eresourcessystem.service.elasticsearch.EsCourseService;
+import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -26,23 +28,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service("courseService")
+@AllArgsConstructor
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final TopicService topicService;
     private final ResourceTypeService resourceTypeService;
-
     private final MongoTemplate mongoTemplate;
-
+    private final EsCourseService esCourseService;
     private final EsCourseRepository esCourseRepository;
-
-    @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, TopicService topicService, ResourceTypeService resourceTypeService, MongoTemplate mongoTemplate, EsCourseRepository esCourseRepository) {
-        this.courseRepository = courseRepository;
-        this.topicService = topicService;
-        this.resourceTypeService = resourceTypeService;
-        this.mongoTemplate = mongoTemplate;
-        this.esCourseRepository = esCourseRepository;
-    }
 
     @Override
     public Course addCourse(Course course) {
@@ -109,7 +102,7 @@ public class CourseServiceImpl implements CourseService {
     public boolean softDelete(Course course) {
         Optional<Course> check = courseRepository.findById(course.getId());
         if (check.isPresent()) {
-            // Soft delete topic first
+            // Soft delete topics first
             for (Topic topic : course.getTopics()) {
                 topicService.softDelete(topic);
             }
@@ -117,7 +110,7 @@ public class CourseServiceImpl implements CourseService {
             // SOFT DELETE Course
             course.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
             courseRepository.save(course);
-            esCourseRepository.delete(new EsCourse(course));
+            esCourseService.delete(new EsCourse(course));
             return true;
         }
         return false;

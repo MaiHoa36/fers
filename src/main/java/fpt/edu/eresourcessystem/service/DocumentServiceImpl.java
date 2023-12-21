@@ -6,6 +6,7 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import fpt.edu.eresourcessystem.dto.DocumentDto;
 import fpt.edu.eresourcessystem.dto.Response.DocumentResponseDto;
 import fpt.edu.eresourcessystem.enums.CommonEnum;
+import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.enums.DocumentEnum;
 import fpt.edu.eresourcessystem.model.Course;
 import fpt.edu.eresourcessystem.model.Document;
@@ -98,6 +99,27 @@ public class DocumentServiceImpl implements DocumentService {
             }
         }
         return document;
+    }
+
+//    @Override
+//    public void changeDocumentCourseStatus(String docId, CourseEnum.Status courseStatus) {
+//        Query query = new Query(Criteria.where("id").is(docId));
+//        Update update = new Update().set("courseStatus", courseStatus);
+//        mongoTemplate.updateMulti(query, update, Document.class);
+//    }
+
+    @Override
+    public void addStudentSaveToDocument(String docId, String studentMail) {
+        Query query = new Query(Criteria.where("id").is(docId));
+        Update update = new Update().push("students", studentMail);
+        mongoTemplate.updateFirst(query, update, Document.class);
+    }
+
+    @Override
+    public void removeStudentUnSaveFromDocument(String docId, String studentMail) {
+        Query query = new Query(Criteria.where("id").is(docId));
+        Update update = new Update().pull("students", studentMail);
+        mongoTemplate.updateFirst(query, update, Document.class);
     }
 
     @Override
