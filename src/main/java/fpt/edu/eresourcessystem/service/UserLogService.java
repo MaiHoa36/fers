@@ -2,7 +2,9 @@ package fpt.edu.eresourcessystem.service;
 
 import fpt.edu.eresourcessystem.model.Course;
 import fpt.edu.eresourcessystem.model.UserLog;
+import org.springframework.data.domain.Page;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,4 +20,6 @@ public interface UserLogService {
     UserLog addUserLog(UserLog userLog);
 
     List<Course> findStudentRecentView(String accountId);
+
+    public Page<UserLog> getUserLogsBySearchAndDate(String search, LocalDate startDate, LocalDate endDate, String role, int pageIndex, int pageSize);
 }

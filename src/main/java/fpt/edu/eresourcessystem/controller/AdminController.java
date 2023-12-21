@@ -324,8 +324,8 @@ public class AdminController {
                                 @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
                                 @RequestParam(required = false, defaultValue = "all") String roleSearch,
                                 final Model model) {
-        List<UserLog> userLogs = userLogService.findAll();
-        model.addAttribute("userLogs", userLogs);
+//        List<UserLog> userLogs = userLogService.findAll();
+//        model.addAttribute("userLogs", userLogs);
         model.addAttribute("roles", AccountEnum.Role.values());
         model.addAttribute("roleSearch", roleSearch);
         return "admin/system_log/admin_user_logs";

@@ -5,11 +5,14 @@ import fpt.edu.eresourcessystem.dto.Response.AccountResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.DataTablesResponse;
 import fpt.edu.eresourcessystem.model.Account;
 import fpt.edu.eresourcessystem.model.Feedback;
+import fpt.edu.eresourcessystem.model.UserLog;
 import fpt.edu.eresourcessystem.service.AccountService;
 import fpt.edu.eresourcessystem.service.FeedbackService;
+import fpt.edu.eresourcessystem.service.UserLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
@@ -26,6 +30,7 @@ public class AdminRestController {
 
     private final AccountService accountService;
     private final FeedbackService feedbackService;
+    private final UserLogService userLogService;
 
     @GetMapping("/feedbacks")
     public ResponseEntity<DataTablesResponse<Feedback>> getAllFeedbacks(
@@ -46,6 +51,28 @@ public class AdminRestController {
         response.setRecordsFiltered(feedbacksPage.getTotalElements());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/user_log")
+    public ResponseEntity<DataTablesResponse<UserLog>> listUserLogs(
+            @RequestParam("draw") int draw,
+            @RequestParam("start") int start,
+            @RequestParam("length") int length,
+            @RequestParam(value = "search[value]", defaultValue = "") String search,
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(value = "role", required = false) String role) {
+
+        int pageIndex = start / length; // Convert start to page index
+        Page<UserLog> userLogsPage = userLogService.getUserLogsBySearchAndDate(search, startDate, endDate, role, pageIndex, length);
+
+        DataTablesResponse<UserLog> response = new DataTablesResponse<>();
+        response.setData(userLogsPage.getContent());
+        response.setDraw(draw);
+        response.setRecordsTotal(userLogsPage.getTotalElements());
+        response.setRecordsFiltered(userLogsPage.getTotalElements());
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/account", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})

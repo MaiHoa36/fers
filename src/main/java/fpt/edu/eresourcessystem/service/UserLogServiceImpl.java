@@ -5,13 +5,13 @@ import fpt.edu.eresourcessystem.enums.CourseEnum;
 import fpt.edu.eresourcessystem.model.Course;
 import fpt.edu.eresourcessystem.model.UserLog;
 import fpt.edu.eresourcessystem.repository.UserLogRepository;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -87,5 +87,38 @@ public class UserLogServiceImpl implements UserLogService {
                 Course.class
         );
 
+    }
+
+    @Override
+    public Page<UserLog> getUserLogsBySearchAndDate(String search, LocalDate startDate, LocalDate endDate, String role, int pageIndex, int pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
+        Criteria criteria = new Criteria();
+
+        // Match on email and URL containing the search string
+        criteria.orOperator(
+                Criteria.where("email").regex(Pattern.quote(search), "i"),
+                Criteria.where("url").regex(Pattern.quote(search), "i")
+        );
+
+        // Date range filtering
+        if (startDate != null && endDate != null) {
+            criteria.and("createdDate").gte(startDate).lte(endDate);
+        } else if (startDate != null) {
+            criteria.and("createdDate").gte(startDate);
+        } else if (endDate != null) {
+            criteria.and("createdDate").lte(endDate);
+        }
+
+        // Role filtering
+        if (role != null && !role.isEmpty() && !role.equalsIgnoreCase("all")) {
+            criteria.and("role").is(role);
+        }
+
+        Query query = new Query(criteria).with(pageable);
+        List<UserLog> result = mongoTemplate.find(query, UserLog.class, "user_logs");
+
+        long totalCount = mongoTemplate.count(new Query(criteria), UserLog.class, "user_logs");
+
+        return new PageImpl<>(result, pageable, totalCount);
     }
 }
