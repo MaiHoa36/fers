@@ -174,95 +174,177 @@
 <script th:src="@{https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js}"></script>
 
 <script type="text/javascript">
-    $(function () {
-        $('#datepicker').datepicker();
-    });
-    $(function () {
-        $('#datepicker2').datepicker();
-    });
-
     $(document).ready(function () {
-
-        // Initialize DataTable
         var table = $("#filterTable").DataTable({
-            searching: true,
-            ordering: true,
-            dom: 'Bfrtip',
-            pagingType: "simple_numbers",
-            pageLength: 10,
-            language: {
+            ordering: false,
+            // "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "/api/admin/user_log", // Update to your correct API endpoint
+                "type": "GET",
+                "data": function (d) {
+                    var startDate = $('#datepicker').datepicker("getDate");
+                    var endDate = $('#datepicker2').datepicker("getDate");
+
+                    d.startDate = startDate ? startDate.toISOString().substring(0, 10) : null;
+                    d.endDate = endDate ? endDate.toISOString().substring(0, 10) : null;
+                    d.role = $('#role').val();
+                }
+            },
+            "columns": [
+                {
+                    "data": "index",
+                    "render": function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                { "data": "email" },
+                { "data": "url" },
+                { "data": "role" },
+                {
+                    "data": "createdDate",
+                    "render": function (data) {
+                        return new Date(data).toLocaleString(); // Format date
+                    }
+                }
+            ],
+            "pagingType": "simple_numbers",
+            "pageLength": 10,
+            "dom": 'Bfrtip',
+            "buttons": [
+                {
+                    text: 'Export to Excel',
+                    extend: 'excel',
+                    className: 'btn btn-save border export',
+                    title: 'UserLogs',
+                    extension: '.xlsx'
+                }
+            ],
+            "language": {
                 paginate: {
                     first: "<<",
                     last: ">>",
                     next: ">>",
                     previous: "<<",
                 }
-            },
-            buttons: [
-                {
-                    text: 'Export to Excel',
-                    extend: 'excel',
-                    className: 'btn btn-save border export',
-                    title: 'UserLogs',
-                    extension: '.xlsx',
-                    exportOptions: {
-                        // Các tùy chọn xuất
-                    }
-                },
-            ]
-        });
-
-        $.fn.dataTable.ext.search.push(
-            function (settings, data, dataIndex) {
-                var minDate = $('#datepicker').datepicker("getDate");
-                var maxDate = $('#datepicker2').datepicker("getDate");
-                var createdDate = new Date(data[4]);
-
-                if ((minDate === null && maxDate === null) ||
-                    (minDate === null && createdDate <= maxDate) ||
-                    (minDate <= createdDate && maxDate === null) ||
-                    (minDate <= createdDate && createdDate <= maxDate)) {
-                    return true;
-                }
-                return false;
-            }
-        );
-
-        function filterByRole(selectedRole) {
-            table.column(3).search(selectedRole).draw(); // Assuming the role is in the 4th column (index 3)
-        }
-
-        $('#role').on('change', function () {
-            var selectedRole = $(this).val();
-            if (selectedRole === 'all') {
-                table.column(3).search('').draw();
-            } else {
-                filterByRole(selectedRole);
             }
         });
 
-        // Redraw the table when the date range changes
-        $('#datepicker, #datepicker2').change(function () {
+        // Redraw the table when filters are changed
+        $('#datepicker, #datepicker2, #role').on('change', function () {
             table.draw();
         });
 
-
-        // Handle search input
         $('#search-text').on('keyup', function () {
             table.search(this.value).draw();
         });
 
-        // Hide DataTable search label
+        // Initialize the datepickers
+        $('#datepicker, #datepicker2').datepicker({
+            format: 'yyyy-mm-dd' // Adjust the format as necessary
+        });
+
+        // Hide the DataTables default search label
         $("label").each(function () {
             if ($(this).text().indexOf('Search:') >= 0) {
                 $(this).css('display', 'none');
             }
         });
-
-
-        // Initial table draw
-        table.draw();
     });
+
+
+
+    // $(function () {
+    //     $('#datepicker').datepicker();
+    // });
+    // $(function () {
+    //     $('#datepicker2').datepicker();
+    // });
+    //
+    // $(document).ready(function () {
+    //
+    //     // Initialize DataTable
+    //     var table = $("#filterTable").DataTable({
+    //         searching: true,
+    //         ordering: true,
+    //         dom: 'Bfrtip',
+    //         pagingType: "simple_numbers",
+    //         pageLength: 10,
+    //         language: {
+    //             paginate: {
+    //                 first: "<<",
+    //                 last: ">>",
+    //                 next: ">>",
+    //                 previous: "<<",
+    //             }
+    //         },
+    //         buttons: [
+    //             {
+    //                 text: 'Export to Excel',
+    //                 extend: 'excel',
+    //                 className: 'btn btn-save border export',
+    //                 title: 'UserLogs',
+    //                 extension: '.xlsx',
+    //                 exportOptions: {
+    //                     // Các tùy chọn xuất
+    //                 }
+    //             },
+    //         ]
+    //     });
+    //
+    //     $.fn.dataTable.ext.search.push(
+    //         function (settings, data, dataIndex) {
+    //             var minDate = $('#datepicker').datepicker("getDate");
+    //             var maxDate = $('#datepicker2').datepicker("getDate");
+    //             var createdDate = new Date(data[4]);
+    //
+    //             if ((minDate === null && maxDate === null) ||
+    //                 (minDate === null && createdDate <= maxDate) ||
+    //                 (minDate <= createdDate && maxDate === null) ||
+    //                 (minDate <= createdDate && createdDate <= maxDate)) {
+    //                 return true;
+    //             }
+    //             return false;
+    //         }
+    //     );
+    //
+    //     function filterByRole(selectedRole) {
+    //         table.column(3).search(selectedRole).draw(); // Assuming the role is in the 4th column (index 3)
+    //     }
+    //
+    //     $('#role').on('change', function () {
+    //         var selectedRole = $(this).val();
+    //         if (selectedRole === 'all') {
+    //             table.column(3).search('').draw();
+    //         } else {
+    //             filterByRole(selectedRole);
+    //         }
+    //     });
+    //
+    //     // Redraw the table when the date range changes
+    //     $('#datepicker, #datepicker2').change(function () {
+    //         table.draw();
+    //     });
+    //
+    //
+    //     // Handle search input
+    //     $('#search-text').on('keyup', function () {
+    //         table.search(this.value).draw();
+    //     });
+    //
+    //     // Hide DataTable search label
+    //     $("label").each(function () {
+    //         if ($(this).text().indexOf('Search:') >= 0) {
+    //             $(this).css('display', 'none');
+    //         }
+    //     });
+    //
+    //
+    //     // Initial table draw
+    //     table.draw();
+    // });
+
+
 </script>
 <!--Custom script-->
 <script th:src="@{/js/admin/admin.js}"></script>

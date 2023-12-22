@@ -394,15 +394,15 @@ function validate_updateresourceType() {
     });
 }
 
-function validate_updateresourceType() {
-    $("#yourFormId").validate({ // Replace 'yourFormId' with the actual ID of your form
+function validate_addfeedback() {
+    $("#form-feedback").validate({ // Replace 'yourFormId' with the actual ID of your form
         rules: {
             feedback: {
                 required: true
             },
             feedbackContent: {
                 required: true,
-                minlength: 10 // Example: minimum length of feedback content
+                minlength: 5 // Example: minimum length of feedback content
             }
         },
         messages: {
@@ -411,7 +411,7 @@ function validate_updateresourceType() {
             },
             feedbackContent: {
                 required: "Please enter your feedback message",
-                minlength: "Feedback must be at least 10 characters long"
+                minlength: "Feedback must be at least 5 characters long"
             }
         }
     });

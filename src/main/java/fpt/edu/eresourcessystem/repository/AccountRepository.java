@@ -50,5 +50,6 @@ public interface AccountRepository extends
 
     void removeAccountById(String id);
 
+    @Query("{ 'deleteFlg' : 'PRESERVED' }")
     List<Account> findByRoleNot(AccountEnum.Role role);
 }

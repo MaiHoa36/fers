@@ -48,7 +48,7 @@
                             <div class="form h-100">
                                 <h3>Send feedback</h3>
                                 <form class="mb-5" th:action="@{/student/feedbacks/add}" method="post"
-                                      th:object="${feedback}">
+                                      th:object="${feedback}" id="form-feedback">
                                     <div class="row">
                                         <div class="col-md-4 form-group mb-5">
                                             <label for="name" class="col-form-label">Name</label>
@@ -167,7 +167,7 @@
                                     </li>
                                     <li class="d-flex">
                                         <span class="wrap-icon icon-envelope mr-3"></span>
-                                        <span class="text">ers@mywebsite.com</span>
+                                        <span class="text">eresource.site</span>
                                     </li>
                                 </ul>
                             </div>
@@ -192,7 +192,9 @@
         crossorigin="anonymous"></script>
 <!--Custom script-->
 <script th:src="@{/js/lecturer/lecturer.js}"></script>
+<script th:src="@{/js/validation.js}"></script>
 <script th:inline="javascript">
+    validate_addfeedback();
     const textarea = document.getElementById('feedbackContent');
     textarea.addEventListener('input', function () {
         this.style.height = 'auto';

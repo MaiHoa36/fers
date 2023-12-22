@@ -29,13 +29,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
     <style>
-        label.error {
-            margin-top: 5px;
-            margin-left: 5px;
-            display: block;
-            color: red;
-            /*font-size: smaller;*/
-        }
+
+         textarea {
+             width: 100%;
+             min-height: 100px;
+             font-size: 16px;
+             resize: none;
+             overflow-y: hidden;
+         }
     </style>
 
     <title>Send feedback | FPT E-resources</title>
@@ -210,6 +211,13 @@
 <script th:src="@{/js/student/feedback.js}"></script>
 
 <script th:inline="javascript">
+
+    const textarea = document.getElementById('feedbackContent');
+    textarea.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+    validate_addfeedback();
     var btn1 = document.querySelector('#green');
     var btn2 = document.querySelector('#red');
 
