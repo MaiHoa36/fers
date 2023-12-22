@@ -141,7 +141,7 @@ public class LecturerController {
             case "PRIVATE" -> course.setStatus(CourseEnum.Status.PRIVATE);
         }
         courseService.updateCourse(course);
-        
+
         // add course log
         addCourseLog(course.getId(),
                 course.getCourseCode(),
@@ -330,6 +330,7 @@ public class LecturerController {
                 null, null);
         return "redirect:/lecturer/courses/" + courseId + "/add_resource_type?success";
     }
+
 
     @GetMapping({"/resource_types/{resourceTypeId}/update"})
     public String editResourceTypeProcess(@PathVariable String resourceTypeId, final Model model) {
@@ -787,6 +788,7 @@ public class LecturerController {
             topicService.removeDocumentFromTopic(document.getTopic().getId(), new ObjectId(documentId));
             resourceTypeService.removeDocumentFromResourceType(document.getResourceType().getId(), new ObjectId(documentId));
             documentService.softDelete(document);
+            notificationService.deleteNotificationByDocId(new ObjectId(documentId));
 
             // Add course log
             Course course = document.getTopic().getCourse();

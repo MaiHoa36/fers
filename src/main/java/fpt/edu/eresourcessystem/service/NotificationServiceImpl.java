@@ -7,6 +7,7 @@ import fpt.edu.eresourcessystem.enums.NotificationEnum;
 import fpt.edu.eresourcessystem.model.Notification;
 import fpt.edu.eresourcessystem.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -112,6 +113,20 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void deleteNotification(List<String> ids) {
         notificationRepository.deleteByIdIn(ids);
+    }
+
+    @Override
+    public void deleteNotificationByDocId(ObjectId docId) {
+        Query query = new Query(Criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
+                .and("document.id").is(docId));
+        mongoTemplate.findAllAndRemove(query, Notification.class);
+    }
+
+    @Override
+    public void deleteNotificationByQuestionId(ObjectId questionId) {
+        Query query = new Query(Criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
+                .and("question.id").is(questionId));
+        mongoTemplate.findAllAndRemove(query, Notification.class);
     }
 
     @Override

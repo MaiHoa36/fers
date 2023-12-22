@@ -103,7 +103,7 @@
                                             <span class="existedResourceTypes" th:text="${resourceType.resourceTypeName}"></span></a>
                                         </p>
                                     </div>
-                                    <div style="margin-left: 5%">
+                                    <div style="margin-left: 5%" th:unless="${resourceType.resourceTypeName eq 'Common material'}">
                                         <a class="lec__edit-topic-icon"
                                            th:href="@{'/lecturer/resource_types/' + ${resourceType.id} +'/update'}">
                                             <i
