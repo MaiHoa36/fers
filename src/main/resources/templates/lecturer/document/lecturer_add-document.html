@@ -243,7 +243,12 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 <!-- CK Editor-->
 <script th:src="@{/assets/ckeditor5/build/ckeditor.js}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+<script th:src="@{/js/validation.js}"></script>
 <script th:inline="javascript">
+
+    // validate_addDocument();
     // Resource Type
     $('#defineResourceType').click(function () {
         $('#inputResourceWrapper').fadeIn();

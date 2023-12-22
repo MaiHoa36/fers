@@ -131,9 +131,28 @@ $(document).on("click", ".remove-lecturer", function(e) {
         }
     });
 });
+
+// Function to validate email format
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
 function confirmAddLecturer() {
     // Get the selected lecturer's email from the dropdown
-    const lecturerEmail = document.getElementById('lecturerEmail').value;
+    // Get the selected lecturer's email from the dropdown
+    const lecturerEmailInput = document.getElementById('lecturerEmail');
+    const lecturerEmail = lecturerEmailInput.value;
+
+    // Check if the lecturer's email is not empty and has a valid format
+    if (!lecturerEmail.trim() || !isValidEmail(lecturerEmail)) {
+        // Display an error message using SweetAlert
+        Swal.fire({
+            title: 'Invalid Email',
+            text: 'Please enter a valid and non-empty email address.',
+            icon: 'error'
+        });
+        return; // Stop further execution
+    }
 
     // Get the course name from the hidden input field
     const courseName = document.getElementById('courseName').value;
