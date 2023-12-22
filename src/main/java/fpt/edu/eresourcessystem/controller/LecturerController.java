@@ -1,7 +1,9 @@
 package fpt.edu.eresourcessystem.controller;
 
 import com.theokanning.openai.audio.CreateTranscriptionRequest;
+import com.theokanning.openai.audio.TranscriptionResult;
 import com.theokanning.openai.service.OpenAiService;
+import fpt.edu.eresourcessystem.utils.AudioUtils;
 import org.springframework.beans.factory.annotation.Value;
 import fpt.edu.eresourcessystem.controller.advices.GlobalControllerAdvice;
 import fpt.edu.eresourcessystem.dto.DocumentDto;
@@ -502,11 +504,6 @@ public class LecturerController {
         return "lecturer/document/lecturer_add-document-to-resource-type";
     }
 
-    private File convertMultipartFileToFile(MultipartFile file) throws IOException {
-        File convertedFile = new File(file.getOriginalFilename());
-        file.transferTo(convertedFile);
-        return convertedFile;
-    }
 
     @PostMapping("/documents/add")
     @Transactional
@@ -556,16 +553,13 @@ public class LecturerController {
                 }
                 documentDTO.setContent(extractTextFromFile(file.getInputStream()));
 
-                OpenAiService service = new OpenAiService(apiKey);
+                OpenAiService openAiService = new OpenAiService(apiKey);
                 if (docType == DocumentEnum.DocumentFormat.AUDIO) {
-                    CreateTranscriptionRequest request = new CreateTranscriptionRequest();
-                    request.setModel("whisper-1");
-//                File file = new File(filePath);
-                    // Chuyển đổi MultipartFile thành File
-                    File convertedFile = convertMultipartFileToFile(file);
-                    String transcription = service.createTranscription(request, convertedFile.getPath()).getText();
 
-                    documentDTO.setContent(transcription);
+                    byte[] audioBytes = file.getBytes();
+                    String textTranscript = AudioUtils.convertAudioToText(audioBytes);
+
+                    documentDTO.setContent(textTranscript);
                 }
 
                 if (file.getSize() < DATABASE_MAX_SIZE_FILE && docType != DocumentEnum.DocumentFormat.MS_DOC
