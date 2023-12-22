@@ -251,7 +251,9 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document updateDoc(Document document) {
-        return documentRepository.save(document);
+        Document result = documentRepository.save(document);
+        esDocumentRepository.save(new EsDocument(result));
+        return result;
     }
 
     @Override

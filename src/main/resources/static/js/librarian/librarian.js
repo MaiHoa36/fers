@@ -96,26 +96,26 @@ $("body").on("click", ".delete-lecturer", function () {
 });
 
 
-$(document).on("click", ".remove-lecturer", function(e) {
+$(document).on("click", ".remove-lecturer", function (e) {
     e.preventDefault();  // Prevent the default link behavior
     var courseId = $(this).data("course-id");
     var url = '/librarian/courses/' + courseId + '/remove-lecture';
 
     Swal.fire({
-        title: 'Are you sure?',
+        title: 'Remove confirmation',
         text: "Do you want to remove this lecturer?",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, remove it!'
+        confirmButtonText: 'Yes'
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
                 type: "GET",
                 url: url,
                 // Add CSRF token if needed
-                success: function() {
+                success: function () {
                     Swal.fire(
                         'Removed!',
                         'The lecturer has been removed.',
@@ -124,7 +124,7 @@ $(document).on("click", ".remove-lecturer", function(e) {
                         window.location.reload(); // Reload the page or redirect
                     });
                 },
-                error: function() {
+                error: function () {
                     Swal.fire('Error', 'Failed to remove the lecturer.', 'error');
                 }
             });
@@ -139,39 +139,35 @@ function isValidEmail(email) {
 }
 function confirmAddLecturer() {
     // Get the selected lecturer's email from the dropdown
-    // Get the selected lecturer's email from the dropdown
-    const lecturerEmailInput = document.getElementById('lecturerEmail');
-    const lecturerEmail = lecturerEmailInput.value;
-
-    // Check if the lecturer's email is not empty and has a valid format
-    if (!lecturerEmail.trim() || !isValidEmail(lecturerEmail)) {
-        // Display an error message using SweetAlert
-        Swal.fire({
-            title: 'Invalid Email',
-            text: 'Please enter a valid and non-empty email address.',
-            icon: 'error'
-        });
-        return; // Stop further execution
-    }
+    const lecturerEmail = document.getElementById('lecturerEmail').value;
 
     // Get the course name from the hidden input field
     const courseName = document.getElementById('courseName').value;
 
-    // Display confirmation dialog using SweetAlert
-    Swal.fire({
-        title: 'Are you sure?',
-        html: `Do you want to assign <b>${lecturerEmail}</b> to the course <b>${courseName}</b>?<br><br>This action will send an email to the lecturer.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, assign it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Submit the form if the user confirms
-            document.getElementById('addLecturerForm').submit();
-        }
-    });
+    var emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (lecturerEmail.toString() === '' || lecturerEmail === null || !lecturerEmail.toString().match(emailRegex)) {
+        Swal.fire(
+            'Email lecturer is empty or not in correct format!',
+            'Please enter email in correct format',
+            'error'
+        );
+    } else {
+        // Display confirmation dialog using SweetAlert
+        Swal.fire({
+            title: 'Assign confirmation',
+            html: `Do you want to assign <b>${lecturerEmail}</b> to the course <b>${courseName}</b>?<br><br>This action will send an email to the lecturer.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form if the user confirms
+                document.getElementById('addLecturerForm').submit();
+            }
+        });
+    }
 }
 
 

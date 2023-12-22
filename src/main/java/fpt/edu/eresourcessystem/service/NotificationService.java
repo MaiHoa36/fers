@@ -4,6 +4,7 @@ import fpt.edu.eresourcessystem.dto.NotificationDto;
 import fpt.edu.eresourcessystem.dto.Response.NotificationResponseDto;
 import fpt.edu.eresourcessystem.enums.NotificationEnum;
 import fpt.edu.eresourcessystem.model.Notification;
+import org.bson.types.ObjectId;
 
 import java.util.List;
 
@@ -26,6 +27,10 @@ public interface NotificationService {
     void markReadAll(String email);
 
     void deleteNotification(List<String> ids);
+
+    void deleteNotificationByDocId(ObjectId docId);
+
+    void deleteNotificationByQuestionId(ObjectId questionId);
 
     void updateNotificationStatus(NotificationEnum.NotificationStatus oldStatus, NotificationEnum.NotificationStatus newStatus);
 }
