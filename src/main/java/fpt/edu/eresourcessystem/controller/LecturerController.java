@@ -598,7 +598,7 @@ public class LecturerController {
 
         List<MultiFile> multiFiles = new ArrayList<>();
         // Check if files were uploaded
-        if (files != null && files.length > 0 && files.length < MAX_ALLOWED_SUPPORTING_FILES_NUMBER) {
+        if (files != null && files.length > 0 && files.length <= MAX_ALLOWED_SUPPORTING_FILES_NUMBER) {
             String link;
             MultiFile multiFile;
             for (MultipartFile supportFile : files) {
@@ -772,7 +772,7 @@ public class LecturerController {
 
         int total = supportingFilesNumber + filesNumber;
 
-        if (total < MAX_ALLOWED_SUPPORTING_FILES_NUMBER) {
+        if (total <= MAX_ALLOWED_SUPPORTING_FILES_NUMBER) {
             List<MultiFile> existedMultiFiles = document.getMultipleFiles();
             for (MultiFile existedMultiFile : existedMultiFiles) {
                 if (!Arrays.asList(supportingFiles).contains(existedMultiFile.getCloudFileName())) {

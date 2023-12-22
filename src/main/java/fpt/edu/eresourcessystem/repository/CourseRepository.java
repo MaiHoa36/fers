@@ -33,14 +33,14 @@ public interface CourseRepository extends
     @Query("{'_id': { $in: ?0 }}")
     List<Course> findCoursesByLibrarianCreatedCourses(List<String> courseIds);
 
-    @Query(("{$and:[{ 'deleteFlg' : 'PRESERVED' },"
+    @Query(("{$and:[{ 'deleteFlg' : 'PRESERVED', 'librarian._id' : ?3 },"
             + "{$or: ["
             + "    {courseCode: {$regex: ?0}},"
             + "    {courseName: {$regex: ?1}},"
             + "    {courseDescription: {$regex: ?2}}"
             + "    ]}"
             + "]}"))
-    Page<Course> findByCourseCodeLikeOrCourseNameLikeOrDescriptionLike(String code, String name, String description, Pageable pageable);
+    Page<Course> findByCourseCodeLikeOrCourseNameLikeOrDescriptionLike(String code, String name, String description, String librarianId, Pageable pageable);
 
     @Query("{$and:[{ 'deleteFlg' : 'PRESERVED' },"
             + "{$or: ["
