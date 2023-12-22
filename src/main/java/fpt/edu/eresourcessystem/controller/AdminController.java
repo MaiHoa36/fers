@@ -308,10 +308,10 @@ public class AdminController {
         }
         foundAccount.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
         Account account = accountService.updateAccount(foundAccount);
-        if (null == account) {
-            return "redirect: /admin/accounts/updated/" + accountId + SUCCESS_PARAM;
+        if (null != account) {
+            return "redirect:/admin/accounts/list?error";
         }
-        return "redirect: /admin/accounts/list?error";
+        return "redirect:/admin/accounts/list?success";
     }
 
     @GetMapping({"/user_log/tracking"})
