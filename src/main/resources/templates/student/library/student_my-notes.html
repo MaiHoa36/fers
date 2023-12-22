@@ -85,7 +85,7 @@
                             <div class="stu__view-my-notes">
                                 <div th:if="${param.search} AND ${studentNotes == null} OR ${studentNotes.size()} == 0"
                                      class="list-content-not-found">
-                                    <p class="number-count count-questions">No note found.</p>
+                                    <p class="number-count count-questions" style="margin-left: 0">No note found.</p>
                                 </div>
                                 <div class="stu__add-note">
                                     <a class="btn btn-save" th:href="@{/student/my_note/student_notes/add}">

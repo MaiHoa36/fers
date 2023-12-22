@@ -88,7 +88,6 @@ public class Document {
     public Document(DocumentDto documentDTO) {
         this.id = documentDTO.getId();
         this.topic = documentDTO.getTopic();
-        this.course = documentDTO.getTopic().getCourse();
         this.resourceType = documentDTO.getResourceType();
         this.title = documentDTO.getTitle();
         this.description = documentDTO.getDescription();
@@ -98,7 +97,10 @@ public class Document {
         this.cloudFileLink = documentDTO.getCloudFileLink();
         this.fileName = documentDTO.getFileName();
         this.displayWithFile = documentDTO.isDisplayWithFile();
+
         this.docStatus = documentDTO.getDocStatus();
+        this.courseStatus = documentDTO.getTopic().getCourse().getStatus();
+
         this.suffix = documentDTO.getSuffix();
         this.docType = DocumentEnum.DocumentFormat.getDocType(documentDTO.getSuffix());
         this.multipleFiles = documentDTO.getMultiFiles();

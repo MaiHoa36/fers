@@ -214,7 +214,7 @@ public class AdminController {
                     if (null == adminService.findByAccountId(account.getId())) {
                         Admin admin = new Admin();
                         admin.setAccount(account);
-                        adminService.updateAdmin(admin);
+                        adminService.addAdmin(admin);
                     }
                 }
                 case LIBRARIAN -> {
@@ -223,8 +223,6 @@ public class AdminController {
                         Librarian newLibrarian = new Librarian();
                         newLibrarian.setAccount(account);
                         librarianService.addLibrarian(newLibrarian);
-                    } else {
-                        librarianService.updateLibrarian(librarian);
                     }
                 }
                 case STUDENT -> {
@@ -241,8 +239,6 @@ public class AdminController {
                         Lecturer newLecturer = new Lecturer();
                         newLecturer.setAccount(account);
                         lecturerService.addLecturer(newLecturer);
-                    } else {
-                        lecturerService.updateLecturer(lecturer);
                     }
                 }
                 default -> {
@@ -313,9 +309,9 @@ public class AdminController {
         foundAccount.setDeleteFlg(CommonEnum.DeleteFlg.DELETED);
         Account account = accountService.updateAccount(foundAccount);
         if (null == account) {
-            return "redirect: /admin/accounts/updated/" + accountId + ERROR_PARAM;
+            return "redirect: /admin/accounts/updated/" + accountId + SUCCESS_PARAM;
         }
-        return "redirect: /admin/accounts/list?success";
+        return "redirect: /admin/accounts/list?error";
     }
 
     @GetMapping({"/user_log/tracking"})
