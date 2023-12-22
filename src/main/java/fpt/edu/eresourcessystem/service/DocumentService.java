@@ -33,6 +33,10 @@ public interface DocumentService {
 
     Document findByIdStudentSavedCourse(String mail, String documentId);
 
+    void addStudentSaveToDocument(String docId, String studentMail);
+
+    void removeStudentUnSaveFromDocument(String docId, String studentMail);
+
     List<Document> findByListId(List<String> documentIds);
 
     Document updateDocument(Document document, String currentFileId, String id) throws IOException;

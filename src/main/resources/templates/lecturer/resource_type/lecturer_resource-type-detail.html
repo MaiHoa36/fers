@@ -54,7 +54,7 @@
                                    th:href="@{'/lecturer/resource_types/' + ${resourceType.id} +'/documents/add'}">
                                     + Add document
                                 </a>
-                                <a class="btn btn--hover mb-2 mt-2"
+                                <a class="btn btn--hover mb-2 mt-2" th:unless="${resourceType.resourceTypeName eq 'Common material'}"
                                    th:href="@{'/lecturer/resource_types/' + ${resourceType.id} +'/update'}">
                                     <span class="ps-3 pe-3"><i class="fa-regular fa-edit"></i>  Edit resource type name</span>
                                 </a>

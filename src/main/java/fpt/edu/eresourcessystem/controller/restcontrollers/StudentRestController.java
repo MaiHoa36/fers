@@ -56,13 +56,15 @@ public class StudentRestController {
     }
 
     public Student getLoggedInStudent() {
-        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account loggedInAccount = accountService.findByEmail(loggedInEmail);
-        return studentService.findByAccountId(loggedInAccount.getId());
+        return studentService.findByAccountId(getLoggedInAccount().getId());
     }
 
     public String getLoggedInStudentMail() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    private Account getLoggedInAccount() {
+        return accountService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @PostMapping("/documents/{documentId}/save_document")
@@ -72,6 +74,7 @@ public class StudentRestController {
         Student student = getLoggedInStudent();
         if (null != documentService.findById(documentId)) {
             boolean result = studentService.saveADoc(student.getId(), documentId);
+            documentService.addStudentSaveToDocument(documentId, getLoggedInStudentMail());
             if (result) {
                 // add log
                 addUserLog("/api/student/documents/" + documentId + "/save_document");
@@ -92,6 +95,7 @@ public class StudentRestController {
         if (null != documentService.findById(documentId)) {
             boolean result = studentService.unsavedADoc(student.getId(), documentId);
             if (result) {
+                documentService.removeStudentUnSaveFromDocument(documentId, getLoggedInStudentMail());
                 // add log
                 addUserLog("/api/student/documents/" + documentId + "/unsaved_document");
                 return new ResponseEntity<>(HttpStatus.OK);
@@ -130,30 +134,31 @@ public class StudentRestController {
     public ResponseEntity<AnswerResponseDto> addQuestion(@ModelAttribute AnswerDto answerDTO,
                                                          @RequestParam String docId,
                                                          @RequestParam String quesId) {
-        Student student = getLoggedInStudent();
-        Document document = documentService.findById(docId);
-        Question question = questionService.findById(quesId);
-        if (null == student || null == answerDTO || null == document || null == question) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        answerDTO.setStudent(student);
-        answerDTO.setQuestionId(question);
-        answerDTO.setDocumentId(document);
-        Answer answer = answerService.addAnswer(new Answer(answerDTO));
-        if (null != answer) {
-            // update list answer of the question
-            question.getAnswers().add(answer);
-            if (question.getStatus() != QuestionAnswerEnum.Status.CREATED) {
-                question.setStatus(QuestionAnswerEnum.Status.CREATED);
+        if (getLoggedInAccount().getRole() == AccountEnum.Role.STUDENT) {
+            Student student = getLoggedInStudent();
+            Document document = documentService.findById(docId);
+            Question question = questionService.findById(quesId);
+            if (null == student || null == answerDTO || null == document || null == question) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-            questionService.updateQuestion(question);
-            // add log
-            addUserLog("/api/student/answer/add/" + answer.getId());
-            AnswerResponseDto answerResponseDTO = new AnswerResponseDto(answer);
-            return new ResponseEntity<>(answerResponseDTO, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            answerDTO.setStudent(student);
+            answerDTO.setQuestionId(question);
+            answerDTO.setDocumentId(document);
+            Answer answer = answerService.addAnswer(new Answer(answerDTO));
+            if (null != answer) {
+                // update list answer of the question
+                question.getAnswers().add(answer);
+                if (question.getStatus() != QuestionAnswerEnum.Status.CREATED) {
+                    question.setStatus(QuestionAnswerEnum.Status.CREATED);
+                }
+                questionService.updateQuestion(question);
+                // add log
+                addUserLog("/api/student/answer/add/" + answer.getId());
+                AnswerResponseDto answerResponseDTO = new AnswerResponseDto(answer);
+                return new ResponseEntity<>(answerResponseDTO, HttpStatus.OK);
+            }
         }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/answers/get/{questionId}", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
@@ -183,19 +188,20 @@ public class StudentRestController {
     @Transactional
     public ResponseEntity<HttpStatus> saveCourse(@PathVariable String courseId) {
         // get account authorized
-        Student student = getLoggedInStudent();
-        if (null != courseService.findByCourseId(courseId)) {
-            boolean result = studentService.saveACourse(student.getId(), courseId);
-            courseService.addStudentSaveToCourse(courseId, getLoggedInStudentMail());
-            if (result) {
-                // add log
-                addUserLog("/student/course/" + courseId + "/save_course");
+        if (getLoggedInAccount().getRole() == AccountEnum.Role.STUDENT) {
+            Student student = getLoggedInStudent();
+            if (null != courseService.findByCourseId(courseId)) {
+                boolean result = studentService.saveACourse(student.getId(), courseId);
+                courseService.addStudentSaveToCourse(courseId, getLoggedInStudentMail());
+                if (result) {
+                    // add log
+                    addUserLog("/student/course/" + courseId + "/save_course");
 //                return "saved";
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
             }
-
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -223,24 +229,25 @@ public class StudentRestController {
     @Transactional
     public ResponseEntity<DocumentNote> addNewNote(@RequestParam String noteContent,
                                                    @PathVariable String documentId) {
-        Student student = getLoggedInStudent();
-        Document document = documentService.findById(documentId);
-        if (null == student || null == noteContent || "".equals(noteContent.trim()) || null == document) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (getLoggedInAccount().getRole() == AccountEnum.Role.STUDENT) {
+            Student student = getLoggedInStudent();
+            Document document = documentService.findById(documentId);
+            if (null == student || null == noteContent || "".equals(noteContent.trim()) || null == document) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            DocumentNote documentNote = new DocumentNote();
+            documentNote.setStudentId(student.getId());
+            documentNote.setDocId(documentId);
+            documentNote.setDocumentTitle(document.getTitle());
+            documentNote.setNoteContent(noteContent);
+            DocumentNote result = documentNoteService.addDocumentNote(documentNote);
+            if (null != result) {
+                // add log
+                addUserLog("/api/student/document_note/add/" + documentId);
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
         }
-        DocumentNote documentNote = new DocumentNote();
-        documentNote.setStudentId(student.getId());
-        documentNote.setDocId(documentId);
-        documentNote.setDocumentTitle(document.getTitle());
-        documentNote.setNoteContent(noteContent);
-        DocumentNote result = documentNoteService.addDocumentNote(documentNote);
-        if (null != result) {
-            // add log
-            addUserLog("/api/student/document_note/add/" + documentId);
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "/document_note/{documentId}/update", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})

@@ -32,6 +32,9 @@ public class Document {
     @DocumentReference(lazy = true)
     private Topic topic;
 
+    @DocumentReference(lazy = true)
+    private Course course;
+
     private String courseId;
 
     @DocumentReference(lazy = true)
@@ -40,7 +43,6 @@ public class Document {
     @NotEmpty(message = "course.validation.title.required")
     private String title;
     private String description;
-    private DocumentEnum.DocumentStatusEnum docStatus;
 
     private String editorContent;
 
@@ -61,6 +63,7 @@ public class Document {
 
     private DocumentEnum.DocumentFormat docType;
     private CourseEnum.Status courseStatus;
+    private DocumentEnum.DocumentStatusEnum docStatus;
 
     private List<String> students;
 
@@ -94,7 +97,10 @@ public class Document {
         this.cloudFileLink = documentDTO.getCloudFileLink();
         this.fileName = documentDTO.getFileName();
         this.displayWithFile = documentDTO.isDisplayWithFile();
+
         this.docStatus = documentDTO.getDocStatus();
+        this.courseStatus = documentDTO.getTopic().getCourse().getStatus();
+
         this.suffix = documentDTO.getSuffix();
         this.docType = DocumentEnum.DocumentFormat.getDocType(documentDTO.getSuffix());
         this.multipleFiles = documentDTO.getMultiFiles();

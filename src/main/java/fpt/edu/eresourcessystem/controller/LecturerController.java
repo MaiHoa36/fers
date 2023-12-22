@@ -14,6 +14,7 @@ import fpt.edu.eresourcessystem.enums.DocumentEnum;
 import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
 import fpt.edu.eresourcessystem.model.*;
 import fpt.edu.eresourcessystem.service.*;
+import fpt.edu.eresourcessystem.service.elasticsearch.EsCourseService;
 import fpt.edu.eresourcessystem.service.s3.StorageService;
 import fpt.edu.eresourcessystem.utils.CommonUtils;
 import jakarta.validation.Valid;
@@ -50,6 +51,7 @@ import static fpt.edu.eresourcessystem.utils.CommonUtils.extractTextFromFile;
 public class LecturerController {
     private final GlobalControllerAdvice globalControllerAdvice;
     private final CourseService courseService;
+    private final EsCourseService esCourseService;
     private final AccountService accountService;
     private final LecturerService lecturerService;
     private final StudentService studentService;
@@ -146,7 +148,8 @@ public class LecturerController {
             case "PRIVATE" -> course.setStatus(CourseEnum.Status.PRIVATE);
         }
         courseService.updateCourse(course);
-        //add course log
+        
+        // add course log
         addCourseLog(course.getId(),
                 course.getCourseCode(),
                 course.getCourseName(),
@@ -338,12 +341,15 @@ public class LecturerController {
     @GetMapping({"/resource_types/{resourceTypeId}/update"})
     public String editResourceTypeProcess(@PathVariable String resourceTypeId, final Model model) {
         ResourceType resourcetype = resourceTypeService.findById(resourceTypeId);
-        Course course = resourcetype.getCourse();
-        List<ResourceType> resourceTypes = course.getResourceTypes();
-        model.addAttribute("course", course);
-        model.addAttribute("resourceTypes", resourceTypes);
-        model.addAttribute("resourceType", resourcetype);
-        return "lecturer/resource_type/lecturer_update-resource-type-of-course";
+        if (!resourcetype.getResourceTypeName().equals("Common material")){
+            Course course = resourcetype.getCourse();
+            List<ResourceType> resourceTypes = course.getResourceTypes();
+            model.addAttribute("course", course);
+            model.addAttribute("resourceTypes", resourceTypes);
+            model.addAttribute("resourceType", resourcetype);
+            return "lecturer/resource_type/lecturer_update-resource-type-of-course";
+        }
+        return "redirect:/lecturer/resource_types/" + resourceTypeId + "?error";
     }
 
 
@@ -351,7 +357,7 @@ public class LecturerController {
     @Transactional
     public String editResourceType(@PathVariable String resourceTypeId, @ModelAttribute ResourceType resourcetype) {
         ResourceType checkResourceTypeExist = resourceTypeService.findById(resourceTypeId);
-        if (null != checkResourceTypeExist) {
+        if (null != checkResourceTypeExist && !checkResourceTypeExist.getResourceTypeName().equals("Common material")) {
             String oldContent = resourcetype.getResourceTypeName();
             checkResourceTypeExist.setResourceTypeName(resourcetype.getResourceTypeName());
             checkResourceTypeExist = resourceTypeService.updateResourceType(checkResourceTypeExist);

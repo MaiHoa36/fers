@@ -1,5 +1,6 @@
 package fpt.edu.eresourcessystem.model.elasticsearch;
 
+import fpt.edu.eresourcessystem.enums.CourseEnum;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -30,6 +31,8 @@ public class EsDocument implements Serializable {
     @Field
     private String createdBy;
 
+    private String courseStatus;
+
     public EsDocument(fpt.edu.eresourcessystem.model.Document document) {
         this.documentId = document.getId();
         this.title = document.getTitle();
@@ -38,5 +41,6 @@ public class EsDocument implements Serializable {
         this.docType = document.getSuffix().toUpperCase();
         this.lastModifiedDate = document.getLastModifiedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));;
         this.createdBy = document.getCreatedBy();
+        this.courseStatus = document.getCourseStatus().toString();
     }
 }
