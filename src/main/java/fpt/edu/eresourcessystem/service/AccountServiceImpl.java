@@ -121,6 +121,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> getAccountsExcludeStudent() {
-        return accountRepository.findByRoleNot(AccountEnum.Role.STUDENT);
+        return accountRepository.findByRoleNotAndDeleteFlgNot(AccountEnum.Role.STUDENT, CommonEnum.DeleteFlg.DELETED);
     }
 }
