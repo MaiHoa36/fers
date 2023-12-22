@@ -141,6 +141,12 @@ public class LecturerController {
             case "PRIVATE" -> course.setStatus(CourseEnum.Status.PRIVATE);
         }
         courseService.updateCourse(course);
+        for (Topic topic : course.getTopics()){
+            for (Document document : topic.getDocuments()){
+                document.setCourseStatus(course.getStatus());
+                documentService.updateDoc(document);
+            }
+        }
 
         // add course log
         addCourseLog(course.getId(),
@@ -567,7 +573,7 @@ public class LecturerController {
 
         List<MultiFile> multiFiles = new ArrayList<>();
         // Check if files were uploaded
-        if (files != null && files.length > 0 && files.length < 4) {
+        if (files != null && files.length > 0 && files.length < MAX_ALLOWED_SUPPORTING_FILES_NUMBER) {
             String link;
             MultiFile multiFile;
             for (MultipartFile supportFile : files) {
@@ -738,7 +744,7 @@ public class LecturerController {
 
         int total = supportingFilesNumber + filesNumber;
 
-        if (total < 4) {
+        if (total < MAX_ALLOWED_SUPPORTING_FILES_NUMBER) {
             List<MultiFile> existedMultiFiles = document.getMultipleFiles();
             for (MultiFile existedMultiFile : existedMultiFiles) {
                 if (!Arrays.asList(supportingFiles).contains(existedMultiFile.getCloudFileName())) {
