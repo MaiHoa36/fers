@@ -240,17 +240,6 @@ function validateAddLecturerForm() {
                 required: "Please enter the lecturer's email.",
                 email: "Please enter a valid email address."
             }
-        },
-        errorElement: 'div',
-        errorPlacement: function (error, element) {
-            error.addClass('invalid-feedback');
-            error.insertAfter(element);
-        },
-        highlight: function (element, errorClass, validClass) {
-            $(element).addClass('is-invalid').removeClass('is-valid');
-        },
-        unhighlight: function (element, errorClass, validClass) {
-            $(element).removeClass('is-invalid').addClass('is-valid');
         }
     });
 }
@@ -315,10 +304,10 @@ function validate_updateTopic() {
                 minlength: 3,
                 maxlength: 50
             },
-            topicDescription: {
-                required: true,
-                minlength: 5
-            }
+            // topicDescription: {
+            //     required: true,
+            //     minlength: 5
+            // }
         },
         messages: {
             topicTitle: {
@@ -326,10 +315,10 @@ function validate_updateTopic() {
                 minlength: "Topic title must be at least 3 characters!",
                 maxlength: "Topic Title can have at most 50 characters!"
             },
-            topicDescription: {
-                required: "Please enter a topic description",
-                minlength: "Topic description must be at least 5 characters!"
-            }
+            // topicDescription: {
+            //     required: "Please enter a topic description",
+            //     minlength: "Topic description must be at least 5 characters!"
+            // }
         }
     });
 }
@@ -342,10 +331,10 @@ function validate_addTopic() {
                 minlength: 3, // Change this as needed
                 maxlength: 50  // Change this as needed
             },
-            topicDescription: {
-                minlength: 5,// Change this as needed
-                required: true,
-            }
+            // topicDescription: {
+            //     minlength: 5,// Change this as needed
+            //     required: true,
+            // }
         },
         messages: {
             topicTitle: {
@@ -353,10 +342,10 @@ function validate_addTopic() {
                 minlength: "Topic Title must have at least 3 characters!", // Change this as needed
                 maxlength: "Topic Title can have at most 50 characters!"  // Change this as needed
             },
-            topicDescription: {
-                required: "Please enter a topic description",
-                minlength: "Topic Description can have at least 5 characters!" // Change this as needed
-            }
+            // topicDescription: {
+            //     required: "Please enter a topic description",
+            //     minlength: "Topic Description can have at least 5 characters!" // Change this as needed
+            // }
         }
     });
 }

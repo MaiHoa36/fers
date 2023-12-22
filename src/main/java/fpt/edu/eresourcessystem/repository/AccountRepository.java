@@ -2,6 +2,7 @@ package fpt.edu.eresourcessystem.repository;
 
 import com.mongodb.lang.NonNull;
 import fpt.edu.eresourcessystem.enums.AccountEnum;
+import fpt.edu.eresourcessystem.enums.CommonEnum;
 import fpt.edu.eresourcessystem.model.Account;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
@@ -50,6 +51,8 @@ public interface AccountRepository extends
 
     void removeAccountById(String id);
 
-    @Query("{ 'deleteFlg' : 'PRESERVED' }")
-    List<Account> findByRoleNot(AccountEnum.Role role);
+//    @Query("{ 'deleteFlg' : 'PRESERVED' }")
+//    List<Account> findByRoleNot(AccountEnum.Role role);
+//
+    List<Account> findByRoleNotAndDeleteFlgNot(AccountEnum.Role role, CommonEnum.DeleteFlg deleteFlg);
 }

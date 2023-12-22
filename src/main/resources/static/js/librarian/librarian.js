@@ -132,10 +132,14 @@ $(document).on("click", ".remove-lecturer", function (e) {
     });
 });
 
+// Function to validate email format
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
 function confirmAddLecturer() {
     // Get the selected lecturer's email from the dropdown
-    let lecturerEmail = document.getElementById('lecturerEmail').value;
-    console.log(lecturerEmail)
+    const lecturerEmail = document.getElementById('lecturerEmail').value;
 
     // Get the course name from the hidden input field
     const courseName = document.getElementById('courseName').value;

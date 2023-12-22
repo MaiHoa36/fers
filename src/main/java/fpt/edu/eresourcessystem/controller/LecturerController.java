@@ -1,5 +1,8 @@
 package fpt.edu.eresourcessystem.controller;
 
+import com.theokanning.openai.audio.CreateTranscriptionRequest;
+import com.theokanning.openai.service.OpenAiService;
+import org.springframework.beans.factory.annotation.Value;
 import fpt.edu.eresourcessystem.controller.advices.GlobalControllerAdvice;
 import fpt.edu.eresourcessystem.dto.DocumentDto;
 import fpt.edu.eresourcessystem.dto.FeedbackDto;
@@ -28,6 +31,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +64,9 @@ public class LecturerController {
     private final CourseLogService courseLogService;
     private final MultiFileService multiFileService;
     private final NotificationService notificationService;
+
+    @Value("${openai.api.key}")
+    private String apiKey;
 
     private Lecturer getLoggedInLecturer() {
         String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -502,6 +509,12 @@ public class LecturerController {
         return "lecturer/document/lecturer_add-document-to-resource-type";
     }
 
+    private File convertMultipartFileToFile(MultipartFile file) throws IOException {
+        File convertedFile = new File(file.getOriginalFilename());
+        file.transferTo(convertedFile);
+        return convertedFile;
+    }
+
     @PostMapping("/documents/add")
     @Transactional
     public String addDocumentProcess(@ModelAttribute DocumentDto documentDTO,
@@ -548,8 +561,20 @@ public class LecturerController {
                 if (fileExtension != null) {
                     docType = DocumentEnum.DocumentFormat.getDocType(fileExtension);
                 }
-
                 documentDTO.setContent(extractTextFromFile(file.getInputStream()));
+
+                OpenAiService service = new OpenAiService(apiKey);
+                if (docType == DocumentEnum.DocumentFormat.AUDIO) {
+                    CreateTranscriptionRequest request = new CreateTranscriptionRequest();
+                    request.setModel("whisper-1");
+//                File file = new File(filePath);
+                    // Chuyển đổi MultipartFile thành File
+                    File convertedFile = convertMultipartFileToFile(file);
+                    String transcription = service.createTranscription(request, convertedFile.getPath()).getText();
+
+                    documentDTO.setContent(transcription);
+                }
+
                 if (file.getSize() < DATABASE_MAX_SIZE_FILE && docType != DocumentEnum.DocumentFormat.MS_DOC
                         && docType != DocumentEnum.DocumentFormat.AUDIO) {
                     id = documentService.addFile(file);
@@ -686,6 +711,9 @@ public class LecturerController {
                     }
                     checkExist.setFileName(file.getOriginalFilename());
                     checkExist.setContent(extractTextFromFile(file.getInputStream()));
+
+
+
                     if (file.getSize() < DATABASE_MAX_SIZE_FILE && docType != DocumentEnum.DocumentFormat.MS_DOC
                             && docType != DocumentEnum.DocumentFormat.AUDIO) {
                         checkExist.setCloudFileLink(null);

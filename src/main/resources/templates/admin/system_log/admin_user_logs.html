@@ -172,6 +172,8 @@
 <!-- DataTables Buttons Functionalities -->
 <script th:src="@{https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js}"></script>
 <script th:src="@{https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -204,7 +206,7 @@
                 {
                     "data": "createdDate",
                     "render": function (data) {
-                        return new Date(data).toLocaleString(); // Format date
+                        return data ? moment(data).format('LLLL') : ''; // Format as needed
                     }
                 }
             ],

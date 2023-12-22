@@ -390,10 +390,12 @@ public class LibrarianController {
             accountDto.setEmail(lecturerEmail);
             accountDto.setPassword(VERIFICATION_CODE);
             accountDto.setRole(AccountEnum.Role.LECTURER);
+            accountDto.setName(accountDto.getName());
             Account account1 = accountService.addAccount(accountDto);
             // save account
             Lecturer lecturer = new Lecturer();
             lecturer.setAccount(account1);
+
             savedLecturer = lecturerService.addLecturer(lecturer);
             // save lecturer
         } else {
