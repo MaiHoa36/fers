@@ -137,8 +137,8 @@ function submitFormAddQuestion(docId) {
                 // question content
                 var html = "<div class=\"stu__question-content-wrapper\" id=\"" + data.questionId + "\">\n" +
                     "                                                <h6 class=\"stu__question-creater-name\"><i class=\"fa-solid fa-user\"></i>\n" +
-                "                                                    <span>" + data.studentName + "</span>(You)</h6><p class=\"stu__question-content question-content\"\n" +
-                "                                                   id=\"question-content-" + data.questionId + "\">" + data.questionContent + "</p>\n";
+                    "                                                    <span>" + data.studentName + "</span>(You)</h6><p class=\"stu__question-content question-content\"\n" +
+                    "                                                   id=\"question-content-" + data.questionId + "\">" + data.questionContent + "</p>\n";
                 // edit section
                 html += "<div class=\"edit-question-div\" id=\"update-question" + data.questionId + "\" style=\"display: none\">\n" +
                     "                                                    <label id=\"update-question-error" + data.questionId + "\"\n" +
@@ -158,11 +158,11 @@ function submitFormAddQuestion(docId) {
                 html += "<span class=\"stu__question-date stu__question-content\">" + data.createdDate +
                     "                                                </span> <a class=\"view-note-link-item  edit-question\" question-id=\"" + data.questionId + "\">Edit</a>" +
                     "                                                  | <a class=\"view-note-link-item delete-question\" question-id=\"" + data.questionId + "\" onclick=deleteQuestion(\"" + data.questionId + "\")>Delete</a>" +
-                    "                                                 | <a class=\"lec__add-reply view-question-link-item\" question-id=\""+ data.questionId+"\"\n" +
-                    "                                                       onclick=showReplyForm(\""+ data.questionId+"\")>Reply</a>";
-                html+="<div class=\"reply-content\" id=\"list-reply-content-"+ data.questionId+"\"></div>\n"
+                    "                                                 | <a class=\"lec__add-reply view-question-link-item\" question-id=\"" + data.questionId + "\"\n" +
+                    "                                                       onclick=showReplyForm(\"" + data.questionId + "\")>Reply</a>";
+                html += "<div class=\"reply-content\" id=\"list-reply-content-" + data.questionId + "\"></div>\n"
 
-                html+="<div class=\"stu__reply-form\" id=\"reply-form" + data.questionId + "\"><form class=\"form-student-add-doc-new-reply justify-content-between\"\n" +
+                html += "<div class=\"stu__reply-form\" id=\"reply-form" + data.questionId + "\"><form class=\"form-student-add-doc-new-reply justify-content-between\"\n" +
                     "                                                          method=\"post\" id=\"reply-content-form" + data.questionId + "\">\n" +
                     "                                                        <div class=\"\">\n" +
                     "                                                            <input type=\"text\" name=\"docId\" value=\"" + docId + "\" readonly hidden>\n" +
@@ -200,7 +200,6 @@ function submitFormAddQuestion(docId) {
                     "                                                    </form>\n" +
                     "                                                </div>" +
                     "                                           </div>";
-
 
 
                 $("#my-questions").prepend(html);
@@ -353,19 +352,19 @@ function submitFormReplyQuestion(param) {
                 if (data.studentName == null) {
                     html = "<div class=\"reply-content border-bottom\">\n" +
                         "                     <h6 class=\"stu__question-creater-name\"><i class=\"fa-solid fa-user\"></i> <span>" + data.lecturerName + "</span></h6>\n" +
-                        "                     <p class=\"stu__question-content\">" + data.answerContent + "</p>\n" +
-                        "                     <p class=\"stu__question-content\" ><span class=\"lec__answer-date\" >" + data.createdDate + "</span> " +
+                        "                     <p class=\"stu__question-content\" id=\"reply-content-" + data.answerId + "\">" + data.answerContent + "</p>\n" +
+                        "                     <p class=\"stu__question-content\" ><span class=\"stu__answer-date\" >" + data.createdDate + "</span></p> " +
                         "                     </div>";
                 } else {
                     console.log(data.studentName)
                     // reply content
                     html = "<div class=\"reply-content border-bottom\"  id=\"" + data.answerId + "\">\n" +
                         "                     <h6 class=\"stu__question-creater-name\"><i class=\"fa-solid fa-user\"></i> <span>" + data.studentName + "(You)</span></h6>\n" +
-                        "                     <p class=\"stu__question-content\" id=\"reply-content-" + data.answerId + "\"></p>" + data.answerContent + "</p>\n";
+                        "                     <p class=\"stu__question-content\" id=\"reply-content-" + data.answerId + "\">"+data.answerContent+"</p>";
                     // edit section
                     html += "<div class=\"edit-reply-div\" id=\"update-reply" + data.answerId + "\"style=\"display: none\">\n" +
                         "                                                    <label id=\"update-reply-error" + data.answerId + "\" class=\"display-none\">Please enter something to update.</label>\n" +
-                        "                                                    <input class=\"update-reply\" value=\"" + data.answerContent + "\" id=\"update-reply-content-" + data.answerId + "\">\n" +
+                        "                                                    <textarea class=\"update-reply\" id=\"update-reply-content-" + data.answerId + "\">"+ data.answerContent +"</textarea>\n" +
                         "                                                    <button id=\"close-update-reply-" + data.answerId + "\" type=\"button\" title=\"exist\"\n" +
                         "                                                            reply-id=\"" + data.answerId + "\" onclick=existFormEditReply(\"" + data.answerId + "\")\n" +
                         "                                                            class=\"exist-form-edit-reply btn-danger\"><i class=\"fa-solid fa-xmark\"></i> Close</button> " +
@@ -899,31 +898,34 @@ function loadMoreOtherQuestion(skip, docId) {
             }
             var html = '';
             $.each(data, function (index, question) {
-                var html = '';
-                html += "<div class=\"stu__question-content-wrapper\">\n" +
-                    "                                            <h6 class=\"stu__question-creater-name\"><i class=\"fa-solid fa-user\"></i>\n" +
-                    "                                                <span>" + question.studentName + "</span></h6>\n" +
-                    "                                            <p class=\"stu__question-content question-content\">" + question.questionContent + "</p>\n" +
-                    "                                            <p class=\"stu__answer-date stu__question-content\">" + question.createdDate + "</p>";
-                if (question.totalAnswers > 0) {
-                    html += "                                         <p  id=\"view-more-reply-" + question.questionId + "\"\n" +
-                        "                                               question-id=\"" + question.questionId + "\" onclick=viewMoreReply(\"" + question.questionId + "\")\n" +
-                        "                                               class=\"view-question-reply stu__question-content\">View <span>" + question.totalAnswers + "</span> reply</p>";
-                    html += "                                            <p style=\"display:none;\" id=\"see-less-reply-" + question.questionId + "\"\n" +
-                        "                                               question-id=\"" + question.questionId + "\" onclick=seeLessReply(\"" + question.questionId + "\")\n" +
-                        "                                               class=\"view-question-reply stu__question-content\">See less</p>\n" +
-                        "                                            <p style=\"display:none;\" id=\"loading-reply-" + question.questionId + "\"\n" +
-                        "                                               question-id=\"" + question.questionId + "\"\n" +
-                        "                                               class=\"view-question-reply stu__question-content\"><i\n" +
-                        "                                                    class=\"fas fa-spinner fa-spin\"></i> Loading more reply...</p>\n" +
-                        "                                            <!--                                        View reply-->\n" +
-                        "                                            <div class=\"reply-content\" id=\"list-reply-content-" + question.questionId + "\">\n" +
-                        "                                            </div>\n";
+                    if ($("#" + question.questionId).length > 0) {
+                        var html = '';
+                        html += "<div class=\"stu__question-content-wrapper\" id=\"" + question.questionId + "\">\n" +
+                            "                                            <h6 class=\"stu__question-creater-name\"><i class=\"fa-solid fa-user\"></i>\n" +
+                            "                                                <span>" + question.studentName + "</span></h6>\n" +
+                            "                                            <p class=\"stu__question-content question-content\">" + question.questionContent + "</p>\n" +
+                            "                                            <p class=\"stu__answer-date stu__question-content\">" + question.createdDate + "</p>";
+                        if (question.totalAnswers > 0) {
+                            html += "                                         <p  id=\"view-more-reply-" + question.questionId + "\"\n" +
+                                "                                               question-id=\"" + question.questionId + "\" onclick=viewMoreReply(\"" + question.questionId + "\")\n" +
+                                "                                               class=\"view-question-reply stu__question-content\">View <span>" + question.totalAnswers + "</span> reply</p>";
+                            html += "                                            <p style=\"display:none;\" id=\"see-less-reply-" + question.questionId + "\"\n" +
+                                "                                               question-id=\"" + question.questionId + "\" onclick=seeLessReply(\"" + question.questionId + "\")\n" +
+                                "                                               class=\"view-question-reply stu__question-content\">See less</p>\n" +
+                                "                                            <p style=\"display:none;\" id=\"loading-reply-" + question.questionId + "\"\n" +
+                                "                                               question-id=\"" + question.questionId + "\"\n" +
+                                "                                               class=\"view-question-reply stu__question-content\"><i\n" +
+                                "                                                    class=\"fas fa-spinner fa-spin\"></i> Loading more reply...</p>\n" +
+                                "                                            <!--                                        View reply-->\n" +
+                                "                                            <div class=\"reply-content\" id=\"list-reply-content-" + question.questionId + "\">\n" +
+                                "                                            </div>\n";
 
+                        }
+                        html += "                                        </div>";
+                        $("#other-question-content").append(html);
+                    }
                 }
-                html += "                                        </div>";
-                $("#other-question-content").append(html);
-            })
+            )
             $("#loading-more-other-question").css("display", "none");
             $("#load-more-other-question").removeClass('disabled');
         },

@@ -65,7 +65,7 @@
                                 <label class="lecturer_input-label-doc" th:for="documentTitle">Title:</label>
                                 <input type="text" th:id="documentTitle"
                                        class="lecturer_input form-control lecturer__input-doc"
-                                       th:field="*{title}" placeholder="Enter document code" required>
+                                       th:field="*{title}" placeholder="Enter document title" required>
                                 <p class="text-danger" th:errors="*{title}"
                                    th:if="${#fields.hasErrors('title')}"></p>
                                 <!--Description-->
