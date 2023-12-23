@@ -193,5 +193,8 @@ label.error {
     /*font-size: smaller;*/
 }
 .a-link {
-    color:var(--link-color) ;
+    color:var(--link-color);
+}
+.a-link:hover {
+    text-decoration: underline;
 }
