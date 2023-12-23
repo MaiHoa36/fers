@@ -346,7 +346,8 @@
                                                th:id="sending-new-question"><i class="fas fa-spinner fa-spin"></i>
                                                 Sending...</a>
                                             <button type="button" title="Send" th:id="send-new-question-button"
-                                                    onclick="submitFormAddQuestion()" class="btn-save"><i
+                                                    th:doc-id="${document.id}"
+                                                    onclick="submitFormAddQuestion(this.getAttribute('doc-id'))" class="btn-save"><i
                                                     class="fa-solid fa-paper-plane"></i> Send
                                             </button>
                                         </div>

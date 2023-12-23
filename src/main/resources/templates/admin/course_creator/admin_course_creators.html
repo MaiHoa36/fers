@@ -87,9 +87,7 @@
                                             <div class="course-container">
                                                 <th:block th:each="course, item : ${librarian.createdCourses}">
                                                 <span class="course-link">
-                                                    <a class="a-link"
-                                                       th:href="@{'/librarian/courses/' + ${course.getId}}"
-                                                       th:text="${course.courseCode}"></a></span>
+                                                    <a th:text="${course.courseCode}"></a></span>
                                                 </th:block>
                                             </div>
                                         </div>

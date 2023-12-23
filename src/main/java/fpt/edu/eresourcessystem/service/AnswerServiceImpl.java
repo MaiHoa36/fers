@@ -1,24 +1,23 @@
 package fpt.edu.eresourcessystem.service;
 
 import fpt.edu.eresourcessystem.enums.CommonEnum;
-import fpt.edu.eresourcessystem.model.Answer;
-import fpt.edu.eresourcessystem.model.Document;
-import fpt.edu.eresourcessystem.model.Question;
-import fpt.edu.eresourcessystem.model.Student;
+import fpt.edu.eresourcessystem.model.*;
 import fpt.edu.eresourcessystem.repository.AnswerRepository;
+import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service("answerService")
+@RequiredArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
-
-    public AnswerServiceImpl(AnswerRepository answerRepository) {
-        this.answerRepository = answerRepository;
-    }
-
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public Answer findById(String answerId) {
@@ -69,6 +68,13 @@ public class AnswerServiceImpl implements AnswerService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void deleteAnswersByDocId(ObjectId docId) {
+        Query query = new Query(Criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
+                .and("documentId.id").is(docId));
+        mongoTemplate.findAllAndRemove(query, Answer.class);
     }
 
     @Override

@@ -5,6 +5,7 @@ import fpt.edu.eresourcessystem.enums.QuestionAnswerEnum;
 import fpt.edu.eresourcessystem.model.Document;
 import fpt.edu.eresourcessystem.model.Question;
 import fpt.edu.eresourcessystem.model.Student;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -40,6 +41,8 @@ public interface QuestionService {
     Question updateQuestion(Question question);
 
     boolean deleteQuestion(Question question);
+
+    void deleteQuestionsByDocId(ObjectId docId);
 
     Page<Question> findByStudentAndSearch(Student student, String search, QuestionAnswerEnum.Status status, int pageIndex, Integer pageSize);
 
