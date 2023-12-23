@@ -192,15 +192,15 @@
                                                id="supportFileInput" th:name="files" multiple>
                                     </div>
                                 </div>
-<!--                                <div class="mt-3 form-check">-->
-<!--                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">-->
-<!--                                    <label class="form-check-label" for="flexCheckDefault">-->
-<!--                                        Save as a draft-->
-<!--                                    </label>-->
-<!--                                </div>-->
+                                <!--                                <div class="mt-3 form-check">-->
+                                <!--                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">-->
+                                <!--                                    <label class="form-check-label" for="flexCheckDefault">-->
+                                <!--                                        Save as a draft-->
+                                <!--                                    </label>-->
+                                <!--                                </div>-->
 
                                 <div>
-                                    <button type="submit" class="btn btn-save lecturer_btn-save"
+                                    <button type="button" class="btn btn-save lecturer_btn-save" onclick="confirmSaveDocument()"
                                             id="submitAllData">
                                         Save
                                     </button>
@@ -261,7 +261,11 @@
         var isDuplicate = false;
 
         if (formattedValue === '') {
-            alert("Please enter a resource type!");
+            Swal.fire(
+                'Resource type name is empty!',
+                'Please enter name of resource type you want to add.',
+                'error'
+            );
             return;
         }
 
@@ -279,12 +283,20 @@
                 'error'
             );
         } else {
-            var confirmation = confirm("Are you sure you want to add this resource type?");
-            if (confirmation) {
-                var newOption = $('<option>').text(formattedValue).val(formattedValue);
-                selectResource.append(newOption);
-                selectResource.val(formattedValue);
-            }
+            Swal.fire({
+                title: 'Are you sure you want to add this resource type?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var newOption = $('<option>').text(formattedValue).val(formattedValue);
+                    selectResource.append(newOption);
+                    selectResource.val(formattedValue);
+                    $('#inputResourceWrapper').fadeOut();
+                } else if (result.isDenied) {
+
+                }
+            });
         }
     });
 

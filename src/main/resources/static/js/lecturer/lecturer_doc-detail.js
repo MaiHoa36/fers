@@ -350,86 +350,131 @@ function getFileExtension(filename) {
 }
 
 function saveFiles() {
-    if (listSupportingFiles.length == supportingFileElements.length && supportingFileElements == null) {
-        return;
-    }
+    Swal.fire({
+        title: 'Do you want to save?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (listSupportingFiles.length == supportingFileElements.length && supportingFileElements == null) {
+                return;
+            }
 
-    overlay.style.display = 'block';
-    saveWithoutLoading.style.display = 'none';
-    saveWithLoading.style.display = 'inline';
+            overlay.style.display = 'block';
+            saveWithoutLoading.style.display = 'none';
+            saveWithLoading.style.display = 'inline';
 
-    const formData = new FormData();
+            const formData = new FormData();
 
-    const documentId = document.getElementById('documentId').value;
+            const documentId = document.getElementById('documentId').value;
 
-    // Thêm các tệp đã tải lên vào formData
-    const selectedFiles = newSupportFileInput.files;
-    for (let i = 0; i < selectedFiles.length; i++) {
-        formData.append('files', selectedFiles[i]);
-    }
+            // Thêm các tệp đã tải lên vào formData
+            const selectedFiles = newSupportFileInput.files;
+            for (let i = 0; i < selectedFiles.length; i++) {
+                formData.append('files', selectedFiles[i]);
+            }
 
-    // Thêm các phần tử trong listSupportingFiles vào formData
-    for (let i = 0; i < listSupportingFiles.length; i++) {
-        formData.append('supportingFiles', listSupportingFiles[i]);
-    }
+            // Thêm các phần tử trong listSupportingFiles vào formData
+            for (let i = 0; i < listSupportingFiles.length; i++) {
+                formData.append('supportingFiles', listSupportingFiles[i]);
+            }
 
-    // Gọi AJAX để gửi formData lên phía máy chủ
-    $.ajax({
-        url: '/lecturer/' + documentId + '/update_supporting_files',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function () {
-            window.location.reload();
-        },
-        error: function (error) {
-            // Xử lý lỗi từ máy chủ
-            console.log(error);
+            // Gọi AJAX để gửi formData lên phía máy chủ
+            $.ajax({
+                url: '/lecturer/' + documentId + '/update_supporting_files',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function () {
+                    window.location.reload();
+                },
+                error: function (error) {
+                    // Xử lý lỗi từ máy chủ
+                    console.log(error);
+                }
+            });
         }
     });
 }
 
 function backUpdateFiles() {
-    window.location.reload();
+    Swal.fire({
+        title: 'Your changes will not be saved, continue?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.reload();
+        }
+    });
 }
 
 function updateFiles() {
+    Swal.fire({
+        title: 'Update confirmation',
+        html: `Do you want to update supporting files?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            addSupportFile.style.display = 'block';
+            updateSupportingFiles.style.display = 'none';
+            if (noSupportingFile != null) {
+                noSupportingFile.style.display = 'none';
+            }
 
-    addSupportFile.style.display = 'block';
-    updateSupportingFiles.style.display = 'none';
-    if (noSupportingFile != null) {
-        noSupportingFile.style.display = 'none';
-    }
+            saveUpdateFilesWrap.style.display = 'inline-block';
+            saveUpdateFiles.style.display = 'inline';
+            backUpdateFile.style.display = 'inline';
 
-    saveUpdateFilesWrap.style.display = 'inline-block';
-    saveUpdateFiles.style.display = 'inline';
-    backUpdateFile.style.display = 'inline';
+            for (let i = 0; i < removeFiles.length; i++) {
+                const removeFile = removeFiles[i];
+                removeFile.style.display = 'inline'; // Thiết lập thuộc tính "display" thành "block"
+            }
+            for (let i = 0; i < supportingFileDownload.length; i++) {
+                let supportingFile = supportingFileDownload[i];
+                console.log(supportingFileDownload[i]);
+                supportingFile.removeAttribute('onclick');
+                supportingFile.classList.add('supporting-file-when-updating');
+            }
+        }
+    });
 
-    for (let i = 0; i < removeFiles.length; i++) {
-        const removeFile = removeFiles[i];
-        removeFile.style.display = 'inline'; // Thiết lập thuộc tính "display" thành "block"
-    }
-    for (let i = 0; i < supportingFileDownload.length; i++) {
-        let supportingFile = supportingFileDownload[i];
-        console.log(supportingFileDownload[i]);
-        supportingFile.removeAttribute('onclick');
-        supportingFile.classList.add('supporting-file-when-updating');
-    }
+
 }
 
 function removeFile(element) {
+    Swal.fire({
+        title: 'Do you want to remove this file?',
+        html: 'This action WILL NOT delete the file immediately. \n' +
+            'You can click Back to return the supporting files to their original state.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const fileName = element.getAttribute('file-name');
+            const index = listSupportingFiles.indexOf(fileName);
+            if (index > -1) {
+                listSupportingFiles.splice(index, 1);
+            }
 
-    const fileName = element.getAttribute('file-name');
-    const index = listSupportingFiles.indexOf(fileName);
-    if (index > -1) {
-        listSupportingFiles.splice(index, 1);
-    }
-
-    // Xóa phần tử khỏi DOM
-    element.remove();
-
-    console.log(listSupportingFiles);
+            // Xóa phần tử khỏi DOM
+            element.remove();
+        }
+    });
 }
 
 function addFileInput() {
@@ -437,24 +482,36 @@ function addFileInput() {
 }
 
 function downloadFile(fileName) {
-    $.ajax({
-        url: '/api/lecturer/download',
-        method: 'GET',
-        data: {fileName: fileName},
-        xhrFields: {
-            responseType: 'blob'
-        },
-        success: function (data) {
-            var downloadLink = document.createElement('a');
-            downloadLink.href = URL.createObjectURL(data);
-            downloadLink.download = fileName;
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-        },
-        error: function () {
-            console.log("Error when download file");
+    Swal.fire({
+        title: 'Do you want to download this file?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/api/lecturer/download',
+                method: 'GET',
+                data: {fileName: fileName},
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function (data) {
+                    var downloadLink = document.createElement('a');
+                    downloadLink.href = URL.createObjectURL(data);
+                    downloadLink.download = fileName;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                },
+                error: function () {
+                    console.log("Error when download file");
+                }
+            });
         }
     });
+
 }
 
 function loadMoreQuestion(skip, docId) {

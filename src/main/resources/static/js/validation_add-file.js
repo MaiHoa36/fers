@@ -2,7 +2,7 @@
 let fileInput = document.getElementById('fileUploadInput');
 let cancelButton = document.getElementById('cancelUploadButton');
 
-let file = null;
+var file = null;
 let isUploading = false;
 
 const allowedFileUploadNumber = 3;

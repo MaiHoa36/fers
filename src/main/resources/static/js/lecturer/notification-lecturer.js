@@ -31,7 +31,6 @@ function onConnected() {
         }
     });
     stompClient.subscribe('/user/notifications/question', function (question) {
-
         question = JSON.parse(question.body); // Parse the data if it's a string
         var html = "<div class='lec__question-content-wrapper' id='" + question.questionId + "'>\n" +
             " <h6 class='lec__question-creater-name'><i class='fa-solid fa-user'></i> <span> " + question.studentName + "</span></h6>\n" +
