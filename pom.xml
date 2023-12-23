@@ -299,12 +299,6 @@
             <artifactId>poi</artifactId>
             <version>3.7</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.7</version>
-        </dependency>
 
 
 <!--        <dependency>-->
@@ -320,11 +314,11 @@
             <version>0.14.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>ai.openai</groupId>
-            <artifactId>whisper</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>ai.openai</groupId>-->
+<!--            <artifactId>whisper</artifactId>-->
+<!--            <version>1.0.0</version>-->
+<!--        </dependency>-->
 
 
         <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-speech -->
