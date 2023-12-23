@@ -24,6 +24,9 @@ public interface EsDocumentRepository extends ElasticsearchRepository<EsDocument
             "{\"match\": {\"title\": \"*?0*\"}}," +
             "{\"match\": {\"description\": \"*?0*\"}}," +
             "{\"match\": {\"content\": \"*?0*\"}}," +
+            "{\"fuzzy\": {\"title\": {\"value\": \"?0\", \"fuzziness\": \"AUTO\"}}}," +
+            "{\"fuzzy\": {\"description\": {\"value\": \"?0\", \"fuzziness\": \"AUTO\"}}}," +
+            "{\"fuzzy\": {\"content\": {\"value\": \"?0\", \"fuzziness\": \"AUTO\"}}}," +
             "{\"regexp\": {\"title\": \".*?0.*\"}}," +
             "{\"regexp\": {\"description\": \".*?0.*\"}}," +
             "{\"regexp\": {\"content\": \".*?0.*\"}}" +

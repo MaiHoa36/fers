@@ -21,6 +21,10 @@ public interface EsCourseRepository extends ElasticsearchRepository<EsCourse, St
             "{\"match\": {\"name\": \"*?0*\"}}," +
             "{\"match\": {\"lecturer\": \"*?0*\"}}," +
             "{\"match\": {\"description\": \"*?0*\"}}," +
+            "{\"fuzzy\": {\"code\": {\"value\": \"?0\", \"fuzziness\": \"AUTO\"}}}," +
+            "{\"fuzzy\": {\"name\": {\"value\": \"?0\", \"fuzziness\": \"AUTO\"}}}," +
+            "{\"fuzzy\": {\"lecturer\": {\"value\": \"?0\", \"fuzziness\": \"AUTO\"}}}," +
+            "{\"fuzzy\": {\"description\": {\"value\": \"?0\", \"fuzziness\": \"AUTO\"}}}," +
             "{\"regexp\": {\"code\": \".*?0.*\"}}," +
             "{\"regexp\": {\"name\": \".*?0.*\"}}," +
             "{\"regexp\": {\"lecturer\": \".*?0.*\"}}," +

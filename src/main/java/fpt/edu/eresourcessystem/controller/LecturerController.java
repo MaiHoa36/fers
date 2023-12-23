@@ -4,7 +4,6 @@ import co.elastic.clients.elasticsearch._types.SortOptionsBuilders;
 import com.theokanning.openai.audio.CreateTranscriptionRequest;
 import com.theokanning.openai.audio.TranscriptionResult;
 import com.theokanning.openai.service.OpenAiService;
-import fpt.edu.eresourcessystem.utils.AudioUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import fpt.edu.eresourcessystem.controller.advices.GlobalControllerAdvice;
