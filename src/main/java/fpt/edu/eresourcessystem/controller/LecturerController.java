@@ -876,7 +876,7 @@ public class LecturerController {
             findStatus = QuestionAnswerEnum.Status.CREATED;
         }
 //        List<Question> questions = questionService.findByLecturerMail(getLoggedInLecturerMail());
-        Page<Question> questions = (loggedInEmail != null) ? questionService.findByLecturerAndSearch(loggedInEmail, search, findStatus, pageIndex, PAGE_SIZE) : null;
+        Page<Question> questions = (loggedInEmail != null) ? questionService.findByLecturerAndSearch(loggedInEmail, search.trim(), findStatus, pageIndex, PAGE_SIZE) : null;
         // add log
 //        addUserLog("/my_library/my_questions/history");
         if (questions != null) {

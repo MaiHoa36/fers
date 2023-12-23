@@ -52,6 +52,9 @@
                             </div>
                         </div>
                         <div>
+                            <div id="overlay" class="overlay">
+                                <div class="loader"></div>
+                            </div>
                             <form style="width: 75%; margin-left: 10%" method="post" role="form"
                                   th:action="@{'/lecturer/documents/add?respondResourceType=' + ${resourceType.resourceTypeName}}"
                                   th:object="${document}"
@@ -282,9 +285,9 @@
             'error'
         );
     }
-
 </script>
 <script th:src="@{/js/validation_add-file.js}"></script>
+<script th:src="@{/js/overlay.js}"></script>
 </body>
 
 </html>

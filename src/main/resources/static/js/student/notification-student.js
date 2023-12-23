@@ -31,7 +31,10 @@ function onConnected() {
         }
     });
 
-    // stompClient.subscribe(`/user/public`, onMessageReceived);
+    stompClient.subscribe('/user/notifications/lecturer_reply', function (answer) {
+        answer = JSON.parse(answer.body); // Parse the data if it's a string
+        // display answer nha cau
+    });
 }
 
 function onError(error) {

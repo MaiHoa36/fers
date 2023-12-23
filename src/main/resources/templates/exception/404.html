@@ -9,12 +9,14 @@
 <body>
 <div>
     <div style="display: flex; justify-content: center; margin-top: 6rem">
-        <img src="/images/errors/404.png" style="width:50%" alt="404">
+        <img src="/images/errors/404.svg" style="width:50%" alt="404">
+    </div>
+    <div style="display: flex; justify-content: center; margin-top: 4rem">
+        <h3 class="d-none" th:text="${errorMessage}"></h3>
     </div>
     <div style="display: flex; justify-content: center; margin-top: 4rem">
         <a class="btn btn--back" href="javascript:void(0);" onclick="history.go(-1);">Back</a>
     </div>
 </div>
-<h3 class="d-none" th:text="${errorMessage}"></h3>
 </body>
 </html>

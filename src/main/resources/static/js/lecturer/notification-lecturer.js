@@ -89,8 +89,10 @@ function onConnected() {
         $("#lecturer-questions").prepend(html);
     });
 
-
-    // stompClient.subscribe(`/user/public`, onMessageReceived);
+    stompClient.subscribe('/user/notifications/student_reply', function (answer) {
+        answer = JSON.parse(answer.body); // Parse the data if it's a string
+        // display answer nha cau
+    });
 }
 
 function onError(error) {

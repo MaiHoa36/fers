@@ -56,6 +56,9 @@
                             </div>
                         </div>
                         <div>
+                            <div id="overlay" class="overlay">
+                                <div class="loader"></div>
+                            </div>
                             <form style="width: 75%; margin-left: 10%" method="post"
                                   th:action="@{'/lecturer/documents/update'}"
                                   th:object="${document}"
@@ -236,9 +239,8 @@
     }
 </script>
 <script th:src="@{/js/editor.js}"></script>
-<script th:src="@{/js/validation_update-file.js}">
-
-</script>
+<script th:src="@{/js/validation_update-file.js}"></script>
+<script th:src="@{/js/overlay.js}"></script>
 </body>
 
 </html>
