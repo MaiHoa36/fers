@@ -96,24 +96,24 @@ public class NotificationController {
         return new QuestionResponseDto(question);
     }
 
-    @MessageMapping("/feedback")
-    @SendToUser("/notifications/feedback")
-    public NotificationResponseDto sendFeedback(@RequestBody final NotificationDto notificationDto,
-                                                final Principal principal) {
-        notificationDto.setFrom(principal.getName());
-        if (notificationDto.getType().equals("4")) {
-            Feedback feedback = feedbackService.getFeedbackById(notificationDto.getFeedbackId()).orElse(null);
-            notificationDto.setFeedback(feedback);
-            notificationDto.setTo("admin");
-            if (feedback != null) {
-                notificationDto.setLink("/admin/feedbacks/" + feedback.getId());
-            }
-        }
-        Notification notification = notificationService.addNotification(notificationDto);
-        return new NotificationResponseDto(
-                notification
-        );
-    }
+//    @MessageMapping("/feedback")
+//    @SendToUser("/notifications/feedback")
+//    public NotificationResponseDto sendFeedback(@RequestBody final NotificationDto notificationDto,
+//                                                final Principal principal) {
+//        notificationDto.setFrom(principal.getName());
+//        if (notificationDto.getType().equals("4")) {
+//            Feedback feedback = feedbackService.getFeedbackById(notificationDto.getFeedbackId()).orElse(null);
+//            notificationDto.setFeedback(feedback);
+//            notificationDto.setTo("admin");
+//            if (feedback != null) {
+//                notificationDto.setLink("/admin/feedbacks/" + feedback.getId());
+//            }
+//        }
+//        Notification notification = notificationService.addNotification(notificationDto);
+//        return new NotificationResponseDto(
+//                notification
+//        );
+//    }
 
     @GetMapping("/notifications/{nId}")
     public String viewNotification(@PathVariable String nId) {

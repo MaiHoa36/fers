@@ -12,6 +12,9 @@ function validate_addCourse() {
                 minlength: 5,
                 maxlength: 150
             },
+            lecturer: {
+                email: true,
+            },
             description: {
                 maxlength: 1500 // Increased character limit for descriptions
             },
@@ -31,6 +34,9 @@ function validate_addCourse() {
                 required: "Course name is required!",
                 minlength: "Course name must have at least 5 characters!",
                 maxlength: "Course name can have at most 150 characters!"
+            },
+            lecturer: {
+                email: "Input format email lecturer",
             },
             description: {
                 maxlength: "Description can have at most 1500 characters!"
