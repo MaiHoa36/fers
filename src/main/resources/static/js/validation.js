@@ -1,4 +1,10 @@
 // VALIDATE COURSE
+addFptEmailValidation();
+function addFptEmailValidation() {
+    $.validator.addMethod("fptEmail", function(value, element) {
+        return this.optional(element) || /^[a-zA-Z0-9._-]+@fpt\.edu\.vn$/.test(value);
+    }, "Please enter a valid FPT email address.");
+}
 function validate_addCourse() {
     $('#add-form').validate({
         rules: {
@@ -14,6 +20,7 @@ function validate_addCourse() {
             },
             lecturer: {
                 email: true,
+                fptEmail: true
             },
             description: {
                 maxlength: 1500 // Increased character limit for descriptions
@@ -238,7 +245,8 @@ function validateAddLecturerForm() {
         rules: {
             lecturerEmail: {
                 required: true,
-                email: true
+                email: true,
+                fptEmail: true
             }
         },
         messages: {
@@ -397,7 +405,7 @@ function validate_addfeedback() {
             },
             feedbackContent: {
                 required: true,
-                minlength: 5 // Example: minimum length of feedback content
+                // minlength: 0 // Example: minimum length of feedback content
             }
         },
         messages: {
@@ -406,7 +414,7 @@ function validate_addfeedback() {
             },
             feedbackContent: {
                 required: "Please enter your feedback message",
-                minlength: "Feedback must be at least 5 characters long"
+                // minlength: "Feedback must be at least 0 characters long"
             }
         }
     });

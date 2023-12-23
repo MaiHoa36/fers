@@ -70,7 +70,7 @@ public class TrainingTypeServiceImpl implements TrainingTypeService {
 
         if (trainingTypeOpt.isPresent()) {
             TrainingType trainingType = trainingTypeOpt.get();
-//            course.setTrainingType(trainingType);
+            course.setTrainingType(trainingType);
             trainingType.getCourses().add(course);
             return trainingTypeRepository.save(trainingType);
         }

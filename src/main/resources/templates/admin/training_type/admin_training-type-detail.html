@@ -136,7 +136,9 @@
                         <td th:text="${course.getCourseName()}"></td>
                         <td th:text="${course.getCourseCode()}"></td>
                         <td class="code-archive-except" th:text="${course.getDescription()}"></td>
-                        <td th:text="${#dates.format(course.getCreatedDate(), 'dd/MM/yyyy HH:mm')}"></td>
+                        <td
+                            th:text="${#temporals.format(course.getCreatedDate(), 'dd-MM-yyyy HH:mm:ss')}">
+                        </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(trainingType.courses)}">
                         <td colspan="4" class="text-center">No courses available</td>

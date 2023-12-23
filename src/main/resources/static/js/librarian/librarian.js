@@ -143,8 +143,7 @@ function confirmAddLecturer() {
 
     // Get the course name from the hidden input field
     const courseName = document.getElementById('courseName').value;
-
-    var emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    var emailRegex = /^[a-zA-Z0-9._-]+@fpt\.edu\.vn$/;
     if (lecturerEmail.toString() === '' || lecturerEmail === null || !lecturerEmail.toString().match(emailRegex)) {
         Swal.fire(
             'Email lecturer is empty or not in correct format!',
