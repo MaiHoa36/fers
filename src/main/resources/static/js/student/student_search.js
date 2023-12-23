@@ -44,8 +44,8 @@ function search(event) {
                 console.log(results);
                 results.empty();
                 if (data.length == 0) {
-                    let li = $('<li style="margin: 2rem 2rem">');
-                    let img = $('<img src="/images/no-result.png" style="width: 70%">').attr('alt', 'No result');
+                    let li = $('<li class="d-flex justify-content-center"  style="margin: 2rem 2rem">');
+                    let img = $('<img src="/images/no-result.gif" style="width: 50%">').attr('alt', 'No result');
                     li.append(img);
                     results.append(li);
                 } else {
@@ -108,8 +108,8 @@ function search(event) {
                 console.log(data);
                 results.empty();
                 if (data.length == 0) {
-                    let li = $('<li style="margin: 2rem 2rem">');
-                    let img = $('<img src="/images/no-result.png" style="width: 70%">').attr('alt', 'No result');
+                    let li = $('<li class="d-flex justify-content-center"  style="margin: 2rem 2rem">');
+                    let img = $('<img src="/images/no-result.gif" style="width: 50%">').attr('alt', 'No result');
                     li.append(img);
                     results.append(li);
                 } else {
@@ -180,8 +180,8 @@ function loadCourses() {
 
             if (data.length == 0) {
                 results.empty();
-                let li = $('<li style="margin: 2rem 2rem">');
-                let img = $('<img src="/images/no-result.png" style="width: 70%">').attr('alt', 'No result');
+                let li = $('<li class="d-flex justify-content-center"  style="margin: 2rem 2rem">');
+                let img = $('<img src="/images/no-result.gif" style="width: 50%">').attr('alt', 'No result');
                 li.append(img);
                 results.append(li);
             } else {
@@ -250,8 +250,8 @@ function loadDocuments() {
             overlay.style.display = 'none';
             if (data.length == 0) {
                 results.empty();
-                let li = $('<li style="margin: 2rem 2rem">');
-                let img = $('<img src="/images/no-result.png" style="width: 70%">').attr('alt', 'No result');
+                let li = $('<li class="d-flex justify-content-center"  style="margin: 2rem 2rem">');
+                let img = $('<img src="/images/no-result.gif" style="width: 50%">').attr('alt', 'No result');
                 li.append(img);
                 results.append(li);
             } else {

@@ -9,8 +9,10 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 public interface EsCourseRepository extends ElasticsearchRepository<EsCourse, String> {
     @Query("{\"bool\": " +
-            "{\"must\": [{\"match\": {\"status\": \"PUBLISH\"}}]," +
-            "\"should\": " +
+            "{\"must\":[" +
+            "{\"match\": {\"status\": \"PUBLISH\"}}," +
+            "{\"bool\": " +
+            "{\"should\": " +
             "[{\"match_phrase\": {\"code\": \"*?0*\"}}," +
             "{\"match_phrase\": {\"name\": \"*?0*\"}}," +
             "{\"match_phrase\": {\"lecturer\": \"*?0*\"}}," +
@@ -22,8 +24,9 @@ public interface EsCourseRepository extends ElasticsearchRepository<EsCourse, St
             "{\"regexp\": {\"code\": \".*?0.*\"}}," +
             "{\"regexp\": {\"name\": \".*?0.*\"}}," +
             "{\"regexp\": {\"lecturer\": \".*?0.*\"}}," +
-            "{\"regexp\": {\"description\": \".*?0.*\"}}]" +
-            "}}")
+            "{\"regexp\": {\"description\": \".*?0.*\"}}" +
+            "]}}" +
+            "]}}")
     Page<EsCourse> search(String search, Pageable pageable);
 
     @Query("{\"bool\": {\"should\": [" +
