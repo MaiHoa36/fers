@@ -63,7 +63,7 @@ public interface CourseService {
 
     List<Course> findByListId(List<String> courseIds);
 
-    Page<Course> findByCodeOrNameOrDescription(String code, String name, String description, int pageIndex, int pageSize);
+    Page<Course> findByCodeOrNameOrDescription(String code, String name, String description, String librarianId, int pageIndex, int pageSize);
 
     List<Course> findByCodeOrName(String code, String name);
 

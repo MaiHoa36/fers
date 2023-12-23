@@ -260,7 +260,7 @@ public class LibrarianController {
                              @RequestParam(required = false, defaultValue = "") String search,
                              final Model model) {
         Page<Course> page;
-        page = courseService.findByCodeOrNameOrDescription(search, search, search, pageIndex, PAGE_SIZE);
+        page = courseService.findByCodeOrNameOrDescription(search, search, search, getLoggedInLibrarian().getId() ,pageIndex, PAGE_SIZE);
         List<Integer> pages = CommonUtils.pagingFormat(page.getTotalPages(), pageIndex);
         model.addAttribute("pages", pages);
         model.addAttribute("totalPage", page.getTotalPages());

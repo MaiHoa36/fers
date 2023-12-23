@@ -555,9 +555,9 @@ li {
     width: 5%;
     text-align: center
 }
-.table-view tr td:last-child{
-    width: 55%;
-}
+/*.table-view tr td:last-child{*/
+/*    width: 55%;*/
+/*}*/
 
 .link{
     color: var(--link-color);

@@ -19,7 +19,7 @@ public class Constants {
     public static final long MAX_SIZE_FILE = 104857600;
     public static final long MAX_SIZE_SUPPORTING_FILE = 52428800;
 
-    public static final long MAX_ALLOWED_SUPPORTING_FILES_NUMBER = 4;
+    public static final long MAX_ALLOWED_SUPPORTING_FILES_NUMBER = 3;
 
 
 

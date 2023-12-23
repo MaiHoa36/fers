@@ -886,3 +886,36 @@ function loadMoreOtherQuestion(skip, docId) {
         }
     });
 }
+
+function downloadFile(fileName) {
+    Swal.fire({
+        title: 'Do you want to download this file?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/api/student/download',
+                method: 'GET',
+                data: {fileName: fileName},
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function (data) {
+                    var downloadLink = document.createElement('a');
+                    downloadLink.href = URL.createObjectURL(data);
+                    downloadLink.download = fileName;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                },
+                error: function () {
+                    console.log("Error when download file");
+                }
+            });
+        }
+    });
+
+}

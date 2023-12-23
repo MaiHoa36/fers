@@ -12,21 +12,26 @@ import org.springframework.stereotype.Repository;
 @Repository("esDocumentRepository")
 public interface EsDocumentRepository extends ElasticsearchRepository<EsDocument, String> {
 
-    @Query("{\"bool\": " +
-            "{" +
-            "\"filter\": [{\"match\": {\"courseStatus\": \"PUBLISH\"}}]," +
-            "\"should\": " +
-            "[{\"match_phrase\": {\"title\": \"*?0*\"}}," +
+    @Query("{\"bool\":{" +
+            "\"must\":[" +
+            "{\"match\": {\"courseStatus\": \"PUBLISH\"}}," +
+            "{\"bool\": " +
+            "{\"should\":[" +
+            "{\"match_phrase\": {\"title\": \"*?0*\"}}," +
             "{\"match_phrase\": {\"description\": \"*?0*\"}}," +
             "{\"match_phrase\": {\"docType\": \"*?0*\"}}," +
             "{\"match_phrase\": {\"content\": \"*?0*\"}}," +
             "{\"match\": {\"title\": \"*?0*\"}}," +
             "{\"match\": {\"description\": \"*?0*\"}}," +
             "{\"match\": {\"content\": \"*?0*\"}}," +
+            "{\"fuzzy\": {\"title\": {\"value\": \"?0\", \"fuzziness\": \"AUTO\"}}}," +
+            "{\"fuzzy\": {\"description\": {\"value\": \"?0\", \"fuzziness\": \"AUTO\"}}}," +
+            "{\"fuzzy\": {\"content\": {\"value\": \"?0\", \"fuzziness\": \"AUTO\"}}}," +
             "{\"regexp\": {\"title\": \".*?0.*\"}}," +
             "{\"regexp\": {\"description\": \".*?0.*\"}}," +
-            "{\"regexp\": {\"content\": \".*?0.*\"}}]" +
-            "}}")
+            "{\"regexp\": {\"content\": \".*?0.*\"}}" +
+            "]}}" +
+            "]}}")
     Page<EsDocument> search(String search, Pageable pageable);
 
     default Page<EsDocument> findBySearchTerm(String searchTerm, Pageable pageable) {

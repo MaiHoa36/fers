@@ -486,3 +486,7 @@ label.error {
 #changeCourseStatus:hover {
     color: var(--link-color);
 }
+
+#defineResourceType:hover, #defineButton:hover {
+    color: var(--link-color);
+}

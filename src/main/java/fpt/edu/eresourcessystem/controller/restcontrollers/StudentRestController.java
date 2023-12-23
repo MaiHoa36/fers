@@ -131,7 +131,7 @@ public class StudentRestController {
 
     @PostMapping(value = "/answer/add", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
     @Transactional
-    public ResponseEntity<AnswerResponseDto> addQuestion(@ModelAttribute AnswerDto answerDTO,
+    public ResponseEntity<AnswerResponseDto> addAnswer(@ModelAttribute AnswerDto answerDTO,
                                                          @RequestParam String docId,
                                                          @RequestParam String quesId) {
         if (getLoggedInAccount().getRole() == AccountEnum.Role.STUDENT) {
@@ -155,6 +155,7 @@ public class StudentRestController {
                 // add log
                 addUserLog("/api/student/answer/add/" + answer.getId());
                 AnswerResponseDto answerResponseDTO = new AnswerResponseDto(answer);
+                messagingTemplate.convertAndSendToUser(document.getCreatedBy(), "/notifications/student_reply", answerResponseDTO);
                 return new ResponseEntity<>(answerResponseDTO, HttpStatus.OK);
             }
         }

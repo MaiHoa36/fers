@@ -389,7 +389,9 @@
                     url: url,
                     // include CSRF token if necessary
                     success: function () {
-                        Swal.fire('Deleted!', successMessage, 'success');
+                        Swal.fire('Deleted!', successMessage, 'success').then(() => {
+                            history.go(-2);
+                        });
                     },
                     error: function () {
                         Swal.fire('Error', 'Failed to delete the item.', 'error');

@@ -408,7 +408,7 @@ function validate_addfeedback() {
 
 // VALIDATE DOCUMENTS
 function validate_addDocument(){
-    $("#add-document").validate({
+    return $("#add-form").validate({
         rules: {
             title: "required",
             description: {
@@ -429,7 +429,7 @@ function validate_addDocument(){
 }
 
 function validate_updateDocument(){
-    $("#update-document").validate({
+    $("#add-form").validate({
         rules: {
             title: "required",
             description: {

@@ -56,86 +56,27 @@
 
                     <div class="add-form-content">
                         <table>
-                            <h2>Information of lecturer:</h2>
-                            <form method="post" th:object="${lecturer}"
-                                  th:action="@{/librarian/lectures/update}">
-                                <!--                                <tr class="lib_input-wrapper">-->
-                                <!--                                    <td class="lib_input-label"><label for="name">Name:</label></td>-->
-                                <!--                                    <td>-->
-                                <!--                                        <input type="text" id="name" name="name" class="lib_input form-control"-->
-                                <!--                                               th:value="${lecturer.account.name}" placeholder="Enter name" readonly>-->
-                                <!--                                    </td>-->
-                                <!--                                </tr>-->
+                            <tr class="lib_input-wrapper">
+                                <td class="lib_input-label" style="padding-left: 0"><label for="name">Name:</label></td>
+                                <td>
+                                    <input type="text" id="name" name="name" style="width: 100%"
+                                           class="lib_input form-control" th:value="${lecturer.account.name}"
+                                           readonly>
+                                </td>
+                            </tr>
+                            <tr class="lib_input-wrapper">
+                                <td class="lib_input-label" style="padding-left: 0"><label for="email">Email:</label></td>
+                                <td>
+                                    <input type="text" id="email" name="email" style="width: 100%"
+                                           class="lib_input form-control" th:value="${lecturer.account.email}"
+                                           placeholder="Enter email" readonly>
+                                </td>
+                            </tr>
 
-                                <!--                                <tr class="lib_input-wrapper">-->
-                                <!--                                    <td class="lib_input-label"><label for="role">Role:</label></td>-->
-                                <!--                                    <td>-->
-                                <!--                                        &lt;!&ndash; You can replace the input type and values with appropriate Thymeleaf expressions &ndash;&gt;-->
-                                <!--                                        <input type="text" id="role" name="role" class="lib_input form-control"-->
-                                <!--                                               th:value="${lecturer.account.role}" placeholder="Enter role" readonly>-->
-                                <!--                                    </td>-->
-                                <!--                                </tr>-->
-
-                                <!--                                <tr class="lib_input-wrapper">-->
-                                <!--                                    <td class="lib_input-label"><label for="trainingType">Training Type:</label></td>-->
-                                <!--                                    <td>-->
-                                <!--                                        &lt;!&ndash; You can replace the input type and values with appropriate Thymeleaf expressions &ndash;&gt;-->
-                                <!--                                        <input type="text" id="trainingType" name="trainingType"-->
-                                <!--                                               class="lib_input form-control" th:value="${lecturer.trainingType}"-->
-                                <!--                                               placeholder="Enter training type" required>-->
-                                <!--                                    </td>-->
-                                <!--                                </tr>-->
-
-                                <!--                                <tr class="lib_input-wrapper">-->
-                                <!--                                    <td class="lib_input-label"><label for="createdBy">Created By:</label></td>-->
-                                <!--                                    <td>-->
-                                <!--                                        <input type="text" id="createdBy" name="createdBy"-->
-                                <!--                                               class="lib_input form-control" th:value="${lecturer.createdBy}"-->
-                                <!--                                               placeholder="Enter created by" readonly>-->
-                                <!--                                    </td>-->
-                                <!--                                </tr>-->
-
-                                <!--                                <tr class="lib_input-wrapper">-->
-                                <!--                                    <td class="lib_input-label"><label for="createdDate">Created Date:</label></td>-->
-                                <!--                                    <td>-->
-                                <!--                                        <input type="text" id="createdDate" name="createdDate"-->
-                                <!--                                               class="lib_input form-control" th:value="${lecturer.createdDate}"-->
-                                <!--                                               placeholder="Enter created date" readonly>-->
-                                <!--                                    </td>-->
-                                <!--                                </tr>-->
-
-                                <!--                                <tr class="lib_input-wrapper">-->
-                                <!--                                    <td class="lib_input-label"><label for="lastModifiedBy">Last Modified By:</label>-->
-                                <!--                                    </td>-->
-                                <!--                                    <td>-->
-                                <!--                                        <input type="text" id="lastModifiedBy" name="lastModifiedBy"-->
-                                <!--                                               class="lib_input form-control" th:value="${lecturer.lastModifiedBy}"-->
-                                <!--                                               placeholder="Enter last modified by" readonly>-->
-                                <!--                                    </td>-->
-                                <!--                                </tr>-->
-
-                                <tr class="lib_input-wrapper">
-                                    <td class="lib_input-label"><label for="email">Email:</label></td>
-                                    <td>
-                                        <input type="text" id="email" name="email"
-                                               class="lib_input form-control" th:value="${lecturer.account.email}"
-                                               placeholder="Enter email" readonly>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        <!--                                        <button type="submit" class="btn lib_btn-save">Update</button>-->
-                                        <button type="button" class="btn lib_btn-delete delete-lecturer"
-                                                th:id="${lecturer.getId}">Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            </form>
 
                         </table>
                         <!-- Display Courses -->
-                        <h2>List Courses Managed:</h2>
+                        <h4 class="mt-4">List Courses Managed:</h4>
                         <table class="table table-striped table-sm table-bordered">
                             <thead>
                             <tr>

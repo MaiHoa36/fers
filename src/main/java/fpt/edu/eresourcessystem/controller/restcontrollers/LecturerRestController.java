@@ -17,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
@@ -43,6 +44,7 @@ public class LecturerRestController {
     private final ImageService imageService;
     private final StorageService storageService;
     private final CourseLogService courseLogService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     private void addUserLog(String url) {
         UserLog userLog = new UserLog(new UserLogDto(url, getLoggedInLecturerMail(), AccountEnum.Role.LECTURER));
@@ -76,7 +78,7 @@ public class LecturerRestController {
 
     @PostMapping(value = "/answer/add", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
     @Transactional
-    public ResponseEntity<AnswerResponseDto> addQuestion(@ModelAttribute AnswerDto answerDTO,
+    public ResponseEntity<AnswerResponseDto> addAnswer(@ModelAttribute AnswerDto answerDTO,
                                                          @RequestParam String docId,
                                                          @RequestParam String quesId) {
         Lecturer lecturer = getLoggedInLecturer();
@@ -109,6 +111,7 @@ public class LecturerRestController {
                     getLoggedInLecturer().getAccount().getEmail(),
                     null, null);
             AnswerResponseDto answerResponseDTO = new AnswerResponseDto(answer);
+            messagingTemplate.convertAndSendToUser(question.getCreatedBy(), "/notifications/lecturer_reply", answerResponseDTO);
             return new ResponseEntity<>(answerResponseDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

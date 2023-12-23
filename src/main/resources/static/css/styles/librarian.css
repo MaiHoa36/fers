@@ -192,6 +192,10 @@ label.error {
     color: var(--link-color);
 }
 
+.a-link:hover {
+    text-decoration: underline;
+}
+
 /* Style for the export form container */
 .export-form-container {
     display: none;

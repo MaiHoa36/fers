@@ -1,9 +1,9 @@
 package fpt.edu.eresourcessystem.controller;
 
+import co.elastic.clients.elasticsearch._types.SortOptionsBuilders;
 import com.theokanning.openai.audio.CreateTranscriptionRequest;
 import com.theokanning.openai.audio.TranscriptionResult;
 import com.theokanning.openai.service.OpenAiService;
-//import fpt.edu.eresourcessystem.utils.AudioUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import fpt.edu.eresourcessystem.controller.advices.GlobalControllerAdvice;
@@ -616,7 +616,7 @@ public class LecturerController {
 
         List<MultiFile> multiFiles = new ArrayList<>();
         // Check if files were uploaded
-        if (files != null && files.length > 0 && files.length < MAX_ALLOWED_SUPPORTING_FILES_NUMBER) {
+        if (files != null && files.length > 0 && files.length <= MAX_ALLOWED_SUPPORTING_FILES_NUMBER) {
             String link;
             MultiFile multiFile;
             for (MultipartFile supportFile : files) {
@@ -790,7 +790,7 @@ public class LecturerController {
 
         int total = supportingFilesNumber + filesNumber;
 
-        if (total < MAX_ALLOWED_SUPPORTING_FILES_NUMBER) {
+        if (total <= MAX_ALLOWED_SUPPORTING_FILES_NUMBER) {
             List<MultiFile> existedMultiFiles = document.getMultipleFiles();
             for (MultiFile existedMultiFile : existedMultiFiles) {
                 if (!Arrays.asList(supportingFiles).contains(existedMultiFile.getCloudFileName())) {
@@ -894,7 +894,7 @@ public class LecturerController {
             findStatus = QuestionAnswerEnum.Status.CREATED;
         }
 //        List<Question> questions = questionService.findByLecturerMail(getLoggedInLecturerMail());
-        Page<Question> questions = (loggedInEmail != null) ? questionService.findByLecturerAndSearch(loggedInEmail, search, findStatus, pageIndex, PAGE_SIZE) : null;
+        Page<Question> questions = (loggedInEmail != null) ? questionService.findByLecturerAndSearch(loggedInEmail, search.trim(), findStatus, pageIndex, PAGE_SIZE) : null;
         // add log
 //        addUserLog("/my_library/my_questions/history");
         if (questions != null) {

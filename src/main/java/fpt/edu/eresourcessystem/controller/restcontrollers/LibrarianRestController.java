@@ -3,15 +3,20 @@ package fpt.edu.eresourcessystem.controller.restcontrollers;
 import fpt.edu.eresourcessystem.dto.CourseDto;
 import fpt.edu.eresourcessystem.dto.LecturerDto;
 import fpt.edu.eresourcessystem.dto.Response.DataTablesResponse;
+import fpt.edu.eresourcessystem.model.Account;
 import fpt.edu.eresourcessystem.model.Course;
 import fpt.edu.eresourcessystem.model.Lecturer;
+import fpt.edu.eresourcessystem.model.Librarian;
+import fpt.edu.eresourcessystem.service.AccountService;
 import fpt.edu.eresourcessystem.service.CourseService;
 import fpt.edu.eresourcessystem.service.LecturerService;
+import fpt.edu.eresourcessystem.service.LibrarianService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,6 +25,19 @@ import org.springframework.web.bind.annotation.*;
 public class LibrarianRestController {
     private final LecturerService lecturerService;
     private final CourseService courseService;
+    private final AccountService accountService;
+    private final LibrarianService librarianService;
+
+    private Librarian getLoggedInLibrarian() {
+        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (null == loggedInEmail || "anonymousUser".equals(loggedInEmail)) {
+            return null;
+        }
+        Account loggedInAccount = accountService.findByEmail(loggedInEmail);
+        if (loggedInAccount != null) {
+            return librarianService.findByAccountId(loggedInAccount.getId());
+        } else return null;
+    }
 
     @GetMapping("/lectures/list")
     @ResponseBody
@@ -56,7 +74,7 @@ public class LibrarianRestController {
         int page = start / length + 1; // Calculate the page number
 //        Pageable pageable = PageRequest.of(page, length);
         if (page < 0) page = 0;
-        Page<Course> coursesPage = courseService.findByCodeOrNameOrDescription(searchValue.trim(), searchValue.trim(), searchValue.trim(), page, length);
+        Page<Course> coursesPage = courseService.findByCodeOrNameOrDescription(searchValue.trim(), searchValue.trim(), searchValue.trim(), getLoggedInLibrarian().getId(), page, length);
 
         // Chuyển đổi từ Page<Course> sang Page<CourseDto>
         Page<CourseDto> courseDtoPage = coursesPage.map(course -> {

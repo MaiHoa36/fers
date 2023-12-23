@@ -34,8 +34,6 @@ public class CommonUtils {
     }
 
     public static String extractTextFromFile(InputStream fileBytes) throws IOException, TikaException, SAXException {
-//        File file = new File("src/main/1mb.pdf");
-
         Parser parser = new AutoDetectParser();
         BodyContentHandler handler = new BodyContentHandler(10000000);
         Metadata metadata = new Metadata();
