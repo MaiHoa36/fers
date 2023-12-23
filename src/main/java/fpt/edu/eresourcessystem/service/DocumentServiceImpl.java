@@ -16,6 +16,7 @@ import fpt.edu.eresourcessystem.repository.CourseRepository;
 import fpt.edu.eresourcessystem.repository.DocumentRepository;
 import fpt.edu.eresourcessystem.repository.ResourceTypeRepository;
 import fpt.edu.eresourcessystem.repository.elasticsearch.EsDocumentRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,14 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service("documentService")
 public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
+    private final QuestionService questionService;
+    private final AnswerService answerService;
+    private final DocumentNoteService documentNoteService;
+    private final NotificationService notificationService;
     private final EsDocumentRepository esDocumentRepository;
     private final MongoTemplate mongoTemplate;
 
@@ -49,17 +55,6 @@ public class DocumentServiceImpl implements DocumentService {
     private final GridFsOperations operations;
     private final CourseRepository courseRepository;
     private final ResourceTypeRepository resourceTypeRepository;
-
-    @Autowired
-    public DocumentServiceImpl(DocumentRepository documentRepository, EsDocumentRepository esDocumentRepository, MongoTemplate mongoTemplate, GridFsTemplate template, GridFsOperations operations, CourseRepository courseRepository, ResourceTypeRepository resourceTypeRepository) {
-        this.documentRepository = documentRepository;
-        this.esDocumentRepository = esDocumentRepository;
-        this.mongoTemplate = mongoTemplate;
-        this.template = template;
-        this.operations = operations;
-        this.courseRepository = courseRepository;
-        this.resourceTypeRepository = resourceTypeRepository;
-    }
 
     @Override
     public List<DocumentResponseDto> findRelevantDocument(String topicId, String docId) {
@@ -260,7 +255,11 @@ public class DocumentServiceImpl implements DocumentService {
     public boolean softDelete(Document document) {
         Optional<Document> check = documentRepository.findById(document.getId());
         if (check.isPresent()) {
-            // Here: Soft delete note, question & answer
+            // Here: delete note, question & answer
+            questionService.deleteQuestionsByDocId(new ObjectId(document.getId()));
+            answerService.deleteAnswersByDocId(new ObjectId(document.getId()));
+            documentNoteService.deleteDocumentNoteByDocId(document.getId());
+            notificationService.deleteNotificationByDocId(new ObjectId(document.getId()));
 
 
             // Soft delete

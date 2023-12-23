@@ -1,8 +1,8 @@
 package fpt.edu.eresourcessystem.service;
 
 import fpt.edu.eresourcessystem.enums.CommonEnum;
+import fpt.edu.eresourcessystem.model.Answer;
 import fpt.edu.eresourcessystem.model.DocumentNote;
-import fpt.edu.eresourcessystem.model.StudentNote;
 import fpt.edu.eresourcessystem.repository.DocumentNoteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,9 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,6 +74,14 @@ public class DocumentNoteServiceImpl implements DocumentNoteService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void deleteDocumentNoteByDocId(String docId) {
+        Query query = new Query(Criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
+                .and("docId").is(docId));
+        Update update = new Update().set("deleteFlg", CommonEnum.DeleteFlg.DELETED);
+        mongoTemplate.updateFirst(query, update, DocumentNote.class);
     }
 
     @Override

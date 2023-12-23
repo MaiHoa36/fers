@@ -23,7 +23,13 @@ function confirmSaveDocument() {
         );
     } else {
         if($('.ck-content').innerHTML != null && fileInput.value != null){
-            if($('.ck-content').innerHTML != '' && fileInput.value != ''){
+            if($('.ck-content').innerHTML == '' && fileInput.value == ''){
+                Swal.fire(
+                    'No content!',
+                    'Please create new content or upload available file.',
+                    'error'
+                );
+            } else if($('.ck-content').innerHTML != '' && fileInput.value != ''){
                 if(document.getElementById('editorWrapper').style.display != 'none'){
                     Swal.fire({
                         title: 'Display-content file is uploaded.',

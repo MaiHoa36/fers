@@ -9,6 +9,7 @@ import fpt.edu.eresourcessystem.model.Question;
 import fpt.edu.eresourcessystem.model.Student;
 import fpt.edu.eresourcessystem.repository.QuestionRepository;
 import lombok.AllArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -19,7 +20,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static fpt.edu.eresourcessystem.enums.CommonEnum.DeleteFlg.DELETED;
 import static fpt.edu.eresourcessystem.enums.CommonEnum.DeleteFlg.PRESERVED;
 
 @AllArgsConstructor
@@ -189,6 +189,13 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public void deleteQuestionsByDocId(ObjectId docId) {
+        Query query = new Query(Criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
+                .and("documentId.id").is(docId));
+        mongoTemplate.findAllAndRemove(query, Question.class);
+    }
+
+    @Override
     public Page<Question> findByStudentAndSearch(Student student, String search, QuestionAnswerEnum.Status status, int pageIndex, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
         Criteria criteria = new Criteria();
@@ -214,7 +221,7 @@ public class QuestionServiceImpl implements QuestionService {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
         Criteria criteria = new Criteria();
         criteria.and("lecturer").is(lecturerEmail);
-        criteria.and("deletedFlg").is(PRESERVED);
+        criteria.and("deleteFlg").is(PRESERVED);
         if (search != null && !search.isEmpty()) {
             Criteria regexCriteria = Criteria.where("content").regex(Pattern.quote(search), "i");
             criteria.andOperator(regexCriteria);
