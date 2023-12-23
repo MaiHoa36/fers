@@ -214,7 +214,7 @@ public class QuestionServiceImpl implements QuestionService {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
         Criteria criteria = new Criteria();
         criteria.and("lecturer").is(lecturerEmail);
-        criteria.and("deletedFlg").is(PRESERVED);
+        criteria.and("deleteFlg").is(PRESERVED);
         if (search != null && !search.isEmpty()) {
             Criteria regexCriteria = Criteria.where("content").regex(Pattern.quote(search), "i");
             criteria.andOperator(regexCriteria);
@@ -229,7 +229,6 @@ public class QuestionServiceImpl implements QuestionService {
         Query query = new Query(criteria);
         query.fields().include("id", "documentId", "createdDate", "content", "student");
         long total = mongoTemplate.count(query, Question.class);
-        System.out.println(total + "????????????????");
         List<Question> questions = mongoTemplate.find(query.with(pageable), Question.class);
         return new PageImpl<>(questions, pageable, total);
     }

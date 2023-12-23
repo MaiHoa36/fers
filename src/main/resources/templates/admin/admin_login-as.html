@@ -138,7 +138,7 @@
 <script th:inline="javascript">
     function checkAccount() {
         $('#accountInfo').hide();
-        let email = $('#email').val();
+        let email = $('#email').val().trim();
         const loadingAnimation = $('#loadingAnimation');
         loadingAnimation.show();
 
