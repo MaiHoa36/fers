@@ -1,7 +1,11 @@
 package fpt.edu.eresourcessystem.controller;
 
+import co.elastic.clients.elasticsearch._types.SortOptionsBuilders;
 import com.theokanning.openai.audio.CreateTranscriptionRequest;
+import com.theokanning.openai.audio.TranscriptionResult;
 import com.theokanning.openai.service.OpenAiService;
+import fpt.edu.eresourcessystem.utils.AudioUtils;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import fpt.edu.eresourcessystem.controller.advices.GlobalControllerAdvice;
 import fpt.edu.eresourcessystem.dto.DocumentDto;
@@ -32,7 +36,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -67,6 +73,9 @@ public class LecturerController {
 
     @Value("${openai.api.key}")
     private String apiKey;
+
+    private final WhisperService whisperService;
+
 
     private Lecturer getLoggedInLecturer() {
         String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -509,7 +518,7 @@ public class LecturerController {
         return "lecturer/document/lecturer_add-document-to-resource-type";
     }
 
-    private File convertMultipartFileToFile(MultipartFile file) throws IOException {
+    private File convertMultiPartToFile(MultipartFile file) throws IOException {
         File convertedFile = new File(file.getOriginalFilename());
         file.transferTo(convertedFile);
         return convertedFile;
@@ -563,14 +572,24 @@ public class LecturerController {
                 }
                 documentDTO.setContent(extractTextFromFile(file.getInputStream()));
 
-                OpenAiService service = new OpenAiService(apiKey);
-                if (docType == DocumentEnum.DocumentFormat.AUDIO) {
+                OpenAiService openAiService = new OpenAiService(apiKey);
+                if (docType == DocumentEnum.DocumentFormat.AUDIO || docType == DocumentEnum.DocumentFormat.VIDEO) {
                     CreateTranscriptionRequest request = new CreateTranscriptionRequest();
                     request.setModel("whisper-1");
-//                File file = new File(filePath);
-                    // Chuyển đổi MultipartFile thành File
-                    File convertedFile = convertMultipartFileToFile(file);
-                    String transcription = service.createTranscription(request, convertedFile.getPath()).getText();
+
+                    // Lấy InputStream từ MultipartFile
+                    InputStream inputStream = file.getInputStream();
+
+                    // Tạo một temporary File từ InputStream (Bạn có thể sử dụng thư viện FileUtils của Apache Commons IO)
+                    File tempFile = File.createTempFile("temp_audio", ".wav");
+                    FileUtils.copyInputStreamToFile(inputStream, tempFile);
+//                    File tempFile = convertMultiPartToFile(file);
+
+                    // Sử dụng temporary File cho việc tạo transcription
+                    String transcription = openAiService.createTranscription(request, tempFile).getText();
+
+                    // Xóa temporary File sau khi sử dụng (optional)
+                    tempFile.delete();
 
                     documentDTO.setContent(transcription);
                 }
