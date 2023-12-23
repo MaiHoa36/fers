@@ -229,7 +229,7 @@ public class QuestionServiceImpl implements QuestionService {
         Query query = new Query(criteria);
         query.fields().include("id", "documentId", "createdDate", "content", "student");
         long total = mongoTemplate.count(query, Question.class);
-        System.out.println(total);
+        System.out.println(total + "????????????????");
         List<Question> questions = mongoTemplate.find(query.with(pageable), Question.class);
         return new PageImpl<>(questions, pageable, total);
     }

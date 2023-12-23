@@ -105,7 +105,7 @@ function sendRealtimeQuestion(qId) {
     stompClient.send('/app/question', {}, qId);
 }
 
-function submitFormAddQuestion(param) {
+function submitFormAddQuestion(docId) {
 
     var content = $('#new-question-content').val();
     var trimmedString = $.trim(content);
@@ -136,12 +136,14 @@ function submitFormAddQuestion(param) {
                 sendRealtimeQuestion(data.questionId);
                 // question content
                 var html = "<div class=\"stu__question-content-wrapper\" id=\"" + data.questionId + "\">\n" +
-                    "                                                <h6 class=\"stu__question-creater-name\"><i class=\"fa-solid fa-user\"></i> <span> " + data.studentName + " (You)</span></h6>\n" +
-                    "                                                <p class=\"stu__question-content question-content\" id=\"question-content-" + data.questionId + "\">" + data.questionContent + "</p>\n";
+                    "                                                <h6 class=\"stu__question-creater-name\"><i class=\"fa-solid fa-user\"></i>\n" +
+                "                                                    <span>" + data.studentName + "</span>(You)</h6><p class=\"stu__question-content question-content\"\n" +
+                "                                                   id=\"question-content-" + data.questionId + "\">" + data.questionContent + "</p>\n";
                 // edit section
-                html += "<div class=\"edit-question-div\" id=\"update-question" + data.questionId + "\"style=\"display: none\">\n" +
-                    "                                                    <label id=\"update-question-error" + data.questionId + "\" class=\"display-none\">Please enter something to update.</label>\n" +
-                    "                                                    <input class=\"update-question\" value=\"" + data.questionContent + "\" id=\"update-question-content-" + data.questionId + "\">\n" +
+                html += "<div class=\"edit-question-div\" id=\"update-question" + data.questionId + "\" style=\"display: none\">\n" +
+                    "                                                    <label id=\"update-question-error" + data.questionId + "\"\n" +
+                    "                                                           class=\"display-none\">Please enter something to update.</label>\n" +
+                    "                                                    <textarea class=\"update-question\" id=\"update-question-content-" + data.questionId + "\">" + data.questionContent + "</textarea>\n" +
                     "                                                    <button id=\"close-update-question-" + data.questionId + "\" type=\"button\" title=\"exist\"\n" +
                     "                                                            question-id=\"" + data.questionId + "\" onclick=existFormEditQuestion(\"" + data.questionId + "\")\n" +
                     "                                                            class=\"exist-form-edit-question btn-danger\"><i class=\"fa-solid fa-xmark\"></i> Close</button> " +
@@ -156,7 +158,50 @@ function submitFormAddQuestion(param) {
                 html += "<span class=\"stu__question-date stu__question-content\">" + data.createdDate +
                     "                                                </span> <a class=\"view-note-link-item  edit-question\" question-id=\"" + data.questionId + "\">Edit</a>" +
                     "                                                  | <a class=\"view-note-link-item delete-question\" question-id=\"" + data.questionId + "\" onclick=deleteQuestion(\"" + data.questionId + "\")>Delete</a>" +
-                    "                                                </div>\n";
+                    "                                                 | <a class=\"lec__add-reply view-question-link-item\" question-id=\""+ data.questionId+"\"\n" +
+                    "                                                       onclick=showReplyForm(\""+ data.questionId+"\")>Reply</a>";
+                html+="<div class=\"reply-content\" id=\"list-reply-content-"+ data.questionId+"\"></div>\n"
+
+                html+="<div class=\"stu__reply-form\" id=\"reply-form" + data.questionId + "\"><form class=\"form-student-add-doc-new-reply justify-content-between\"\n" +
+                    "                                                          method=\"post\" id=\"reply-content-form" + data.questionId + "\">\n" +
+                    "                                                        <div class=\"\">\n" +
+                    "                                                            <input type=\"text\" name=\"docId\" value=\"" + docId + "\" readonly hidden>\n" +
+                    "                                                            <input type=\"text\" name=\"quesId\" value=\"" + data.questionId + "\" readonly hidden>\n" +
+                    "                                                            <label id=\"new-reply-content-error-" + data.questionId + "\"\n" +
+                    "                                                                   class=\"student_input-label error-input\">Content\n" +
+                    "                                                                require!</label>\n" +
+                    "                                                            <div class=\"form-content\">\n" +
+                    "                                                                <label for=\"new-reply-content-" + data.questionId + "\"\n" +
+                    "                                                                       class=\"lec_input-label-reply\">Enter\n" +
+                    "                                                                    answer:</label>\n" +
+                    "                                                                <textarea id=\"new-reply-content-" + data.questionId + "\"\n" +
+                    "                                                                        class=\"input-reply-content\" name=\"answer\" required></textarea>\n" +
+                    "                                                            </div>\n" +
+                    "                                                        </div>\n" +
+                    "                                                        <div class=\"submit-reply-button\">\n" +
+                    "                                                            <button type=\"button\" title=\"exist\" id=\"exist-reply-form-button-" + data.questionId + "\"\n" +
+                    "                                                                    question-id=\"" + data.questionId + "\"\n" +
+                    "                                                                    onclick=existFormReplyQuestion(\"" + data.questionId + "\")\n" +
+                    "                                                                    class=\"btn-danger\"><i class=\"fa-solid fa-xmark\"></i>\n" +
+                    "                                                                Close\n" +
+                    "                                                            </button>\n" +
+                    "                                                            <a type=\"button\" title=\"Sending\" style=\"display:none;\"\n" +
+                    "                                                               id=\"sending-reply-" + data.questionId + "\"\n" +
+                    "                                                               question-id=\"" + data.questionId + "\"><i\n" +
+                    "                                                                    class=\"fas fa-spinner fa-spin\"></i> Sending...</a>\n" +
+                    "                                                            <button type=\"button\" title=\"Send\"\n" +
+                    "                                                                    id=\"send-reply-button-" + data.questionId + "\"\n" +
+                    "                                                                    question-id=\"" + data.questionId + "\"\n" +
+                    "                                                                    onclick=submitFormReplyQuestion(\"" + data.questionId + "\")\n" +
+                    "                                                                    class=\"btn-save\"><i\n" +
+                    "                                                                    class=\"fa-solid fa-paper-plane\"></i> Reply\n" +
+                    "                                                            </button>\n" +
+                    "                                                        </div>\n" +
+                    "                                                    </form>\n" +
+                    "                                                </div>" +
+                    "                                           </div>";
+
+
 
                 $("#my-questions").prepend(html);
                 console.log(data.studentName)
