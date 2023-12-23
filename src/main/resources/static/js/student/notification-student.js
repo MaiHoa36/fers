@@ -34,6 +34,16 @@ function onConnected() {
     stompClient.subscribe('/user/notifications/lecturer_reply', function (answer) {
         answer = JSON.parse(answer.body); // Parse the data if it's a string
         // display answer nha cau
+        if ($("#"+answer.questionId).length > 0){
+            var viewDiv = '#list-reply-content-' + answer.questionId;
+            var html = "<div class=\"reply-content border-bottom\">\n" +
+                "                     <h6 class=\"stu__question-creater-name\"><i class=\"fa-solid fa-user\"></i> <span>" + answer.lecturerName + "</span></h6>\n" +
+                "                     <p class=\"stu__question-content\">" + answer.answerContent + "</p>\n" +
+                "                     <p class=\"stu__question-content\" ><span class=\"stu__answer-date\" >" + answer.createdDate + "</span> " +
+                "                     </div>";
+
+            $(viewDiv).append(html);
+        }
     });
 }
 
