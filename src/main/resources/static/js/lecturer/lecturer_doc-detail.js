@@ -525,12 +525,12 @@ function loadMoreQuestion(skip, docId) {
         contentType: 'application/json',
         success: function (data) {
             $("#load-more-question-lec").attr('current-count', skip + 10);
-            if (data.length < 10) {
+            if (!data.checkHasMore) {
                 $("#load-more-question-lec").css('display', "none");
             }
             var html = '';
-            $.each(data, function (index, question) {
-                var html = '';
+            $.each(data.questions, function (index, question) {
+                html = '';
                 if ($("#" + question.questionId).length > 0) {
                 } else {
                     html += "<div class=\"lec__question-content-wrapper\" id=\"" + question.questionId + "\"> <h6 class=\"lec__question-creater-name\"><i class=\"fa-solid fa-user\"></i>\n" +

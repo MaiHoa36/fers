@@ -179,14 +179,20 @@ public class StudentController {
         model.addAttribute("documentNote", Objects.requireNonNullElseGet(documentNote, DocumentNote::new));
 
         List<QuestionResponseDto> myQuestionResponseDtos = new ArrayList<>();
+        boolean hasMoreMyQuestion = false;
+
         if (null != questionId) {
             myQuestionResponseDtos.add(new QuestionResponseDto(questionService.findById(questionId)));
+            hasMoreMyQuestion = questionService.hasMoreItemsAfterSkipAndLimitByStudent(student, document,1,0);
         } else {
             myQuestionResponseDtos = questionService.findByStudentLimitAndSkip(student, document, 3, 0);
+            hasMoreMyQuestion = questionService.hasMoreItemsAfterSkipAndLimitByStudent(student, document,3,0);
         }
 
         List<QuestionResponseDto> questionResponseDtos = questionService.findByOtherStudentLimitAndSkip(student, document, 3, 0);
-        System.out.println(questionResponseDtos.size());
+        boolean hasMoreOtherQuestion = questionService.hasMoreItemsAfterSkipAndLimitByNotIsStudent(student,document,3,0);
+        model.addAttribute("hasMoreMyQuestion", hasMoreMyQuestion);
+        model.addAttribute("hasMoreOtherQuestion", hasMoreOtherQuestion);
         //        // get others doc
 //        if (null != document.getTopic()) {
 //            List<DocumentResponseDto> relevantDocuments = documentService

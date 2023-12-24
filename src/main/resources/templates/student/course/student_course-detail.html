@@ -73,8 +73,8 @@
                                        th:topic-id="${topic.id}"
                                        th:id="'link-view-detail-' + ${topic.id}"
                                        onclick=getByTopic(this.getAttribute("topic-id"))
-                                       th:text="${topic.topicTitle}"></a>
-                                    </li>
+                                       th:text="${topic.topicTitle}"
+                                       th:title="${topic.topicTitle}"></a>
                                 </div>
                             </div>
 

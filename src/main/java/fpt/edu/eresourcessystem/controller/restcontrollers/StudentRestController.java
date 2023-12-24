@@ -5,6 +5,7 @@ import fpt.edu.eresourcessystem.dto.AnswerDto;
 import fpt.edu.eresourcessystem.dto.QuestionDto;
 import fpt.edu.eresourcessystem.dto.Response.AnswerResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.DocumentResponseDto;
+import fpt.edu.eresourcessystem.dto.Response.QuestionLoadMoreResponse;
 import fpt.edu.eresourcessystem.dto.Response.QuestionResponseDto;
 import fpt.edu.eresourcessystem.dto.UserLogDto;
 import fpt.edu.eresourcessystem.enums.AccountEnum;
@@ -435,27 +436,31 @@ public class StudentRestController {
     }
 
     @GetMapping(value = "/load_more_my_question", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<QuestionResponseDto>> loadMoreMyQuestion(@RequestParam String docId,
-                                                                        @RequestParam int skip) {
+    public ResponseEntity<QuestionLoadMoreResponse> loadMoreMyQuestion(@RequestParam String docId,
+                                                                       @RequestParam int skip) {
 
         Student student = getLoggedInStudent();
         Document document = documentService.findById(docId);
         if (null != student && null != document) {
             List<QuestionResponseDto> questions = questionService.findByStudentLimitAndSkip(student, document, 10, skip);
-            return new ResponseEntity<>(questions, HttpStatus.OK);
+            boolean checkHasMore = questionService.hasMoreItemsAfterSkipAndLimitByStudent(student, document, 10, skip);
+            QuestionLoadMoreResponse response = new QuestionLoadMoreResponse(questions, checkHasMore);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/load_more_other_question", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<QuestionResponseDto>> loadMoreOtherQuestion(@RequestParam String docId,
+    public ResponseEntity<QuestionLoadMoreResponse> loadMoreOtherQuestion(@RequestParam String docId,
                                                                            @RequestParam int skip) {
 
         Student student = getLoggedInStudent();
         Document document = documentService.findById(docId);
         if (null != student && null != document) {
             List<QuestionResponseDto> questions = questionService.findByOtherStudentLimitAndSkip(student, document, 10, skip);
-            return new ResponseEntity<>(questions, HttpStatus.OK);
+            boolean checkHasMore = questionService.hasMoreItemsAfterSkipAndLimitByNotIsStudent(student, document, 10, skip);
+            QuestionLoadMoreResponse response = new QuestionLoadMoreResponse(questions, checkHasMore);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

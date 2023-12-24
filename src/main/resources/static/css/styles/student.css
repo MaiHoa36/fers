@@ -557,14 +557,19 @@ stu__navbar-view-doc-item:hover a{
 #list-by-resource{
     margin-top: 2rem;
 }
-.link-view-detail-topic{
+.link-view-detail-topic {
     display: inline;
-    margin-right: 2rem;
+    margin-right: 1rem;
     color: var(--link-color);
     font-size: var(--font-medium);
     cursor: pointer;
+    max-height: 6rem; /* Adjust this value based on your font size and line height */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adds ellipsis (...) when text overflows */
+    white-space: normal; /* Handles line breaks */
 }
-.link-view-detail-topic:hover{
+
+.link-view-detail-topic:hover {
     text-decoration: underline;
 }
 .link-active{

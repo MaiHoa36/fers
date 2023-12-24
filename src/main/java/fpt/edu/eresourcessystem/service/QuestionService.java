@@ -17,8 +17,10 @@ public interface QuestionService {
 
     List<QuestionResponseDto> findByStudentLimitAndSkip(Student student, Document document, int limit, int skip);
     boolean hasMoreItemsAfterSkipAndLimitByStudent(Student student, Document document, int limit, int skip);
+    boolean hasMoreItemsAfterSkipAndLimitByNotIsStudent(Student student, Document document, int limit, int skip);
 
     List<QuestionResponseDto> findByDocumentLimitAndSkip(Document document, int limit, int skip);
+    boolean hasMoreItemsByDocumentAfterSkipAndLimit(Document document, int limit, int skip);
 
     List<QuestionResponseDto> findByOtherStudentLimitAndSkip(Student student, Document document, int limit, int skip);
 
