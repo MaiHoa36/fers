@@ -22,7 +22,7 @@ function confirmSaveDocument() {
             'error'
         );
     } else {
-        if($('.ck-content') != null && fileInput.value != null){
+        if(theEditor != null && fileInput.value != null){
             if(theEditor.getData() == '' && file == null) {
                 Swal.fire(
                     'No content!',

@@ -14,9 +14,11 @@ let files = null;
 let isSupportFileUploading = false;
 
 const allowedFormats = ['pdf', 'doc', 'docx', 'ppt', 'pptx',
-    'md', 'html', 'txt', 'm4a', 'flac',
-    'mp3', 'wav', 'wma', 'aac', 'ogg',
-    'mp4', 'mov', 'avi', 'flv', 'mkv', 'webm',
+    'md', 'html', 'txt',
+    'mp3', 'ogg', 'wav',
+    // 'wma', 'aac', 'm4a', 'flac',
+    'mp4', 'webm',
+    // 'mov', 'avi', 'flv', 'mkv',
     'jpg', 'jpeg', 'gif', 'png', 'svg'];
 
 const supportFileFormats = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx',
@@ -42,9 +44,9 @@ cancelButton.addEventListener('click', function () {
             '                                                <br>\n' +
             '                                                <b>- Image:</b> .jpg, .jpeg, .gif, .png, .svg\n' +
             '                                                <br>\n' +
-            '                                                <b>- Video:</b> .mp4, .webm, .mov, .avi, .flv, .mkv\n' +
+            '                                                <b>- Video:</b> .mp4, .webm, .ogg\n' +
             '                                                <br>\n' +
-            '                                                <b>- Audio:</b> .mp3, .flac, .aac, .wav\n' +
+            '                                                <b>- Audio:</b> .mp3, .ogg, .wav\n' +
             '                                                <br>\n' +
             '                                            </i>\n' +
             '\n' +
@@ -57,9 +59,9 @@ cancelButton.addEventListener('click', function () {
             '                                                <br>\n' +
             '                                                <b>- Image:</b> .jpg, .jpeg, .gif, .png, .svg\n' +
             '                                                <br>\n' +
-            '                                                <b>- Video:</b> .mp4, .webm, .mov, .avi, .flv, .mkv\n' +
+            '                                                <b>- Video:</b> .mp4, .webm, .ogg\n' +
             '                                                <br>\n' +
-            '                                                <b>- Audio:</b> .mp3, .flac, .aac, .wav\n' +
+            '                                                <b>- Audio:</b> .mp3, .ogg, .wav\n' +
             '                                            </i>';
     } else {
         console.log('Không có tệp tin đang được tải lên để hủy');
@@ -92,9 +94,9 @@ fileInput.addEventListener('change', function (event) {
             '                                                <br>\n' +
             '                                                <b>- Image:</b> .jpg, .jpeg, .gif, .png, .svg\n' +
             '                                                <br>\n' +
-            '                                                <b>- Video:</b> .mp4, .webm, .mov, .avi, .flv, .mkv\n' +
+            '                                                <b>- Video:</b> .mp4, .webm, .ogg\n' +
             '                                                <br>\n' +
-            '                                                <b>- Audio:</b> .mp3, .flac, .aac, .wav\n' +
+            '                                                <b>- Audio:</b> .mp3, .ogg, .wav\n' +
             '                                                <br>\n' +
             '                                            </i>\n' +
             '\n' +
@@ -107,9 +109,9 @@ fileInput.addEventListener('change', function (event) {
             '                                                <br>\n' +
             '                                                <b>- Image:</b> .jpg, .jpeg, .gif, .png, .svg\n' +
             '                                                <br>\n' +
-            '                                                <b>- Video:</b> .mp4, .webm, .mov, .avi, .flv, .mkv\n' +
+            '                                                <b>- Video:</b> .mp4, .webm, .ogg\n' +
             '                                                <br>\n' +
-            '                                                <b>- Audio:</b> .mp3, .flac, .aac, .wav\n' +
+            '                                                <b>- Audio:</b> .mp3, .ogg, .wav\n' +
             '                                            </i>';
     }
     var fileSizeInMB = file.size / (1024 * 1024); // Chuyển đổi kích thước tệp tin thành Megabyte
@@ -169,9 +171,9 @@ fileInput.addEventListener('change', function (event) {
                         '                                                <br>\n' +
                         '                                                <b>- Image:</b> .jpg, .jpeg, .gif, .png, .svg\n' +
                         '                                                <br>\n' +
-                        '                                                <b>- Video:</b> .mp4, .webm, .mov, .avi, .flv, .mkv\n' +
+                        '                                                <b>- Video:</b> .mp4, .webm, .ogg\n' +
                         '                                                <br>\n' +
-                        '                                                <b>- Audio:</b> .mp3, .flac, .aac, .wav\n' +
+                        '                                                <b>- Audio:</b> .mp3, .ogg, .wav\n' +
                         '                                                <br>\n' +
                         '                                            </i>\n' +
                         '\n' +
@@ -184,9 +186,9 @@ fileInput.addEventListener('change', function (event) {
                         '                                                <br>\n' +
                         '                                                <b>- Image:</b> .jpg, .jpeg, .gif, .png, .svg\n' +
                         '                                                <br>\n' +
-                        '                                                <b>- Video:</b> .mp4, .webm, .mov, .avi, .flv, .mkv\n' +
+                        '                                                <b>- Video:</b> .mp4, .webm, .ogg\n' +
                         '                                                <br>\n' +
-                        '                                                <b>- Audio:</b> .mp3, .flac, .aac, .wav\n' +
+                        '                                                <b>- Audio:</b> .mp3, .ogg, .wav\n' +
                         '                                            </i>';
                 }
                 document.getElementById('previewContainer').appendChild(preview);

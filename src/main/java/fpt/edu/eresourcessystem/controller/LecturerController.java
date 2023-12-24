@@ -1,11 +1,7 @@
 package fpt.edu.eresourcessystem.controller;
 
-import co.elastic.clients.elasticsearch._types.SortOptionsBuilders;
 import com.theokanning.openai.audio.CreateTranscriptionRequest;
-import com.theokanning.openai.audio.TranscriptionResult;
 import com.theokanning.openai.service.OpenAiService;
-import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Value;
 import fpt.edu.eresourcessystem.controller.advices.GlobalControllerAdvice;
 import fpt.edu.eresourcessystem.dto.DocumentDto;
 import fpt.edu.eresourcessystem.dto.FeedbackDto;
@@ -22,8 +18,10 @@ import fpt.edu.eresourcessystem.service.s3.StorageService;
 import fpt.edu.eresourcessystem.utils.CommonUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -156,8 +153,8 @@ public class LecturerController {
             case "PRIVATE" -> course.setStatus(CourseEnum.Status.PRIVATE);
         }
         courseService.updateCourse(course);
-        for (Topic topic : course.getTopics()){
-            for (Document document : topic.getDocuments()){
+        for (Topic topic : course.getTopics()) {
+            for (Document document : topic.getDocuments()) {
                 document.setCourseStatus(course.getStatus());
                 documentService.updateDoc(document);
             }
@@ -219,8 +216,8 @@ public class LecturerController {
     public String addTopic(@ModelAttribute TopicDto topicDto, final Model model, @PathVariable String courseId) {
         Course course = courseService.findByCourseId(courseId);
         List<Topic> topics = course.getTopics();
-        for(Topic topic : topics){
-            if(topic.getTopicTitle().equals(topicDto.getTopicTitle())){
+        for (Topic topic : topics) {
+            if (topic.getTopicTitle().equals(topicDto.getTopicTitle())) {
                 return "redirect:/lecturer/courses/" + courseId + "/add_topic?error";
             }
         }
@@ -265,8 +262,8 @@ public class LecturerController {
         Topic checkTopicExist = topicService.findById(topicId);
         Course course = checkTopicExist.getCourse();
         List<Topic> topics = course.getTopics();
-        for(Topic existedTopic : topics){
-            if(topic.getTopicTitle().equals(existedTopic.getTopicTitle())){
+        for (Topic existedTopic : topics) {
+            if (topic.getTopicTitle().equals(existedTopic.getTopicTitle())) {
                 return "redirect:/lecturer/topics/" + topicId + "/update?error";
             }
         }
@@ -340,8 +337,8 @@ public class LecturerController {
         resourceType.setResourceTypeName(convertString(resourceType.getResourceTypeName()));
         List<ResourceType> existedResourceTypes = courseService.findByCourseId(courseId).getResourceTypes();
 
-        for(ResourceType existedResourceType : existedResourceTypes){
-            if(existedResourceType.getResourceTypeName().equals(resourceType.getResourceTypeName())){
+        for (ResourceType existedResourceType : existedResourceTypes) {
+            if (existedResourceType.getResourceTypeName().equals(resourceType.getResourceTypeName())) {
                 model.addAttribute("resourceTypeName", resourceType.getResourceTypeName());
                 return "redirect:/lecturer/courses/" + courseId + "/add_resource_type?error";
             }
@@ -369,7 +366,7 @@ public class LecturerController {
     @GetMapping({"/resource_types/{resourceTypeId}/update"})
     public String editResourceTypeProcess(@PathVariable String resourceTypeId, final Model model) {
         ResourceType resourcetype = resourceTypeService.findById(resourceTypeId);
-        if (!resourcetype.getResourceTypeName().equals("Common material")){
+        if (!resourcetype.getResourceTypeName().equals("Common material")) {
             Course course = resourcetype.getCourse();
             List<ResourceType> resourceTypes = course.getResourceTypes();
             model.addAttribute("course", course);
@@ -389,8 +386,8 @@ public class LecturerController {
         ResourceType checkResourceTypeExist = resourceTypeService.findById(resourceTypeId);
         String courseId = checkResourceTypeExist.getCourse().getId();
         List<ResourceType> existedResourceTypes = courseService.findByCourseId(courseId).getResourceTypes();
-        for(ResourceType existedResourceType : existedResourceTypes){
-            if(existedResourceType.getResourceTypeName().equals(resourcetype.getResourceTypeName())){
+        for (ResourceType existedResourceType : existedResourceTypes) {
+            if (existedResourceType.getResourceTypeName().equals(resourcetype.getResourceTypeName())) {
                 return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update?error";
             }
         }
@@ -429,7 +426,7 @@ public class LecturerController {
     public String deleteResourceType(@PathVariable String resourceTypeId) {
         ResourceType resourcetype = resourceTypeService.findById(resourceTypeId);
         if (null != resourcetype) {
-            if(resourcetype.getResourceTypeName().equals("Common material")){
+            if (resourcetype.getResourceTypeName().equals("Common material")) {
                 return "redirect:/courses/" + resourcetype.getCourse() + "/resource_types?cannotDelete";
             }
             courseService.removeResourceType(resourcetype.getCourse().getId(), new ObjectId(resourceTypeId));
@@ -586,7 +583,6 @@ public class LecturerController {
             documentDTO.setResourceType(existedResourceType);
         }
 
-
         String id = "fileNotFound";
         if (String.valueOf(documentDTO.isDisplayWithFile()).equalsIgnoreCase("true")) {
             documentDTO.setDisplayWithFile(true);
@@ -602,26 +598,30 @@ public class LecturerController {
                 }
                 documentDTO.setContent(extractTextFromFile(file.getInputStream()));
 
-                OpenAiService openAiService = new OpenAiService(apiKey);
-                if (docType == DocumentEnum.DocumentFormat.AUDIO || docType == DocumentEnum.DocumentFormat.VIDEO) {
-                    CreateTranscriptionRequest request = new CreateTranscriptionRequest();
-                    request.setModel("whisper-1");
+                try {
+                    OpenAiService openAiService = new OpenAiService(apiKey);
+                    if (docType == DocumentEnum.DocumentFormat.AUDIO || docType == DocumentEnum.DocumentFormat.VIDEO) {
+                        CreateTranscriptionRequest request = new CreateTranscriptionRequest();
+                        request.setModel("whisper-1");
 
-                    // Lấy InputStream từ MultipartFile
-                    InputStream inputStream = file.getInputStream();
+                        // Lấy InputStream từ MultipartFile
+                        InputStream inputStream = file.getInputStream();
 
-                    // Tạo một temporary File từ InputStream (Bạn có thể sử dụng thư viện FileUtils của Apache Commons IO)
-                    File tempFile = File.createTempFile("temp_audio", ".wav");
-                    FileUtils.copyInputStreamToFile(inputStream, tempFile);
+                        // Tạo một temporary File từ InputStream (Bạn có thể sử dụng thư viện FileUtils của Apache Commons IO)
+                        File tempFile = File.createTempFile("temp_audio", ".wav");
+                        FileUtils.copyInputStreamToFile(inputStream, tempFile);
 //                    File tempFile = convertMultiPartToFile(file);
 
-                    // Sử dụng temporary File cho việc tạo transcription
-                    String transcription = openAiService.createTranscription(request, tempFile).getText();
+                        // Sử dụng temporary File cho việc tạo transcription
+                        String transcription = openAiService.createTranscription(request, tempFile).getText();
 
-                    // Xóa temporary File sau khi sử dụng (optional)
-                    tempFile.delete();
+                        // Xóa temporary File sau khi sử dụng (optional)
+                        tempFile.delete();
 
-                    documentDTO.setContent(transcription);
+                        documentDTO.setContent(transcription);
+                    }
+                } catch (Exception e) {
+                    System.out.println(e);
                 }
 
                 if (file.getSize() < DATABASE_MAX_SIZE_FILE && docType != DocumentEnum.DocumentFormat.MS_DOC
@@ -734,7 +734,7 @@ public class LecturerController {
                                         @RequestParam(value = "file", required = false) MultipartFile file)
             throws Exception {
         Document checkExist = documentService.findById(document.getId());
-        if(checkExist.getResourceType() != document.getResourceType()){
+        if (checkExist.getResourceType() != document.getResourceType()) {
             // chuyển resource type
             resourceTypeService.removeDocumentFromResourceType(checkExist.getResourceType().getId(), new ObjectId(checkExist.getId()));
             checkExist.setResourceType(document.getResourceType());
@@ -760,7 +760,6 @@ public class LecturerController {
                     }
                     checkExist.setFileName(file.getOriginalFilename());
                     checkExist.setContent(extractTextFromFile(file.getInputStream()));
-
 
 
                     if (file.getSize() < DATABASE_MAX_SIZE_FILE && docType != DocumentEnum.DocumentFormat.MS_DOC

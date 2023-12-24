@@ -5,11 +5,12 @@ let cancelButton = document.getElementById('cancelUploadButton');
 let file = null;
 let isUploading = false;
 const allowedFormats = ['pdf', 'doc', 'docx', 'ppt', 'pptx',
-    'md', 'html', 'txt', 'm4a', 'flac',
-    'mp3', 'wav', 'wma', 'aac', 'ogg',
-    'mp4', 'mov', 'avi', 'flv', 'mkv', 'webm',
-    'jpg', 'jpeg', 'gif', 'png', 'svg'
-];
+    'md', 'html', 'txt',
+    'mp3', 'ogg', 'wav',
+    // 'wma', 'aac', 'm4a', 'flac',
+    'mp4', 'webm',
+    // 'mov', 'avi', 'flv', 'mkv',
+    'jpg', 'jpeg', 'gif', 'png', 'svg'];
 
 let replaceFileMessage = document.getElementById('replaceFileMessage');
 
