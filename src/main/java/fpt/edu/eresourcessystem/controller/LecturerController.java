@@ -331,7 +331,7 @@ public class LecturerController {
         return "lecturer/resource_type/lecturer_add-resource-type-to-course";
     }
 
-    @PostMapping({"/courses/{courseId}/add_resource_type"})
+    @PostMapping("/courses/{courseId}/add_resource_type")
     @Transactional
     public String addResourceType(ResourceType resourceType, final Model model, @PathVariable String courseId) {
         resourceType.setResourceTypeName(convertString(resourceType.getResourceTypeName()));
@@ -349,7 +349,8 @@ public class LecturerController {
         List<ResourceType> resourceTypes = course.getResourceTypes();
         ResourceType modelResourceType = new ResourceType();
         modelResourceType.setCourse(course);
-        //add course log
+
+        // Add course log
         addCourseLog(course.getId(),
                 course.getCourseCode(),
                 course.getCourseName(),
@@ -387,12 +388,12 @@ public class LecturerController {
         String courseId = checkResourceTypeExist.getCourse().getId();
         List<ResourceType> existedResourceTypes = courseService.findByCourseId(courseId).getResourceTypes();
         for (ResourceType existedResourceType : existedResourceTypes) {
-            if (existedResourceType.getResourceTypeName().equals(resourcetype.getResourceTypeName())) {
+            if (existedResourceType.getResourceTypeName().equalsIgnoreCase(resourcetype.getResourceTypeName())) {
                 return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update?error";
             }
         }
 
-        if (null != checkResourceTypeExist && !checkResourceTypeExist.getResourceTypeName().equals("Common material")) {
+        if (null != checkResourceTypeExist && !checkResourceTypeExist.getResourceTypeName().equalsIgnoreCase("Common material")) {
             String oldContent = resourcetype.getResourceTypeName();
             checkResourceTypeExist.setResourceTypeName(resourcetype.getResourceTypeName());
             checkResourceTypeExist = resourceTypeService.updateResourceType(checkResourceTypeExist);
@@ -408,16 +409,14 @@ public class LecturerController {
                     checkResourceTypeExist.getResourceTypeName(),
                     getLoggedInLecturerMail(),
                     oldContent, null);
-
             // Add flash attribute for success message
-            redirectAttributes.addFlashAttribute("success", "");
+//            redirectAttributes.addFlashAttribute("success", "Resource type updated successfully.");
 
-            return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update";
+            return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update?success";
         }
-
         // Add flash attribute for error message
-        redirectAttributes.addFlashAttribute("error", "");
-        return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update";
+//        redirectAttributes.addFlashAttribute("error", "Error updating resource type.");
+        return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update?error";
     }
 
 
@@ -598,31 +597,31 @@ public class LecturerController {
                 }
                 documentDTO.setContent(extractTextFromFile(file.getInputStream()));
 
-//                try {
-//                    OpenAiService openAiService = new OpenAiService(apiKey);
-//                    if (docType == DocumentEnum.DocumentFormat.AUDIO || docType == DocumentEnum.DocumentFormat.VIDEO) {
-//                        CreateTranscriptionRequest request = new CreateTranscriptionRequest();
-//                        request.setModel("whisper-1");
-//
-//                        // Lấy InputStream từ MultipartFile
-//                        InputStream inputStream = file.getInputStream();
-//
-//                        // Tạo một temporary File từ InputStream (Bạn có thể sử dụng thư viện FileUtils của Apache Commons IO)
-//                        File tempFile = File.createTempFile("temp_audio", ".wav");
-//                        FileUtils.copyInputStreamToFile(inputStream, tempFile);
-////                    File tempFile = convertMultiPartToFile(file);
-//
-//                        // Sử dụng temporary File cho việc tạo transcription
-//                        String transcription = openAiService.createTranscription(request, tempFile).getText();
-//
-//                        // Xóa temporary File sau khi sử dụng (optional)
-//                        tempFile.delete();
-//
-//                        documentDTO.setContent(transcription);
-//                    }
-//                } catch (Exception e) {
-//                    System.out.println(e);
-//                }
+                OpenAiService openAiService = new OpenAiService(apiKey);
+                try {
+                    if (docType == DocumentEnum.DocumentFormat.AUDIO || docType == DocumentEnum.DocumentFormat.VIDEO) {
+                        CreateTranscriptionRequest request = new CreateTranscriptionRequest();
+                        request.setModel("whisper-1");
+
+                        // Get InputStream from MultipartFile
+                        InputStream inputStream = file.getInputStream();
+
+                        // Create a temporary File from InputStream
+                        File tempFile = File.createTempFile("temp_audio", ".wav");
+                        FileUtils.copyInputStreamToFile(inputStream, tempFile);
+
+                        // Use the temporary File for transcription
+                        String transcription = openAiService.createTranscription(request, tempFile).getText();
+
+                        // Optionally delete the temporary File after use
+                        tempFile.delete();
+
+                        documentDTO.setContent(transcription);
+                    }
+                } catch (Exception e) {
+                    return "redirect:/lecturer/topics/" + topicId + "/documents/add?error";
+                }
+
 
                 if (file.getSize() < DATABASE_MAX_SIZE_FILE && docType != DocumentEnum.DocumentFormat.MS_DOC
                         && docType != DocumentEnum.DocumentFormat.AUDIO) {

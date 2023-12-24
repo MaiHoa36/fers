@@ -22,4 +22,9 @@ public interface TrainingTypeService {
     boolean softDelete(TrainingType trainingType);
 
     TrainingType addCourseToTrainingType(String trainingTypeId, Course course);
+
+    void removeCourseFromTrainingType(String trainingTypeId, String courseId);
+
+//    public TrainingType getTrainingTypeByCourseId(String courseId);
+
 }
