@@ -505,7 +505,7 @@
                                          id="other-question-content">
                                         <h5 class="others-question-header">Others' questions</h5>
                                         <div class="stu__question-content-wrapper"
-                                             th:each="question : ${questions}">
+                                             th:each="question : ${questions}" th:id="${question.questionId}">
                                             <h6 class="stu__question-creater-name"><i class="fa-solid fa-user"></i>
                                                 <span th:text="${question.studentName}"></span></h6>
                                             <p class="stu__question-content question-content"

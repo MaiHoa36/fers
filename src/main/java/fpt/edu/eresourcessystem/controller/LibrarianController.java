@@ -204,7 +204,7 @@ public class LibrarianController {
 
     /**
      * @param courseId course Id
-     * @param model model
+     * @param model    model
      * @return update layout
      */
     @GetMapping({"/courses/{courseId}/update"})
@@ -264,7 +264,7 @@ public class LibrarianController {
                              @RequestParam(required = false, defaultValue = "") String search,
                              final Model model) {
         Page<Course> page;
-        page = courseService.findByCodeOrNameOrDescription(search, search, search, getLoggedInLibrarian().getId() ,pageIndex, PAGE_SIZE);
+        page = courseService.findByCodeOrNameOrDescription(search, search, search, getLoggedInLibrarian().getId(), pageIndex, PAGE_SIZE);
         List<Integer> pages = CommonUtils.pagingFormat(page.getTotalPages(), pageIndex);
         model.addAttribute("pages", pages);
         model.addAttribute("totalPage", page.getTotalPages());
@@ -276,7 +276,7 @@ public class LibrarianController {
 
     /**
      * @param courseId courseId
-     * @param model model
+     * @param model    model
      * @return course detail
      */
     @GetMapping({"/courses/{courseId}"})
@@ -313,7 +313,7 @@ public class LibrarianController {
 
     /**
      * @param courseId course id
-     * @param model model
+     * @param model    model
      * @return after add redirect url
      */
     @GetMapping({"/courses/{courseId}/addLecturers"})
@@ -329,8 +329,8 @@ public class LibrarianController {
 
     /**
      * @param courseId course id
-     * @param search search key
-     * @param model model
+     * @param search   search key
+     * @param model    model
      * @return updated redirect url
      */
     @GetMapping({"/courses/{courseId}/updateLecturers"})
@@ -516,7 +516,6 @@ public class LibrarianController {
                 return "redirect:/librarian/lectures/create-lecture?error";
         } else
             return "redirect:/librarian/lectures/create-lecture?error";
-
     }
 
     @PostMapping("/lectures/update")
@@ -649,7 +648,7 @@ public class LibrarianController {
                                  @RequestParam(name = "page", defaultValue = "0") int page,
                                  @RequestParam(name = "size", defaultValue = "10") int size,
                                  @RequestParam(name = "exportAll", defaultValue = "current") String exportAll) throws IOException {
-        if ("all".equals(exportAll)) {
+        if ("current".equals(exportAll)) {
             Page<CourseLog> logs = courseLogService.getLogsBySearchAndDate(search, startDate, endDate, page, size);
             response.setContentType("application/octet-stream");
             String headerKey = "Content-Disposition";

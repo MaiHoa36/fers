@@ -52,7 +52,7 @@
                             <div class="add-content">
                                 <div class="add-form">
                                     <div class="add-form-content">
-                                        <form method="post" role="form" th:action="@{/lecturer/topics/add_topic}"
+                                        <form method="post" role="form" th:action="@{'/lecturer/topics/' + ${courseId} + '/add_topic'}"
                                               th:object="${topic}" th:id="add-topic">
                                             <table class="table-form add-table" style="width: 70%">
                                                 <tr class="d-none">
@@ -175,7 +175,7 @@
     var errorParam = [[${param.error}]];
     if (errorParam) {
         Swal.fire(
-            'Error!',
+            'This topic is defined!',
             'Please check again!',
             'error'
         );

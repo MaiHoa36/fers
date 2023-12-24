@@ -39,9 +39,13 @@ public class EsCourse implements Serializable {
         this.code = course.getCourseCode();
         this.description = course.getDescription();
         this.name = course.getCourseName();
-        this.lecturer = course.getLecturer().getAccount().getName();
+        if(course.getLecturer() != null){
+            this.lecturer = course.getLecturer().getAccount().getName();
+        } else {
+            this.lecturer = "";
+        }
         this.status = course.getStatus();
-        this.lastModifiedDate = course.getLastModifiedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));;
+        this.lastModifiedDate = course.getLastModifiedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         this.createdBy = course.getCreatedBy();
     }
 }
