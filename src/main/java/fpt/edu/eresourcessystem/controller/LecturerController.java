@@ -598,31 +598,31 @@ public class LecturerController {
                 }
                 documentDTO.setContent(extractTextFromFile(file.getInputStream()));
 
-                try {
-                    OpenAiService openAiService = new OpenAiService(apiKey);
-                    if (docType == DocumentEnum.DocumentFormat.AUDIO || docType == DocumentEnum.DocumentFormat.VIDEO) {
-                        CreateTranscriptionRequest request = new CreateTranscriptionRequest();
-                        request.setModel("whisper-1");
-
-                        // Lấy InputStream từ MultipartFile
-                        InputStream inputStream = file.getInputStream();
-
-                        // Tạo một temporary File từ InputStream (Bạn có thể sử dụng thư viện FileUtils của Apache Commons IO)
-                        File tempFile = File.createTempFile("temp_audio", ".wav");
-                        FileUtils.copyInputStreamToFile(inputStream, tempFile);
-//                    File tempFile = convertMultiPartToFile(file);
-
-                        // Sử dụng temporary File cho việc tạo transcription
-                        String transcription = openAiService.createTranscription(request, tempFile).getText();
-
-                        // Xóa temporary File sau khi sử dụng (optional)
-                        tempFile.delete();
-
-                        documentDTO.setContent(transcription);
-                    }
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
+//                try {
+//                    OpenAiService openAiService = new OpenAiService(apiKey);
+//                    if (docType == DocumentEnum.DocumentFormat.AUDIO || docType == DocumentEnum.DocumentFormat.VIDEO) {
+//                        CreateTranscriptionRequest request = new CreateTranscriptionRequest();
+//                        request.setModel("whisper-1");
+//
+//                        // Lấy InputStream từ MultipartFile
+//                        InputStream inputStream = file.getInputStream();
+//
+//                        // Tạo một temporary File từ InputStream (Bạn có thể sử dụng thư viện FileUtils của Apache Commons IO)
+//                        File tempFile = File.createTempFile("temp_audio", ".wav");
+//                        FileUtils.copyInputStreamToFile(inputStream, tempFile);
+////                    File tempFile = convertMultiPartToFile(file);
+//
+//                        // Sử dụng temporary File cho việc tạo transcription
+//                        String transcription = openAiService.createTranscription(request, tempFile).getText();
+//
+//                        // Xóa temporary File sau khi sử dụng (optional)
+//                        tempFile.delete();
+//
+//                        documentDTO.setContent(transcription);
+//                    }
+//                } catch (Exception e) {
+//                    System.out.println(e);
+//                }
 
                 if (file.getSize() < DATABASE_MAX_SIZE_FILE && docType != DocumentEnum.DocumentFormat.MS_DOC
                         && docType != DocumentEnum.DocumentFormat.AUDIO) {
