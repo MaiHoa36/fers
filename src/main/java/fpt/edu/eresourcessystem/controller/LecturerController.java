@@ -605,7 +605,7 @@ public class LecturerController {
 
 
                 if (file.getSize() < DATABASE_MAX_SIZE_FILE && docType != DocumentEnum.DocumentFormat.MS_DOC
-                        && docType != DocumentEnum.DocumentFormat.AUDIO) {
+                        && docType != DocumentEnum.DocumentFormat.AUDIO && docType != DocumentEnum.DocumentFormat.VIDEO) {
                     id = documentService.addFile(file);
                 } else {
                     if (docType == DocumentEnum.DocumentFormat.AUDIO || docType == DocumentEnum.DocumentFormat.VIDEO) {
@@ -758,10 +758,25 @@ public class LecturerController {
 
 
                     if (file.getSize() < DATABASE_MAX_SIZE_FILE && docType != DocumentEnum.DocumentFormat.MS_DOC
-                            && docType != DocumentEnum.DocumentFormat.AUDIO) {
+                            && docType != DocumentEnum.DocumentFormat.AUDIO && docType != DocumentEnum.DocumentFormat.VIDEO) {
                         checkExist.setCloudFileLink(null);
                         id = documentService.addFile(file);
                     } else {
+                        if (docType == DocumentEnum.DocumentFormat.AUDIO || docType == DocumentEnum.DocumentFormat.VIDEO) {
+                            try {
+                                OpenAiService openAiService = new OpenAiService(apiKey);
+                                CreateTranscriptionRequest request = new CreateTranscriptionRequest();
+                                request.setModel("whisper-1");
+                                InputStream inputStream = file.getInputStream();
+                                File tempFile = File.createTempFile("temp_audio", ".wav");
+                                FileUtils.copyInputStreamToFile(inputStream, tempFile);
+                                String transcription = openAiService.createTranscription(request, tempFile).getText();
+                                tempFile.delete();
+                                checkExist.setContent(transcription);
+                            } catch (Exception e) {
+
+                            }
+                        }
                         id = "uploadToCloud";
                         try {
                             checkExist.setContentId(null);
