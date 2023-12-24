@@ -22,14 +22,14 @@ function confirmSaveDocument() {
             'error'
         );
     } else {
-        if($('.ck-content').innerHTML != null && fileInput.value != null){
-            if($('.ck-content').innerHTML == '' && fileInput.value == ''){
+        if($('.ck-content') != null && fileInput.value != null){
+            if(theEditor.getData() == '' && file == null) {
                 Swal.fire(
                     'No content!',
                     'Please create new content or upload available file.',
                     'error'
                 );
-            } else if($('.ck-content').innerHTML != '' && fileInput.value != ''){
+            } else if(theEditor.getData() != '' && fileInput.value != ''){
                 if(document.getElementById('editorWrapper').style.display != 'none'){
                     Swal.fire({
                         title: 'Display-content file is uploaded.',

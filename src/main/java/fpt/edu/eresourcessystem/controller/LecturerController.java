@@ -48,8 +48,7 @@ import java.util.stream.Collectors;
 import static fpt.edu.eresourcessystem.constants.Constants.*;
 import static fpt.edu.eresourcessystem.constants.UrlConstants.ACCESS_DENIED;
 import static fpt.edu.eresourcessystem.constants.UrlConstants.SUCCESS_PARAM;
-import static fpt.edu.eresourcessystem.utils.CommonUtils.convertToPlainText;
-import static fpt.edu.eresourcessystem.utils.CommonUtils.extractTextFromFile;
+import static fpt.edu.eresourcessystem.utils.CommonUtils.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -215,17 +214,23 @@ public class LecturerController {
         return "lecturer/topic/lecturer_add-topic-to-course";
     }
 
-    @PostMapping({"topics/add_topic"})
+    @PostMapping({"topics/{courseId}/add_topic"})
     @Transactional
-    public String addTopic(@ModelAttribute TopicDto topicDto, final Model model) {
+    public String addTopic(@ModelAttribute TopicDto topicDto, final Model model, @PathVariable String courseId) {
+        Course course = courseService.findByCourseId(courseId);
+        List<Topic> topics = course.getTopics();
+        for(Topic topic : topics){
+            if(topic.getTopicTitle().equals(topicDto.getTopicTitle())){
+                return "redirect:/lecturer/courses/" + courseId + "/add_topic?error";
+            }
+        }
         Topic topic = topicService.addTopic(topicDto);
         courseService.addTopic(topic);
-        Course course = courseService.findByCourseId(topic.getCourse().getId());
+
         if (course.getStatus() == CourseEnum.Status.NEW) {
             course.setStatus(CourseEnum.Status.PRIVATE);
             courseService.updateCourse(course);
         }
-        List<Topic> topics = course.getTopics();
         Topic modelTopic = new Topic();
         modelTopic.setCourse(course);
         //add course log
@@ -258,12 +263,18 @@ public class LecturerController {
     @Transactional
     public String editTopic(@PathVariable String topicId, @ModelAttribute Topic topic) {
         Topic checkTopicExist = topicService.findById(topicId);
+        Course course = checkTopicExist.getCourse();
+        List<Topic> topics = course.getTopics();
+        for(Topic existedTopic : topics){
+            if(topic.getTopicTitle().equals(existedTopic.getTopicTitle())){
+                return "redirect:/lecturer/topics/" + topicId + "/update?error";
+            }
+        }
         if (null != checkTopicExist) {
             checkTopicExist.setTopicTitle(topic.getTopicTitle());
             checkTopicExist.setTopicDescription(topic.getTopicDescription());
             topicService.updateTopic(checkTopicExist);
             //add course log
-            Course course = checkTopicExist.getCourse();
             addCourseLog(course.getId(),
                     course.getCourseCode(),
                     course.getCourseName(),
@@ -326,10 +337,11 @@ public class LecturerController {
     @PostMapping({"/courses/{courseId}/add_resource_type"})
     @Transactional
     public String addResourceType(ResourceType resourceType, final Model model, @PathVariable String courseId) {
+        resourceType.setResourceTypeName(convertString(resourceType.getResourceTypeName()));
         List<ResourceType> existedResourceTypes = courseService.findByCourseId(courseId).getResourceTypes();
 
         for(ResourceType existedResourceType : existedResourceTypes){
-            if(existedResourceType.getResourceTypeName().equals(resourceType.getResourceTypeName().trim())){
+            if(existedResourceType.getResourceTypeName().equals(resourceType.getResourceTypeName())){
                 model.addAttribute("resourceTypeName", resourceType.getResourceTypeName());
                 return "redirect:/lecturer/courses/" + courseId + "/add_resource_type?error";
             }
@@ -368,13 +380,20 @@ public class LecturerController {
         return "redirect:/lecturer/resource_types/" + resourceTypeId + "?error";
     }
 
-
     @PostMapping({"/resource_types/{resourceTypeId}/update"})
     @Transactional
     public String editResourceType(@PathVariable String resourceTypeId,
                                    @ModelAttribute ResourceType resourcetype,
                                    RedirectAttributes redirectAttributes) {
+        resourcetype.setResourceTypeName(convertString(resourcetype.getResourceTypeName()));
         ResourceType checkResourceTypeExist = resourceTypeService.findById(resourceTypeId);
+        String courseId = checkResourceTypeExist.getCourse().getId();
+        List<ResourceType> existedResourceTypes = courseService.findByCourseId(courseId).getResourceTypes();
+        for(ResourceType existedResourceType : existedResourceTypes){
+            if(existedResourceType.getResourceTypeName().equals(resourcetype.getResourceTypeName())){
+                return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update?error";
+            }
+        }
 
         if (null != checkResourceTypeExist && !checkResourceTypeExist.getResourceTypeName().equals("Common material")) {
             String oldContent = resourcetype.getResourceTypeName();
@@ -394,13 +413,13 @@ public class LecturerController {
                     oldContent, null);
 
             // Add flash attribute for success message
-            redirectAttributes.addFlashAttribute("success", "Resource type updated successfully.");
+            redirectAttributes.addFlashAttribute("success", "");
 
             return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update";
         }
 
         // Add flash attribute for error message
-        redirectAttributes.addFlashAttribute("error", "Error updating resource type.");
+        redirectAttributes.addFlashAttribute("error", "");
         return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update";
     }
 

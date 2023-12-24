@@ -57,4 +57,19 @@ public class CommonUtils {
         return sb.toString();
     }
 
+    public static String convertString(String str) {
+        String[] words = str.split(" ");
+        StringBuilder result = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                String firstLetter = word.substring(0, 1).toUpperCase();
+                String restOfWord = word.substring(1).toLowerCase();
+                result.append(firstLetter).append(restOfWord).append(" ");
+            }
+        }
+
+        return result.toString().trim();
+    }
+
 }

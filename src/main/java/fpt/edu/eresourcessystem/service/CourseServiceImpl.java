@@ -379,7 +379,6 @@ public class CourseServiceImpl implements CourseService {
         if (courseOptional.isPresent()) {
             Course course = courseOptional.get();
             course.setLecturer(newLecture);
-            course.setStatus(CourseEnum.Status.NEW);
             return courseRepository.save(course);
         } else {
             return null;

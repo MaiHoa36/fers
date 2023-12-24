@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Lecturer | Details Course</title>
+    <title>Lecturer | Add resource type</title>
     <link rel="shortcut icon" href="/images/fptUniversityLogoIcon.png" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap-dist/css/bootstrap.min.css}">
@@ -80,7 +80,8 @@
                                                     <td></td>
                                                     <td>
                                                         <button type="submit" class="btn btn-save">Save</button>
-                                                            <a class="btn btn--back" th:href="'/lecturer/courses/' + ${course.id}">Back</a>
+                                                        <a class="btn btn--back"
+                                                           th:href="'/lecturer/courses/' + ${course.id}">Back</a>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -100,10 +101,12 @@
                                     <div class="doc-info-head" style="max-width: 75%">
                                         <p class="doc-info-title"><a
                                                 th:href="@{'/lecturer/resource_types/' + ${resourceType.id}}">
-                                            <span class="existedResourceTypes" th:text="${resourceType.resourceTypeName}"></span></a>
+                                            <span class="existedResourceTypes"
+                                                  th:text="${resourceType.resourceTypeName}"></span></a>
                                         </p>
                                     </div>
-                                    <div style="margin-left: 5%" th:unless="${resourceType.resourceTypeName eq 'Common material'}">
+                                    <div style="margin-left: 5%"
+                                         th:unless="${resourceType.resourceTypeName eq 'Common material'}">
                                         <a class="lec__edit-topic-icon"
                                            th:href="@{'/lecturer/resource_types/' + ${resourceType.id} +'/update'}">
                                             <i
@@ -142,28 +145,28 @@
 <script th:inline="javascript">
     validate_addResourceType();
 
-        // Check for success message
-        // var success = /*[[${success}]]*/ 'default';
-        if (success !== 'default' && success !== '') {
+    // Check for success message
+    // var success = /*[[${success}]]*/ 'default';
+    if (success !== 'default' && success !== '') {
         Swal.fire({
-        title: 'Success!',
-        text: success,
-        icon: 'success',
-        confirmButtonText: 'Ok'
-    });
+            title: 'Success!',
+            text: success,
+            icon: 'success',
+            confirmButtonText: 'Ok'
+        });
     }
 
-        // Check for error message
-        // var error = /*[[${error}]]*/ 'default';
-        if (error !== 'default' && error !== '') {
+    // Check for error message
+    // var error = /*[[${error}]]*/ 'default';
+    if (error !== 'default' && error !== '') {
         Swal.fire({
-        title: 'Error!',
-        text: error,
-        icon: 'error',
-        confirmButtonText: 'Ok'
-    });
+            title: 'Error!',
+            text: error,
+            icon: 'error',
+            confirmButtonText: 'Ok'
+        });
     }
-        /*]]>*/
+    /*]]>*/
 </script>
 </body>
 
