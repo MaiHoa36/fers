@@ -110,7 +110,8 @@
                                     <input class="btn-check" type="radio" th:field="*{displayWithFile}"
                                            th:name="displayWithFile"
                                            value="true" id="displayContentType2" checked="checked" autocomplete="off">
-                                    <label class="btn btn-success" for="displayContentType2">Upload available file
+                                    <label class="btn btn-success ps-3 pe-3" for="displayContentType2">Display content
+                                        with available file
                                     </label>
                                 </div>
 
@@ -151,9 +152,9 @@
                                                 <br>
                                                 <b>- Image:</b> .jpg, .jpeg, .gif, .png, .svg
                                                 <br>
-                                                <b>- Video:</b> .mp4, .webm, .mov, .avi, .flv, .mkv
+                                                <b>- Video:</b> .mp4, .webm, .ogg
                                                 <br>
-                                                <b>- Audio:</b> .mp3, .flac, .aac, .wav
+                                                <b>- Audio:</b> .mp3, .flac, .ogg
                                                 <br>
                                             </i>
 
@@ -166,9 +167,9 @@
                                                 <br>
                                                 <b>- Image:</b> .jpg, .jpeg, .gif, .png, .svg
                                                 <br>
-                                                <b>- Video:</b> .mp4, .webm, .mov, .avi, .flv, .mkv
+                                                <b>- Video:</b> .mp4, .webm, .ogg
                                                 <br>
-                                                <b>- Audio:</b> .mp3, .flac, .aac, .wav
+                                                <b>- Audio:</b> .mp3, .flac, .ogg
                                             </i>
                                         </div>
                                     </div>
@@ -190,24 +191,21 @@
                                                id="supportFileInput" th:name="files" multiple>
                                     </div>
                                 </div>
-                                <div class="mt-3 form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        Save as a draft
-                                    </label>
-                                </div>
+<!--                                <div class="mt-3 form-check">-->
+<!--                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">-->
+<!--                                    <label class="form-check-label" for="flexCheckDefault">-->
+<!--                                        Save as a draft-->
+<!--                                    </label>-->
+<!--                                </div>-->
 
                                 <div>
                                     <button type="button" onclick="confirmSaveDocument()"
                                             class="btn btn-save lecturer_btn-save"
                                             id="submitAllData">Save
                                     </button>
-                                    <th:block th:if="${param.success}">
-                                        <a class="btn btn--back" href="javascript:void(0);" onclick="history.go(-2);">Back</a>
-                                    </th:block>
-                                    <th:block th:unless="${param.success}">
-                                        <a class="btn btn--back" href="javascript:void(0);" onclick="history.go(-1);">Back</a>
-                                    </th:block>
+
+                                    <a class="btn btn--back" th:href="@{'/lecturer/resource_types/' + ${resourceTypeId}}">Back</a>
+
                                 </div>
                             </form>
                         </div>

@@ -70,9 +70,9 @@
                                         <span th:text="${course.getLecturer().getAccount().getName() == null ? 'Assigned lecturer' : course.getLecturer().getAccount().getName()} + ' - ' + ${course.getLecturer().getAccount().getEmail()} "></span>
                                     </div>
                                     <div><a href="#"
-                                          class="btn btn_remove-lecturer mt-2 remove-lecturer"
+                                          class="btn btn_remove-lecturer mt-2 ps-2 pe-2 remove-lecturer"
                                           data-course-id="${course.getId()}"
-                                          th:data-course-id="${course.getId()}">Remove</a>
+                                          th:data-course-id="${course.getId()}">Remove this lecturer's authority to manage the course</a>
                                     </div>
                                 </td>
                                 <td th:unless="${checkLecturerCourse}">

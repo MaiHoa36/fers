@@ -16,5 +16,7 @@ public interface DocumentNoteService {
 
     boolean deleteDocumentNote(DocumentNote documentNote);
 
+    void deleteDocumentNoteByDocId(String docId);
+
     Page<DocumentNote> findByStudent(String search, String studentId, int pageIndex, int pageSize);
 }

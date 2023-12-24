@@ -205,8 +205,18 @@
                 { "data": "role" },
                 {
                     "data": "createdDate",
-                    "render": function (data) {
-                        return data ? moment(data).format('LLLL') : ''; // Format as needed
+                    "render": function(data, type, row) {
+                        // Assuming 'data' is an array with date and time components
+                        if (!Array.isArray(data) || data.length < 6) return 'Invalid Date';
+
+                        var year = data[0];
+                        var month = String(data[1]).padStart(2, '0');
+                        var day = String(data[2]).padStart(2, '0');
+                        var hour = String(data[3]).padStart(2, '0');
+                        var minute = String(data[4]).padStart(2, '0');
+                        var second = String(data[5]).padStart(2, '0');
+
+                        return `${day}-${month}-${year} ${hour}:${minute}:${second}`;
                     }
                 }
             ],
@@ -246,6 +256,20 @@
             format: 'yyyy-mm-dd' // Adjust the format as necessary
         });
 
+        function formatDateString(dateString) {
+            var parts = dateString.split(',');
+            if (parts.length < 7) return 'Invalid Date';
+
+            var day = parts[2].padStart(2, '0');
+            var month = parts[1].padStart(2, '0');
+            var year = parts[0];
+            var hour = parts[3].padStart(2, '0');
+            var minute = parts[4].padStart(2, '0');
+            var second = parts[5].padStart(2, '0');
+
+            return `${day}-${month}-${year} ${hour}:${minute}:${second}`;
+        }
+
         // Hide the DataTables default search label
         $("label").each(function () {
             if ($(this).text().indexOf('Search:') >= 0) {
@@ -253,7 +277,6 @@
             }
         });
     });
-
 
 
     // $(function () {

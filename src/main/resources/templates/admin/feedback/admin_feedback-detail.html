@@ -96,8 +96,11 @@
                     <tr class="lib_input-wrapper">
                         <td></td>
                         <td>
+<!--                            <a th:href="|mailto:${feedback.account.email}|"-->
+<!--                               th:attr="onclick=|updateFeedbackStatusToDone('${feedback.id}')|"-->
+<!--                               class="btn lib_btn-save">Send Email</a>-->
+
                             <a th:href="|mailto:${feedback.account.email}|"
-                               th:attr="onclick=|updateFeedbackStatusToDone('${feedback.id}')|"
                                class="btn lib_btn-save">Send Email</a>
                         </td>
                     </tr>

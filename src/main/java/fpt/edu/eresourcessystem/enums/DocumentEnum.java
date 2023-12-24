@@ -56,6 +56,7 @@ public class DocumentEnum {
         VIDEO,
         AUDIO,
         IMAGE,
+//        TRANSCRIBE_ABLE,
         UNKNOWN;
 
         public static DocumentFormat getDocType(String suffixName) {
@@ -65,10 +66,10 @@ public class DocumentEnum {
                 case "md" -> MD;
                 case "html" -> HTML;
                 case "txt" -> TXT;
-                case "m4a", "flac", "mp3", "wav", "wma", "aac" -> AUDIO;
-                case "mp4", "mov", "avi", "flv", "mkv", "webm" -> VIDEO;
                 case "jpg", "jpeg", "gif", "png", "svg" -> IMAGE;
-
+                case "mp3", "wav", "ogg" -> AUDIO;
+                case "mp4", "webm" -> VIDEO;
+//                case "flac", "m4a", "mpeg", "mpga", "oga" -> TRANSCRIBE_ABLE;
                 default -> DocumentFormat.UNKNOWN;
             };
         }

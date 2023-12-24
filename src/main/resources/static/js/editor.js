@@ -1,4 +1,5 @@
 // CK editor
+var theEditor;
 ClassicEditor
     .create(document.querySelector('#editor'), {
         ckfinder: {
@@ -10,6 +11,7 @@ ClassicEditor
         editor.editing.view.change(writer => {
             writer.setStyle('height', '50vh', editor.editing.view.document.getRoot());
         });
+        theEditor = editor;
         console.log(Array.from(editor.ui.componentFactory.names()));
     })
     .catch(error => {
