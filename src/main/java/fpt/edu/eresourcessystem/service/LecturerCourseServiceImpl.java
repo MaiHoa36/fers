@@ -6,6 +6,7 @@ import fpt.edu.eresourcessystem.model.LecturerCourseId;
 import fpt.edu.eresourcessystem.repository.LecturerCourseRepository;
 import fpt.edu.eresourcessystem.repository.LecturerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -57,6 +58,7 @@ public class LecturerCourseServiceImpl implements LecturerCourseService {
                 .and("id.createdDate").exists(true)
                 .and("id.lastModifiedDate").exists(true);
         query.addCriteria(criteria);
+        query.with(Sort.by(Sort.Order.desc("id.lastModifiedDate")));
         return mongoTemplate.find(query, LecturerCourse.class);
     }
 

@@ -152,6 +152,8 @@ public class LibrarianController {
                         // create new lecturerCourseId
                         LecturerCourseId lecturerCourseId = new LecturerCourseId();
                         lecturerCourseId.setLecturerId(foundLecturer.getId());
+                        lecturerCourseId.setLecturerName(foundLecturer.getAccount().getName());
+                        lecturerCourseId.setLecturerEmail(foundLecturer.getAccount().getEmail());
                         // set course Id that added
                         lecturerCourseId.setCourseId(result.getId());
                         lecturerCourseId.setCreatedDate(LocalDateTime.now());
