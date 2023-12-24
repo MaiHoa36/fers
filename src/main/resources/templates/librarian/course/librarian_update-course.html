@@ -97,15 +97,15 @@
                                 <tr>
                                     <td class="lib_input-label"><label th:for="trainingType">Training Type:</label>
                                     </td>
-                                    <td><select class="form-control" th:field="*{trainingType}" name="trainingType"
-                                                th:id="trainingType">
-
-                                        <option th:each="trainingType : ${trainingTypes}"
-                                                th:text="${trainingType.getTrainingTypeName()}"
-                                                th:value="${trainingType.getId()}">
-                                        </option>
-                                    </select>
+                                    <td>
+                                        <select class="form-control" th:field="*{trainingType}" name="trainingType" id="trainingType">
+                                            <option th:each="trainingType : ${trainingTypes}"
+                                                    th:text="${trainingType.trainingTypeName}"
+                                                    th:value="${trainingType.id}">
+                                            </option>
+                                        </select>
                                     </td>
+
                                 </tr>
                                 <tr>
                                     <td></td>
