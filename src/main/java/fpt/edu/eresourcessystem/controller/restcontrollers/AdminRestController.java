@@ -79,7 +79,7 @@ public class AdminRestController {
     @Transactional
     public ResponseEntity<AccountResponseDto> getAccountByEmail(@ModelAttribute AccountDto accountDto,
                                                                 @RequestParam String email) {
-        Account account = accountService.findByEmail(email);
+        Account account = accountService.findByEmail(email.trim());
         if (null == account) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

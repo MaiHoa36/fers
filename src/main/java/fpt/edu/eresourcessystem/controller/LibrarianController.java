@@ -645,7 +645,7 @@ public class LibrarianController {
                                  @RequestParam(name = "page", defaultValue = "0") int page,
                                  @RequestParam(name = "size", defaultValue = "10") int size,
                                  @RequestParam(name = "exportAll", defaultValue = "current") String exportAll) throws IOException {
-        if ("all".equals(exportAll)) {
+        if ("current".equals(exportAll)) {
             Page<CourseLog> logs = courseLogService.getLogsBySearchAndDate(search, startDate, endDate, page, size);
             response.setContentType("application/octet-stream");
             String headerKey = "Content-Disposition";
