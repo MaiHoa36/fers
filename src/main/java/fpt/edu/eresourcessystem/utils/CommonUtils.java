@@ -35,7 +35,7 @@ public class CommonUtils {
 
     public static String extractTextFromFile(InputStream fileBytes) throws IOException, TikaException, SAXException {
         Parser parser = new AutoDetectParser();
-        BodyContentHandler handler = new BodyContentHandler(10000000);
+        BodyContentHandler handler = new BodyContentHandler(100000000);
         Metadata metadata = new Metadata();
         ParseContext context = new ParseContext();
         parser.parse(fileBytes, handler, metadata, context);

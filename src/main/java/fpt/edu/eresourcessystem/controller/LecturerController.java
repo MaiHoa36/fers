@@ -349,7 +349,8 @@ public class LecturerController {
         List<ResourceType> resourceTypes = course.getResourceTypes();
         ResourceType modelResourceType = new ResourceType();
         modelResourceType.setCourse(course);
-        //add course log
+
+        // Add course log
         addCourseLog(course.getId(),
                 course.getCourseCode(),
                 course.getCourseName(),
@@ -602,27 +603,26 @@ public class LecturerController {
                 }
                 documentDTO.setContent(extractTextFromFile(file.getInputStream()));
 
-                try {
-                    OpenAiService openAiService = new OpenAiService(apiKey);
-                    if (docType == DocumentEnum.DocumentFormat.AUDIO || docType == DocumentEnum.DocumentFormat.VIDEO) {
-                        CreateTranscriptionRequest request = new CreateTranscriptionRequest();
-                        request.setModel("whisper-1");
-                        InputStream inputStream = file.getInputStream();
-                        File tempFile = File.createTempFile("temp_audio", ".wav");
-                        FileUtils.copyInputStreamToFile(inputStream, tempFile);
-                        String transcription = openAiService.createTranscription(request, tempFile).getText();
-                        tempFile.delete();
-                        documentDTO.setContent(transcription);
-                    }
-                } catch (Exception e) {
-                    return "redirect:/lecturer/topics/" + topicId + "/documents/add?error";
-                }
-
 
                 if (file.getSize() < DATABASE_MAX_SIZE_FILE && docType != DocumentEnum.DocumentFormat.MS_DOC
                         && docType != DocumentEnum.DocumentFormat.AUDIO) {
                     id = documentService.addFile(file);
                 } else {
+                    if (docType == DocumentEnum.DocumentFormat.AUDIO || docType == DocumentEnum.DocumentFormat.VIDEO) {
+                        try {
+                            OpenAiService openAiService = new OpenAiService(apiKey);
+                            CreateTranscriptionRequest request = new CreateTranscriptionRequest();
+                            request.setModel("whisper-1");
+                            InputStream inputStream = file.getInputStream();
+                            File tempFile = File.createTempFile("temp_audio", ".wav");
+                            FileUtils.copyInputStreamToFile(inputStream, tempFile);
+                            String transcription = openAiService.createTranscription(request, tempFile).getText();
+                            tempFile.delete();
+                            documentDTO.setContent(transcription);
+                        } catch (Exception e) {
+                            
+                        }
+                    }
                     id = "uploadToCloud";
                     try {
                         String link = storageService.uploadFile(file);
