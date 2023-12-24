@@ -548,10 +548,12 @@ public class LecturerController {
         return "lecturer/document/lecturer_add-document-to-resource-type";
     }
 
-    private File convertMultiPartToFile(MultipartFile file) throws IOException {
-        File convertedFile = new File(file.getOriginalFilename());
-        file.transferTo(convertedFile);
-        return convertedFile;
+    private String transcribePart(File filePart, String apiKey) throws IOException {
+        OpenAiService openAiService = new OpenAiService(apiKey);
+        CreateTranscriptionRequest request = new CreateTranscriptionRequest();
+        request.setModel("whisper-1");
+        String transcription = openAiService.createTranscription(request, filePart).getText();
+        return transcription;
     }
 
     @PostMapping("/documents/add")
@@ -607,21 +609,11 @@ public class LecturerController {
                     if (docType == DocumentEnum.DocumentFormat.AUDIO || docType == DocumentEnum.DocumentFormat.VIDEO) {
                         CreateTranscriptionRequest request = new CreateTranscriptionRequest();
                         request.setModel("whisper-1");
-
-                        // Lấy InputStream từ MultipartFile
                         InputStream inputStream = file.getInputStream();
-
-                        // Tạo một temporary File từ InputStream (Bạn có thể sử dụng thư viện FileUtils của Apache Commons IO)
                         File tempFile = File.createTempFile("temp_audio", ".wav");
                         FileUtils.copyInputStreamToFile(inputStream, tempFile);
-//                    File tempFile = convertMultiPartToFile(file);
-
-                        // Sử dụng temporary File cho việc tạo transcription
                         String transcription = openAiService.createTranscription(request, tempFile).getText();
-
-                        // Xóa temporary File sau khi sử dụng (optional)
                         tempFile.delete();
-
                         documentDTO.setContent(transcription);
                     }
                 } catch (Exception e) {

@@ -311,10 +311,10 @@
         <dependency>
             <groupId>com.theokanning.openai-gpt3-java</groupId>
             <artifactId>service</artifactId>
-            <version>0.14.0</version>
+            <version>0.18.2</version>
         </dependency>
 
-<!--        <dependency>-->
+        <!--        <dependency>-->
 <!--            <groupId>ai.openai</groupId>-->
 <!--            <artifactId>whisper</artifactId>-->
 <!--            <version>1.0.0</version>-->
