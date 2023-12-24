@@ -132,13 +132,13 @@
                                             <label for="feedbackContent" class="col-form-label">Message *</label>
                                             <textarea class="form-control" th:field="*{feedbackContent}"
                                                       id="feedbackContent" cols="30" rows="4"
-                                                      placeholder="Write your feedback"></textarea>
+                                                     required placeholder="Write your feedback"></textarea>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <input onclick="sendFeedback('4')" type="submit" value="Send Message"
+                                            <input  type="submit" value="Send Message"
                                                    class="btn btn-primary rounded-0 py-2 px-4">
                                             <span class="submitting"></span>
                                         </div>
@@ -186,6 +186,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 <!--Bootstrap script-->
 <script th:src="@{/assets/bootstrap-dist/js/bootstrap.bundle.min.js}"
 
@@ -193,6 +195,7 @@
 <!--Custom script-->
 <script th:src="@{/js/lecturer/lecturer.js}"></script>
 <script th:src="@{/js/validation.js}"></script>
+<script th:src="@{/js/student/feedback.js}"></script>
 <script th:inline="javascript">
     validate_addfeedback();
     const textarea = document.getElementById('feedbackContent');

@@ -142,23 +142,28 @@
 <script th:inline="javascript">
     validate_addResourceType();
 
-    var successParam = [[${param.success}]];
-    if (successParam) {
-        Swal.fire(
-            'Success!',
-            'Save resource type successful!',
-            'success'
-        );
+        // Check for success message
+        // var success = /*[[${success}]]*/ 'default';
+        if (success !== 'default' && success !== '') {
+        Swal.fire({
+        title: 'Success!',
+        text: success,
+        icon: 'success',
+        confirmButtonText: 'Ok'
+    });
     }
 
-    var errorParam = [[${param.error}]];
-    if (errorParam) {
-        Swal.fire(
-            'This resource type is defined!',
-            'Please type another type of resource!',
-            'error'
-        );
+        // Check for error message
+        // var error = /*[[${error}]]*/ 'default';
+        if (error !== 'default' && error !== '') {
+        Swal.fire({
+        title: 'Error!',
+        text: error,
+        icon: 'error',
+        confirmButtonText: 'Ok'
+    });
     }
+        /*]]>*/
 </script>
 </body>
 

@@ -33,6 +33,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -328,7 +329,7 @@ public class LecturerController {
         List<ResourceType> existedResourceTypes = courseService.findByCourseId(courseId).getResourceTypes();
 
         for(ResourceType existedResourceType : existedResourceTypes){
-            if(existedResourceType.getResourceTypeName().equals(resourceType.getResourceTypeName())){
+            if(existedResourceType.getResourceTypeName().equals(resourceType.getResourceTypeName().trim())){
                 model.addAttribute("resourceTypeName", resourceType.getResourceTypeName());
                 return "redirect:/lecturer/courses/" + courseId + "/add_resource_type?error";
             }
@@ -370,13 +371,17 @@ public class LecturerController {
 
     @PostMapping({"/resource_types/{resourceTypeId}/update"})
     @Transactional
-    public String editResourceType(@PathVariable String resourceTypeId, @ModelAttribute ResourceType resourcetype) {
+    public String editResourceType(@PathVariable String resourceTypeId,
+                                   @ModelAttribute ResourceType resourcetype,
+                                   RedirectAttributes redirectAttributes) {
         ResourceType checkResourceTypeExist = resourceTypeService.findById(resourceTypeId);
+
         if (null != checkResourceTypeExist && !checkResourceTypeExist.getResourceTypeName().equals("Common material")) {
             String oldContent = resourcetype.getResourceTypeName();
             checkResourceTypeExist.setResourceTypeName(resourcetype.getResourceTypeName());
             checkResourceTypeExist = resourceTypeService.updateResourceType(checkResourceTypeExist);
-            //add course log
+
+            // Add course log
             Course course = checkResourceTypeExist.getCourse();
             addCourseLog(course.getId(),
                     course.getCourseCode(),
@@ -387,11 +392,18 @@ public class LecturerController {
                     checkResourceTypeExist.getResourceTypeName(),
                     getLoggedInLecturerMail(),
                     oldContent, null);
-            return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update?success";
-        }
-        return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update?error";
 
+            // Add flash attribute for success message
+            redirectAttributes.addFlashAttribute("success", "Resource type updated successfully.");
+
+            return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update";
+        }
+
+        // Add flash attribute for error message
+        redirectAttributes.addFlashAttribute("error", "Error updating resource type.");
+        return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update";
     }
+
 
     @GetMapping({"resource_types/{resourceTypeId}/delete"})
     @Transactional
