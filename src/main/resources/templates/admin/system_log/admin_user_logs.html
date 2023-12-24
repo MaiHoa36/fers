@@ -225,29 +225,29 @@
             "dom": 'Bfrtip',
             "buttons": [
                 {
-                    // text: 'Export to Excel',
-                    // extend: 'excel',
                     text: 'Export to Excel',
-                    action: function (e, dt, button, config) {
-                        var startDate = $('#datepicker').datepicker("getDate");
-                        var endDate = $('#datepicker2').datepicker("getDate");
-
-                        var data = {
-                            startDate: startDate ? startDate.toISOString().substring(0, 10) : null,
-                            endDate: endDate ? endDate.toISOString().substring(0, 10) : null,
-                            role: $('#role').val()
-                        };
-                        $.ajax({
-                            url: '/api/admin/export-user-logs',
-                            type: 'GET',
-                            data: data,
-                            success: function (data) {
-                            },
-                            error: function (error) {
-                            }
-                        });
-                    },
-                    className: 'btn btn-save border export',
+                    extend: 'excel',
+                    // text: 'Export to Excel',
+                    // action: function (e, dt, button, config) {
+                    //     var startDate = $('#datepicker').datepicker("getDate");
+                    //     var endDate = $('#datepicker2').datepicker("getDate");
+                    //
+                    //     var data = {
+                    //         startDate: startDate ? startDate.toISOString().substring(0, 10) : null,
+                    //         endDate: endDate ? endDate.toISOString().substring(0, 10) : null,
+                    //         role: $('#role').val()
+                    //     };
+                    //     $.ajax({
+                    //         url: '/api/admin/export-user-logs',
+                    //         type: 'GET',
+                    //         data: data,
+                    //         success: function (data) {
+                    //         },
+                    //         error: function (error) {
+                    //         }
+                    //     });
+                    // },
+                    className: 'btn btn-save border',
                     title: 'UserLogs',
                     extension: '.xlsx'
                 }
