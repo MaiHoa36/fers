@@ -1,6 +1,7 @@
 package fpt.edu.eresourcessystem.utils;
 
 import fpt.edu.eresourcessystem.model.CourseLog;
+import fpt.edu.eresourcessystem.model.UserLog;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Component
 public class ExportFileExcelUtil {
-    public void export(OutputStream outputStream, List<CourseLog> logs) throws IOException {
+    public void exportCourseLog(OutputStream outputStream, List<CourseLog> logs) throws IOException {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Course Logs");
 
@@ -53,6 +54,30 @@ public class ExportFileExcelUtil {
 //        Cell sizeValueCell = paginationRow.createCell(3);
 //        sizeValueCell.setCellValue(size);
 
+        workbook.write(outputStream);
+    }
+    public void exportUserLog(OutputStream outputStream, List<UserLog> logs) throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("User Logs");
+
+        // Create header row
+        Row headerRow = sheet.createRow(0);
+        String[] columns = {"Id", "Email", "Url", "Role", "Time"};
+        for (int i = 0; i < columns.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+        }
+
+        // Create data rows
+        int rowNum = 1;
+        for (UserLog log : logs) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(log.getId());
+            row.createCell(1).setCellValue(log.getEmail());
+            row.createCell(2).setCellValue(log.getUrl());
+            row.createCell(3).setCellValue(log.getRole().toString());
+            row.createCell(4).setCellValue(log.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        }
         workbook.write(outputStream);
     }
 }
