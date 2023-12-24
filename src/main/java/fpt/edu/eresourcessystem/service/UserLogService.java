@@ -21,5 +21,7 @@ public interface UserLogService {
 
     List<Course> findStudentRecentView(String accountId);
 
-    public Page<UserLog> getUserLogsBySearchAndDate(String search, LocalDate startDate, LocalDate endDate, String role, int pageIndex, int pageSize);
+    Page<UserLog> getUserLogsBySearchAndDate(String search, LocalDate startDate, LocalDate endDate, String role, int pageIndex, int pageSize);
+    List<UserLog> getUserLogsBySearchAndDate(String search, LocalDate startDate, LocalDate endDate, String role);
+
 }

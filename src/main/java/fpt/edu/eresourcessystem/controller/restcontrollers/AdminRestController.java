@@ -4,11 +4,14 @@ import fpt.edu.eresourcessystem.dto.AccountDto;
 import fpt.edu.eresourcessystem.dto.Response.AccountResponseDto;
 import fpt.edu.eresourcessystem.dto.Response.DataTablesResponse;
 import fpt.edu.eresourcessystem.model.Account;
+import fpt.edu.eresourcessystem.model.CourseLog;
 import fpt.edu.eresourcessystem.model.Feedback;
 import fpt.edu.eresourcessystem.model.UserLog;
 import fpt.edu.eresourcessystem.service.AccountService;
 import fpt.edu.eresourcessystem.service.FeedbackService;
 import fpt.edu.eresourcessystem.service.UserLogService;
+import fpt.edu.eresourcessystem.utils.ExportFileExcelUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,8 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +36,7 @@ public class AdminRestController {
     private final AccountService accountService;
     private final FeedbackService feedbackService;
     private final UserLogService userLogService;
+    private final ExportFileExcelUtil excelExporter;
 
     @GetMapping("/feedbacks")
     public ResponseEntity<DataTablesResponse<Feedback>> getAllFeedbacks(
@@ -74,6 +80,21 @@ public class AdminRestController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/export-user-logs")
+    public void exportCourseLogs(HttpServletResponse response,
+                                 @RequestParam(value = "search[value]", defaultValue = "") String search,
+                                 @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                 @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                 @RequestParam(value = "role", required = false) String role) throws IOException {
+        List<UserLog> userLogsList = userLogService.getUserLogsBySearchAndDate(search, startDate, endDate, role);
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=user_logs.xlsx";
+        response.setHeader(headerKey, headerValue);
+        excelExporter.exportUserLog(response.getOutputStream(), userLogsList);
+    }
+
 
     @GetMapping(value = "/account", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
     @Transactional
