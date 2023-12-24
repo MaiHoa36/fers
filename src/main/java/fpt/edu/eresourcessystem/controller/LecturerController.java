@@ -493,12 +493,15 @@ public class LecturerController {
             model.addAttribute("errorMessage", "Could not found document.");
             return "exception/404";
         } else {
+            boolean hasMoreQuestion = false;
             // get list question
             List<QuestionResponseDto> questions = new ArrayList<>();
             if (null != questionId) {
                 questions.add(new QuestionResponseDto(questionService.findById(questionId)));
+                hasMoreQuestion = questionService.hasMoreItemsByDocumentAfterSkipAndLimit(document, 1, 0);
             } else {
                 questions = questionService.findByDocumentLimitAndSkip(document, 5, 0);
+                hasMoreQuestion = questionService.hasMoreItemsByDocumentAfterSkipAndLimit(document, 5, 0);
             }
 
             if (document.isDisplayWithFile()) {
@@ -515,6 +518,7 @@ public class LecturerController {
             model.addAttribute("document", document);
             model.addAttribute("topic", document.getTopic());
             model.addAttribute("questions", questions);
+            model.addAttribute("hasMoreQuestion", hasMoreQuestion);
             return "lecturer/document/lecturer_document-detail";
         }
     }

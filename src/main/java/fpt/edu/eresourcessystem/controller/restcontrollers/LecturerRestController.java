@@ -3,6 +3,7 @@ package fpt.edu.eresourcessystem.controller.restcontrollers;
 
 import fpt.edu.eresourcessystem.dto.AnswerDto;
 import fpt.edu.eresourcessystem.dto.Response.AnswerResponseDto;
+import fpt.edu.eresourcessystem.dto.Response.QuestionLoadMoreResponse;
 import fpt.edu.eresourcessystem.dto.Response.QuestionResponseDto;
 import fpt.edu.eresourcessystem.dto.UserLogDto;
 import fpt.edu.eresourcessystem.enums.AccountEnum;
@@ -236,14 +237,16 @@ public class LecturerRestController {
     }
 
     @GetMapping(value = "/load_more_question", produces = {MimeTypeUtils.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<QuestionResponseDto>> loadMoreOtherQuestion(@RequestParam String docId,
-                                                                           @RequestParam int skip) {
+    public ResponseEntity<QuestionLoadMoreResponse> loadMoreOtherQuestion(@RequestParam String docId,
+                                                                          @RequestParam int skip) {
 
         String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Document document = documentService.findById(docId);
         if (null != loggedInEmail && null != document) {
             List<QuestionResponseDto> questions = questionService.findByDocumentLimitAndSkip(document, 10, skip);
-            return new ResponseEntity<>(questions, HttpStatus.OK);
+            boolean checkHasMore = questionService.hasMoreItemsByDocumentAfterSkipAndLimit(document, 10, skip);
+            QuestionLoadMoreResponse response = new QuestionLoadMoreResponse(questions, checkHasMore);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

@@ -44,12 +44,23 @@ public class QuestionServiceImpl implements QuestionService {
                 .limit(limit)
                 .with(Sort.by(Sort.Order.desc("createdDate")));
         return mongoTemplate.find(query, Question.class).stream().map(
-                o -> new QuestionResponseDto(o)).toList();
+                QuestionResponseDto::new).toList();
     }
     @Override
     public boolean hasMoreItemsAfterSkipAndLimitByStudent(Student student, Document document, int limit, int skip) {
         Query query = new Query(Criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
                 .and("student").is(student)
+                .and("documentId").is(document))
+                .skip(skip)
+                .limit(limit+1)
+                .with(Sort.by(Sort.Order.desc("createdDate")));
+        return hasMoreItemsAfterSkipAndLimit(query, limit);
+    }
+
+    @Override
+    public boolean hasMoreItemsAfterSkipAndLimitByNotIsStudent(Student student, Document document, int limit, int skip) {
+        Query query = new Query(Criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
+                .and("student").ne(student)
                 .and("documentId").is(document))
                 .skip(skip)
                 .limit(limit+1)
@@ -70,7 +81,17 @@ public class QuestionServiceImpl implements QuestionService {
                 .limit(limit)
                 .with(Sort.by(Sort.Order.desc("createdDate")));
         return mongoTemplate.find(query, Question.class).stream().map(
-                o -> new QuestionResponseDto(o)).toList();
+                QuestionResponseDto::new).toList();
+    }
+
+    @Override
+    public boolean hasMoreItemsByDocumentAfterSkipAndLimit(Document document, int limit, int skip) {
+        Query query = new Query(Criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
+                .and("documentId").is(document))
+                .skip(skip)
+                .limit(limit+1)
+                .with(Sort.by(Sort.Order.desc("createdDate")));
+        return hasMoreItemsAfterSkipAndLimit(query, limit);
     }
 
     @Override
@@ -82,7 +103,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .limit(limit)
                 .with(Sort.by(Sort.Order.desc("createdDate")));
         return mongoTemplate.find(query, Question.class).stream().map(
-                o -> new QuestionResponseDto(o)).toList();
+                QuestionResponseDto::new).toList();
     }
 
     @Override
@@ -92,7 +113,7 @@ public class QuestionServiceImpl implements QuestionService {
         List<Question> questions = mongoTemplate.find(query, Question.class);
         return questions.stream()
                 .filter(entity -> PRESERVED.equals(entity.getDeleteFlg()))
-                .map(entity -> new QuestionResponseDto(entity))
+                .map(QuestionResponseDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -104,7 +125,7 @@ public class QuestionServiceImpl implements QuestionService {
         List<Question> questions = mongoTemplate.find(query, Question.class);
         return questions.stream()
                 .filter(entity -> PRESERVED.equals(entity.getDeleteFlg()))
-                .map(entity -> new QuestionResponseDto(entity))
+                .map(QuestionResponseDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -116,7 +137,7 @@ public class QuestionServiceImpl implements QuestionService {
         List<Question> questions = mongoTemplate.find(query, Question.class);
         return questions.stream()
                 .filter(entity -> PRESERVED.equals(entity.getDeleteFlg()))
-                .map(entity -> new QuestionResponseDto(entity))
+                .map(QuestionResponseDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -129,7 +150,7 @@ public class QuestionServiceImpl implements QuestionService {
         List<Question> questions = mongoTemplate.find(query, Question.class);
         return questions.stream()
                 .filter(entity -> PRESERVED.equals(entity.getDeleteFlg()))
-                .map(entity -> new QuestionResponseDto(entity))
+                .map(QuestionResponseDto::new)
                 .collect(Collectors.toList());
     }
 

@@ -360,11 +360,11 @@ function submitFormReplyQuestion(param) {
                     // reply content
                     html = "<div class=\"reply-content border-bottom\"  id=\"" + data.answerId + "\">\n" +
                         "                     <h6 class=\"stu__question-creater-name\"><i class=\"fa-solid fa-user\"></i> <span>" + data.studentName + "(You)</span></h6>\n" +
-                        "                     <p class=\"stu__question-content\" id=\"reply-content-" + data.answerId + "\">"+data.answerContent+"</p>";
+                        "                     <p class=\"stu__question-content\" id=\"reply-content-" + data.answerId + "\">" + data.answerContent + "</p>";
                     // edit section
                     html += "<div class=\"edit-reply-div\" id=\"update-reply" + data.answerId + "\"style=\"display: none\">\n" +
                         "                                                    <label id=\"update-reply-error" + data.answerId + "\" class=\"display-none\">Please enter something to update.</label>\n" +
-                        "                                                    <textarea class=\"update-reply\" id=\"update-reply-content-" + data.answerId + "\">"+ data.answerContent +"</textarea>\n" +
+                        "                                                    <textarea class=\"update-reply\" id=\"update-reply-content-" + data.answerId + "\">" + data.answerContent + "</textarea>\n" +
                         "                                                    <button id=\"close-update-reply-" + data.answerId + "\" type=\"button\" title=\"exist\"\n" +
                         "                                                            reply-id=\"" + data.answerId + "\" onclick=existFormEditReply(\"" + data.answerId + "\")\n" +
                         "                                                            class=\"exist-form-edit-reply btn-danger\"><i class=\"fa-solid fa-xmark\"></i> Close</button> " +
@@ -460,8 +460,9 @@ function viewMoreReply(param) {
                 $('#update-reply-content-' + data[i].answerId).val(modified_val);
             }
             $(loadingDiv).css("display", "none");
-
-            $(seeLessDiv).css("display", "block");
+            if (data.length > 0) {
+                $(seeLessDiv).css("display", "block");
+            }
         },
         error: function (xhr) {
             // Handle errors
@@ -767,11 +768,11 @@ function loadMoreMyQuestion(skip, docId) {
             contentType: 'application/json',
             success: function (data) {
                 $("#load-more-my-question").attr('current-count', skip + 10);
-                if (data.length < 10) {
+                if (!data.checkHasMore) {
                     $("#load-more-my-question").css('display', "none");
                 }
                 var html = '';
-                $.each(data, function (index, question) {
+                $.each(data.questions, function (index, question) {
                     if ($("#" + question.questionId).length > 0) {
 
                     } else {
@@ -893,13 +894,13 @@ function loadMoreOtherQuestion(skip, docId) {
         contentType: 'application/json',
         success: function (data) {
             $("#load-more-other-question").attr('current-count', skip + 10);
-            if (data.length < 10) {
-                $("#load-more-other-question").css('display', "none");
+            if (!data.checkHasMore) {
+                $("#load-more-my-question").css('display', "none");
             }
             var html = '';
-            $.each(data, function (index, question) {
+            $.each(data.questions, function (index, question) {
                     if ($("#" + question.questionId).length > 0) {
-                        var html = '';
+                        html = '';
                         html += "<div class=\"stu__question-content-wrapper\" id=\"" + question.questionId + "\">\n" +
                             "                                            <h6 class=\"stu__question-creater-name\"><i class=\"fa-solid fa-user\"></i>\n" +
                             "                                                <span>" + question.studentName + "</span></h6>\n" +

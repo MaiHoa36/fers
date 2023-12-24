@@ -325,7 +325,7 @@
                                             </div>
                                         </div>
                                         <div class="load-more-question-button">
-                                            <div th:if="${questions ne null} AND ${questions.size()} > 0">
+                                            <div th:if="${questions ne null} AND ${questions.size()} > 0 AND ${hasMoreQuestion} ne null AND ${hasMoreQuestion} == true">
                                                 <button class="btn btn--hover" id="load-more-question-lec"
                                                         th:current-count="${questions.size()} == 1 ? '0': ${questions.size()}"
                                                         th:docId="${document.id}"
