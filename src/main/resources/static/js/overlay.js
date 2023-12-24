@@ -22,7 +22,7 @@ function confirmSaveDocument() {
             'error'
         );
     } else {
-        if(theEditor != null && fileInput.value != null){
+        if(theEditor != null && file != null){
             if(theEditor.getData() == '' && file == null) {
                 Swal.fire(
                     'No content!',

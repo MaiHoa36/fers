@@ -241,7 +241,11 @@ public class LibrarianController {
                     !checkExist.getCourseCode().equalsIgnoreCase(course.getCourseCode())) {
                 return "redirect:/librarian/courses/" + course.getId() + "/update?error";
             }
+//            TrainingType trainingType = trainingTypeService.getTrainingTypeByCourseId(course.getId());
             courseService.updateCourse(course);
+            // k láy training type of exist dc
+            trainingTypeService.removeCourseFromTrainingType(checkExist.getTrainingType().getId(), course.getId());
+            trainingTypeService.addCourseToTrainingType(course.getTrainingType().getId(), course);
             return "redirect:/librarian/courses/" + course.getId() + "/update?success";
         }
     }

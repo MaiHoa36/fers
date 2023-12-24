@@ -349,7 +349,7 @@ $(document).ready(function () {
 });
 
 function highlightSearchResults() {
-    let searchKeyword = document.getElementById('searchKeyword').value;
+    let searchKeyword = document.getElementById('searchKeyword').value.trim();
     var titleElements = document.getElementsByClassName("highlighted-title");
     var descriptionElements = document.getElementsByClassName("highlighted-description");
     var contentElements = document.getElementsByClassName("highlighted-content");
