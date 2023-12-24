@@ -11,7 +11,6 @@ import fpt.edu.eresourcessystem.service.*;
 import fpt.edu.eresourcessystem.utils.CommonUtils;
 import fpt.edu.eresourcessystem.utils.ExportFileExcelUtil;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
@@ -654,14 +653,14 @@ public class LibrarianController {
             String headerKey = "Content-Disposition";
             String headerValue = "attachment; filename=course_logs.xlsx";
             response.setHeader(headerKey, headerValue);
-            excelExporter.export(response.getOutputStream(), logs.getContent());
+            excelExporter.exportCourseLog(response.getOutputStream(), logs.getContent());
         } else {
             List<CourseLog> logs = courseLogService.getLogsBySearchAndDateListAll(search, startDate, endDate);
             response.setContentType("application/octet-stream");
             String headerKey = "Content-Disposition";
             String headerValue = "attachment; filename=course_logs.xlsx";
             response.setHeader(headerKey, headerValue);
-            excelExporter.export(response.getOutputStream(), logs);
+            excelExporter.exportCourseLog(response.getOutputStream(), logs);
         }
     }
 

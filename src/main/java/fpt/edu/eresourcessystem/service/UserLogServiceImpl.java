@@ -121,4 +121,34 @@ public class UserLogServiceImpl implements UserLogService {
 
         return new PageImpl<>(result, pageable, totalCount);
     }
+
+    @Override
+    public List<UserLog> getUserLogsBySearchAndDate(String search, LocalDate startDate, LocalDate endDate, String role) {
+        Criteria criteria = new Criteria();
+
+        // Match on email and URL containing the search string
+        criteria.orOperator(
+                Criteria.where("email").regex(Pattern.quote(search), "i"),
+                Criteria.where("url").regex(Pattern.quote(search), "i")
+        );
+
+        // Date range filtering
+        if (startDate != null && endDate != null) {
+            criteria.and("createdDate").gte(startDate).lte(endDate);
+        } else if (startDate != null) {
+            criteria.and("createdDate").gte(startDate);
+        } else if (endDate != null) {
+            criteria.and("createdDate").lte(endDate);
+        }
+
+        // Role filtering
+        if (role != null && !role.isEmpty() && !role.equalsIgnoreCase("all")) {
+            criteria.and("role").is(role);
+        }
+
+        Query query = new Query(criteria);
+        List<UserLog> results = mongoTemplate.find(query, UserLog.class, "user_logs");
+        return results;
+
+    }
 }
