@@ -7,7 +7,9 @@ import fpt.edu.eresourcessystem.repository.TrainingTypeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("trainingtypeService")
 public class TrainingTypeServiceImpl implements TrainingTypeService {
@@ -76,6 +78,33 @@ public class TrainingTypeServiceImpl implements TrainingTypeService {
         }
         return null;
     }
+
+    @Override
+    public void removeCourseFromTrainingType(String trainingTypeId, String courseId) {
+        // Retrieve the TrainingType by its ID
+        Optional<TrainingType> trainingTypeOptional = trainingTypeRepository.findById(trainingTypeId);
+
+        if (trainingTypeOptional.isPresent()) {
+            TrainingType trainingType = trainingTypeOptional.get();
+
+            // Remove the course with the given ID from the list of courses
+            trainingType.setCourses(trainingType.getCourses().stream()
+                    .filter(course -> !course.getId().equals(courseId))
+                    .collect(Collectors.toList()));
+
+            // Save the updated TrainingType back to the database
+            trainingTypeRepository.save(trainingType);
+        } else {
+            // Handle the case where the TrainingType is not found
+            throw new NoSuchElementException("TrainingType with ID " + trainingTypeId + " not found.");
+        }
+    }
+
+//    @Override
+//    public TrainingType getTrainingTypeByCourseId(String courseId) {
+//        return trainingTypeRepository.findById(courseId)
+//                .orElseThrow(() -> new NoSuchElementException("TrainingType with Course ID " + courseId + " not found."));
+//    }
 
     @Override
     public boolean softDelete(TrainingType trainingType) {

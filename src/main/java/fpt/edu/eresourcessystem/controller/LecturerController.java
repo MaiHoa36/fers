@@ -323,14 +323,14 @@ public class LecturerController {
         return "lecturer/resource_type/lecturer_add-resource-type-to-course";
     }
 
-    @PostMapping({"/courses/{courseId}/add_resource_type"})
+    @PostMapping("/courses/{courseId}/add_resource_type")
     @Transactional
-    public String addResourceType(ResourceType resourceType, final Model model, @PathVariable String courseId) {
+    public String addResourceType(ResourceType resourceType, final Model model, @PathVariable String courseId, RedirectAttributes redirectAttributes) {
         List<ResourceType> existedResourceTypes = courseService.findByCourseId(courseId).getResourceTypes();
 
-        for(ResourceType existedResourceType : existedResourceTypes){
-            if(existedResourceType.getResourceTypeName().equals(resourceType.getResourceTypeName().trim())){
-                model.addAttribute("resourceTypeName", resourceType.getResourceTypeName());
+        for (ResourceType existedResourceType : existedResourceTypes) {
+            if (existedResourceType.getResourceTypeName().equals(resourceType.getResourceTypeName().trim())) {
+//                redirectAttributes.addFlashAttribute("error", "Resource type already exists.");
                 return "redirect:/lecturer/courses/" + courseId + "/add_resource_type?error";
             }
         }
@@ -340,7 +340,8 @@ public class LecturerController {
         List<ResourceType> resourceTypes = course.getResourceTypes();
         ResourceType modelResourceType = new ResourceType();
         modelResourceType.setCourse(course);
-        //add course log
+
+        // Add course log
         addCourseLog(course.getId(),
                 course.getCourseCode(),
                 course.getCourseName(),
@@ -350,6 +351,8 @@ public class LecturerController {
                 resourceType.getResourceTypeName(),
                 getLoggedInLecturerMail(),
                 null, null);
+
+//        redirectAttributes.addFlashAttribute("success", "Resource type added successfully.");
         return "redirect:/lecturer/courses/" + courseId + "/add_resource_type?success";
     }
 
@@ -357,7 +360,7 @@ public class LecturerController {
     @GetMapping({"/resource_types/{resourceTypeId}/update"})
     public String editResourceTypeProcess(@PathVariable String resourceTypeId, final Model model) {
         ResourceType resourcetype = resourceTypeService.findById(resourceTypeId);
-        if (!resourcetype.getResourceTypeName().equals("Common material")){
+        if (!resourcetype.getResourceTypeName().equalsIgnoreCase("Common material")){
             Course course = resourcetype.getCourse();
             List<ResourceType> resourceTypes = course.getResourceTypes();
             model.addAttribute("course", course);
@@ -376,7 +379,7 @@ public class LecturerController {
                                    RedirectAttributes redirectAttributes) {
         ResourceType checkResourceTypeExist = resourceTypeService.findById(resourceTypeId);
 
-        if (null != checkResourceTypeExist && !checkResourceTypeExist.getResourceTypeName().equals("Common material")) {
+        if (null != checkResourceTypeExist && !checkResourceTypeExist.getResourceTypeName().equalsIgnoreCase("Common material")) {
             String oldContent = resourcetype.getResourceTypeName();
             checkResourceTypeExist.setResourceTypeName(resourcetype.getResourceTypeName());
             checkResourceTypeExist = resourceTypeService.updateResourceType(checkResourceTypeExist);
@@ -392,16 +395,14 @@ public class LecturerController {
                     checkResourceTypeExist.getResourceTypeName(),
                     getLoggedInLecturerMail(),
                     oldContent, null);
-
             // Add flash attribute for success message
-            redirectAttributes.addFlashAttribute("success", "Resource type updated successfully.");
+//            redirectAttributes.addFlashAttribute("success", "Resource type updated successfully.");
 
-            return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update";
+            return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update?success";
         }
-
         // Add flash attribute for error message
-        redirectAttributes.addFlashAttribute("error", "Error updating resource type.");
-        return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update";
+//        redirectAttributes.addFlashAttribute("error", "Error updating resource type.");
+        return "redirect:/lecturer/resource_types/" + resourceTypeId + "/update?error";
     }
 
 

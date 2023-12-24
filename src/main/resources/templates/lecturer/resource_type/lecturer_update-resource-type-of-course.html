@@ -121,10 +121,11 @@
     validate_updateresourceType();
 
     var successParam = [[${param.success}]];
+    console.log('Error Parameter:', successParam);
     if (successParam) {
         Swal.fire(
             'Success!',
-            'Save resource type successful!',
+            'Update resource type successful!',
             'success'
         );
     }
