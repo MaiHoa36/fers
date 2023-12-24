@@ -895,7 +895,7 @@ function loadMoreOtherQuestion(skip, docId) {
         success: function (data) {
             $("#load-more-other-question").attr('current-count', skip + 10);
             if (!data.checkHasMore) {
-                $("#load-more-my-question").css('display', "none");
+                $("#load-more-other-question").css('display', "none");
             }
             var html = '';
             $.each(data.questions, function (index, question) {
