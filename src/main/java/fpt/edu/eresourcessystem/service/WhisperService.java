@@ -23,7 +23,7 @@ import java.util.Map;
 @Service
 public class WhisperService {
 
-    @Value("${openai.api.key}")
+//    @Value("${openai.api.key}")
     private String apiKey; // Inject your OpenAI API key from application.properties or application.yml
 
     private final String OPENAI_API_URL = "https://api.openai.com/v1/engines/whisper-1/completions";

@@ -42,7 +42,7 @@ public class Course {
     private String courseName;
     private String description;
 
-    @DocumentReference(lazy = true)
+    @DocumentReference //(lazy = true)
     private TrainingType trainingType;
 
     @DocumentReference(lazy = true)
