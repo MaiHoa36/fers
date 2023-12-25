@@ -303,6 +303,7 @@ function submitDeleteDocumentNote(param) {
                     console.log('success-delete-question' + param);
                     $('#send-new-note-button').css("display", "inline");
                     $('#sending-delete').css("display", "none");
+                    $('#send-edit-note-button').css("display", "none");
                     $('#error-input-new-note').css("display", "none");
                     newEditor.setData('');
                     $('#send-new-note-button').addClass('disabled');
