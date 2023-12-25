@@ -47,6 +47,7 @@ public class AdminController {
     private final FeedbackService feedbackService;
     private final TrainingTypeService trainingTypeService;
 
+
     /*
     DASHBOARD
      */
