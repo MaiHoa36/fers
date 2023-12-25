@@ -41,7 +41,8 @@ public class NotificationServiceImpl implements NotificationService {
     public List<NotificationResponseDto> findByToAccount(String email) {
         Query query = new Query(Criteria.where("deleteFlg").is(CommonEnum.DeleteFlg.PRESERVED)
                 .and("toAccount").is(email)
-                .and("notificationStatus").is(NotificationEnum.NotificationStatus.UNREAD))
+                .and("notificationStatus").is(NotificationEnum.NotificationStatus.UNREAD)
+        )
                 .skip(0)
                 .limit(5)
                 .with(Sort.by(Sort.Order.desc("lastModifiedDate")));
