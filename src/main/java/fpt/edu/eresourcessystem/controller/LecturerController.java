@@ -67,8 +67,8 @@ public class LecturerController {
     private final MultiFileService multiFileService;
     private final NotificationService notificationService;
 
-//    @Value("${openai.api.key}")
-    private String apiKey="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";
+    @Value("${openai.api.key}")
+    private String apiKey;
 
     private final WhisperService whisperService;
 

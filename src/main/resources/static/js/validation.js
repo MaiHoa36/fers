@@ -3,7 +3,7 @@ addFptEmailValidation();
 function addFptEmailValidation() {
     $.validator.addMethod("fptEmail", function(value, element) {
         return this.optional(element) || /^[a-zA-Z0-9._-]+@fpt\.edu\.vn$/.test(value);
-    }, "Please enter a valid FPT email address.");
+    }, "Please enter a valid FPT email (example@fpt.edu.vn) address.");
 }
 function validate_addCourse() {
     $('#add-form').validate({
