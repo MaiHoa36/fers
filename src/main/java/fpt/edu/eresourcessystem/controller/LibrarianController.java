@@ -356,11 +356,12 @@ public class LibrarianController {
     }
 
     @GetMapping({"/courses/{courseId}/remove-lecture"})
-    public String removeLecture(@PathVariable String courseId) {
+    public String removeLecture(@PathVariable String courseId) throws MessagingException {
         Course course = courseService.findByCourseId(courseId);
         boolean removed1 = courseService.removeLecture(courseId);
         boolean removed = lecturerService.removeCourse(course.getLecturer().getId(), new ObjectId(courseId));
         if (removed1 || removed) {
+            emailService.sendCourseRemovalEmail(course.getLecturer().getAccount().getEmail(), course.getCourseName());
             // update old lecturer course
             LecturerCourse oldLecturerCourse = lecturerCourseService.findCurrentLecturer(courseId);
             LecturerCourse newLecturerCourse = new LecturerCourse();

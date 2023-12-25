@@ -80,7 +80,8 @@
                         <tr>
                             <td th:text="${iterStat.index+1}">1</td>
                             <td><a th:href="@{'/librarian/lectures/' + ${lecture.getId()}}"
-                                   th:text="${lecture.getAccountName()}"></a></td>
+                                   th:text="${lecture.getAccountName() != null ? lecture.getAccountName() : ''}"></a>
+                            </td>
                             <td><span class="description" th:text="${lecture.getAccountEmail()}"></span></td>
                             <td>
                                 <th:block th:each="course : ${lecture.getCourses()}">
