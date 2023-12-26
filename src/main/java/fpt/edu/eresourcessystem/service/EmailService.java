@@ -40,7 +40,7 @@ public class EmailService {
                         "<h2>Kính gửi Giảng viên,</h2>" +
                         "<p>Chúng tôi xin thông báo bạn đã được phân công quản lý khóa học <strong>'%s'</strong> từ thời điểm <strong>%s</strong>.</p>" +
                         "<p>Đây là một cơ hội tuyệt vời để bạn thể hiện khả năng và đóng góp vào sự phát triển của khóa học.</p>" +
-                        "<p>Vui lòng đăng nhập vào hệ thống <a href='https://www.eresource.site/guest'>tại đây</a> quản lý khóa học để cập nhật nội dung, tài liệu và thông tin liên quan đến khóa học. " +
+                        "<p>Vui lòng đăng nhập vào hệ thống <a href='https://fers-d9b6d7b892a4.herokuapp.com/'>tại đây</a> quản lý khóa học để cập nhật nội dung, tài liệu và thông tin liên quan đến khóa học. " +
                         "Nếu bạn có bất kỳ thắc mắc hoặc cần sự hỗ trợ, hãy liên hệ với chúng tôi.</p>" +
                         "<p>Chúc bạn một ngày làm việc hiệu quả!</p>" +
                         "<p>Trân trọng,<br>Thư viện đại học FPT.</p>" +
